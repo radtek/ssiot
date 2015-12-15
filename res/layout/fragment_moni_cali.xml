@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/moni_title_3"
+        layout="@layout/moni_title_bar" />
+
+    <RadioGroup
+        android:id="@+id/cali_bd_jz"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/moni_title_3"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/cali_bd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="标定"
+            android:checked="true"
+            android:background="@drawable/radio_monitor_select" />
+
+        <RadioButton
+            android:id="@+id/cali_jz"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/radio_monitor_select"
+            android:button="@null"
+            android:text="校准"
+             />
+    </RadioGroup>
+
+    <RelativeLayout
+        android:id="@+id/cali_sensor_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cali_bd_jz" >
+        
+        <TextView 
+            android:id="@+id/cali_s_t"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="要素:"/>
+
+        <Spinner
+            android:id="@+id/cali_sensor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_s_t" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/cali_channel_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cali_sensor_bar" >
+        
+        <TextView 
+            android:id="@+id/cali_c_t"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="通道:"/>
+
+        <Spinner
+            android:id="@+id/cali_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_c_t" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/cali_stan_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cali_channel_bar" >
+        
+        <TextView 
+            android:id="@+id/cali_stan_t"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="标准:"/>
+
+        <Spinner
+            android:id="@+id/cali_standard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_stan_t" />
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/cali_modi_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cali_channel_bar"
+        android:visibility="gone" >
+        
+        <TextView 
+            android:id="@+id/cali_modi_t"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="调整:"/>
+
+        <Button 
+            android:id="@+id/cali_decrease"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_modi_t"/>
+        <EditText
+            android:id="@+id/cali_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_decrease"
+            android:numeric="integer" />
+        <Button 
+            android:id="@+id/cali_increase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cali_edit"/>
+    </RelativeLayout>
+    
+
+</RelativeLayout>
