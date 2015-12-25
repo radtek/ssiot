@@ -97,15 +97,15 @@ public class Sensor {
     public SensorViewModel DataRowToViewModel(ResultSet rs){
         SensorViewModel m = new SensorViewModel();
         try {
-            m._sensorno = Integer.parseInt(rs.getString("SensorNO"));
+            m._sensorno = rs.getInt("SensorNO");
             m._channel = Integer.parseInt(rs.getString("Channel"));
-            m._sensorcategoryno = Integer.parseInt(rs.getString("SensorCategoryNo"));
+            m._sensorcategoryno = rs.getInt("SensorCategoryNo");
             m._sensorname = rs.getString("SensorName");
             m._shortname = rs.getString("ShortName");
             m._unit = rs.getString("Unit");
-            m._accuracy = Integer.parseInt(rs.getString("Accuracy"));
-            m._minvalue = Float.parseFloat(rs.getString("MinValue"));
-            m._maxvalue = Float.parseFloat(rs.getString("MaxValue"));
+            m._accuracy = rs.getInt("Accuracy");
+            m._minvalue = rs.getFloat("MinValue");
+            m._maxvalue = rs.getFloat("MaxValue");
             m._color = rs.getString("Color");
         } catch (Exception e) {
             e.printStackTrace();

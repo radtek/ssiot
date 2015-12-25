@@ -35,9 +35,11 @@ public class DbHelperSQL{
             long time1 = SystemClock.uptimeMillis();
           try {
               
-              if (null == connection || connection.con == null || connection.con.isClosed()){
+              if (!connectIsOk(connection)){
                   connection = new SqlConnection(connectionString);
-                  connection.Open();
+                  if (!connection.Open()){
+                      return null;
+                  }
               }
 //               Log.v(tag, "#############"+SQLString);
 //             if (SQLString.length() > 6000){
@@ -55,17 +57,29 @@ public class DbHelperSQL{
               Log.v(tag, "3#-------------query cost time" + (SystemClock.uptimeMillis()-time1));
               return rs;
           } catch (SQLException ex) {
+              closeAll();
               ex.printStackTrace();
           } catch (Exception e) {
              e.printStackTrace();
          }
          Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
-         i.putExtra("showmsg", "1Query查询数据出现问题" + (SystemClock.uptimeMillis()-time1));
+         i.putExtra("showmsg", "查询数据出现问题");
          ContextUtilApp.getInstance().sendBroadcast(i);
           return null;
         }
-         
      }
+    
+    private static boolean connectIsOk(SqlConnection c){
+        try {
+            if (null != c && null != c.con  && !c.con.isClosed()){// && c.con.isValid(5)
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
     
     public static void closeAll(){
         try {
@@ -92,9 +106,11 @@ public class DbHelperSQL{
             long time1 = SystemClock.uptimeMillis();
             try {
                 
-                if (null == connection || connection.con == null || connection.con.isClosed()){
+                if (!connectIsOk(connection)){
                     connection = new SqlConnection(connectionString);
-                    connection.Open();
+                    if (!connection.Open()){
+                        return null;
+                    }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
                 preStatement = connection.prepareStatement(SQLString);
@@ -109,6 +125,7 @@ public class DbHelperSQL{
                 Log.v(tag, "3#-------------query参 cost time" + (SystemClock.uptimeMillis()-time1));
                 return rs;
             } catch (Exception e) {
+                closeAll();
                 e.printStackTrace();
             }
             Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
@@ -123,13 +140,15 @@ public class DbHelperSQL{
             Log.v(tag, "1#####Query_objecty####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
             try {
-                if (null == connection || connection.con == null || connection.con.isClosed()){
+                if (!connectIsOk(connection)){
                     connection = new SqlConnection(connectionString);
-                    connection.Open();
+                    if (!connection.Open()){
+                        return false;
+                    }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
                 
-                connection.Open();
+//                connection.Open();
                 preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
                     preStatement.setObject((i+1), cmdParams.get(i));
@@ -143,6 +162,7 @@ public class DbHelperSQL{
                 Log.v(tag, "3#-------------Query_object cost time" + (SystemClock.uptimeMillis()-time1));
                 return b;
             } catch (Exception e) {
+                closeAll();
                 e.printStackTrace();
             }
             Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
@@ -190,9 +210,11 @@ public class DbHelperSQL{
             Log.v(tag, "1#####Update########" + SQLString);
             long time1 = SystemClock.uptimeMillis();
             try {
-                if (null == connection || connection.con == null || connection.con.isClosed()) {
+                if (!connectIsOk(connection)) {
                     connection = new SqlConnection(connectionString);
-                    connection.Open();
+                    if (!connection.Open()){
+                        return 0;
+                    }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis() - time1)
                         + !connection.con.isClosed());
@@ -207,6 +229,7 @@ public class DbHelperSQL{
                 Log.v(tag, "3#-------------update time" + (SystemClock.uptimeMillis() - time1));
                 return i;
             } catch (SQLException ex) {
+                closeAll();
                 ex.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -223,13 +246,15 @@ public class DbHelperSQL{
             Log.v(tag, "1#####Update_object####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
             try {
-                if (null == connection || connection.con == null || connection.con.isClosed()){
+                if (!connectIsOk(connection)){
                     connection = new SqlConnection(connectionString);
-                    connection.Open();
+                    if (!connection.Open()){
+                        return 0;
+                    }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
                 
-                connection.Open();
+//                connection.Open();
                 preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
                     preStatement.setObject((i+1), cmdParams.get(i));
@@ -242,13 +267,21 @@ public class DbHelperSQL{
                 Log.v(tag, "3#-------------Update_object time" + (SystemClock.uptimeMillis()-time1));
                 return ret;
             } catch (Exception e) {
+                closeAll();
                 e.printStackTrace();
             }
             Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
-            i.putExtra("showmsg", "Update_object数据操作出现问题" + (SystemClock.uptimeMillis()-time1));
+            i.putExtra("showmsg", "Update_object数据操作出现问题");
             ContextUtilApp.getInstance().sendBroadcast(i);
             return 0;
         }
+    }
+    
+    private static String MSGOPENFAIL = "连接ssiot数据库失败，请检查网络！";
+    private static void toastmsg(String msg){//TTOODDOO in zheng ssiot
+        Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
+        i.putExtra("showmsg", ""+msg);
+        ContextUtilApp.getInstance().sendBroadcast(i);
     }
     
     public static class SqlConnection{
@@ -262,10 +295,13 @@ public class DbHelperSQL{
         
         public boolean Open(){
             String JDriver = "net.sourceforge.jtds.jdbc.Driver";
-            String connectDB = "jdbc:jtds:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433/iot2014";
+            String connectDB = "jdbc:jtds:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433/iot2014;loginTimeout=9;socketTimeout=9";
+//            String JDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+//            String connectDB = "jdbc:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433;DatabaseName=iot2014";
+            long timebegingopen = SystemClock.uptimeMillis();
             try {
                 Class.forName(JDriver);// 加载数据库引擎，返回给定字符串名的类
-                Log.v(tag, "############加载jdbcjtds驱动成功#############");
+                Log.v(tag, "############加载jdbcjtds驱动成功#############" + (SystemClock.uptimeMillis()-timebegingopen));
             } catch (ClassNotFoundException e){
                 e.printStackTrace();
                 Log.e(tag, "######加载数据库引擎失败###########1");
@@ -284,6 +320,7 @@ public class DbHelperSQL{
                 Log.v(tag, "连接ssiot数据库成功");
             } catch (SQLException e) {
                 e.printStackTrace();
+                toastmsg(MSGOPENFAIL);
                 return false;
             }
             return true;

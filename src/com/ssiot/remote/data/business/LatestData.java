@@ -113,8 +113,8 @@ public class LatestData{
 //                sb_sql.insert(0, "SELECT TOP 99999999 * , ROW_NUMBER() OVER ( ORDER BY "+orderby+" ) AS [RANK] FROM (");
             } else {
 //                sb_sql.insert(0, "SELECT TOP 99999999 * , ROW_NUMBER() OVER ( ORDER BY 更新时间 ) AS [RANK] FROM (");
-                sb_sql.insert(0, "SELECT TOP 99999999 * , ROW_NUMBER() OVER ( ORDER BY 更新时间 ) AS [RANK] " +
-                		"FROM ( SELECT TOP 99999999 * , ROW_NUMBER() OVER ( PARTITION BY 节点编号 ORDER BY 更新时间 ) AS [RANK2] FROM (");
+                sb_sql.insert(0, "SELECT TOP 99999999 * , ROW_NUMBER() OVER ( ORDER BY 更新时间 desc ) AS [RANK] " +
+                		"FROM ( SELECT TOP 99999999 * , ROW_NUMBER() OVER ( PARTITION BY 节点编号 ORDER BY 更新时间 desc) AS [RANK2] FROM (");
             }
 //            sb_sql.append(" ) AS [Table] WHERE 1=1");
             sb_sql.append(" ) AS [Table] WHERE 1=1 ) as t where t.[Rank2]=1");

@@ -23,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_name"
+            android:layout_centerVertical="true"
             android:text="名称:"/>
     </RelativeLayout>
     
@@ -41,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_id"
+            android:layout_centerVertical="true"
             android:text="ID:"/>
     </RelativeLayout>
     
@@ -54,11 +56,13 @@
             android:id="@+id/conf_freq"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/spinner_back"/>
         <TextView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_freq"
+            android:layout_centerVertical="true"
             android:text="上报频率:"/>
     </RelativeLayout>
     
@@ -77,6 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_longti"
+            android:layout_centerVertical="true"
             android:text="经度:"/>
     </RelativeLayout>
     
@@ -95,6 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_lati"
+            android:layout_centerVertical="true"
             android:text="纬度:"/>
     </RelativeLayout>
     
@@ -113,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/conf_remark"
+            android:layout_centerVertical="true"
             android:text="备注:"/>
     </RelativeLayout>
     
@@ -122,6 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/conf_remark_bar"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/button_bk"
         android:text="发送"/>
     
 </RelativeLayout>

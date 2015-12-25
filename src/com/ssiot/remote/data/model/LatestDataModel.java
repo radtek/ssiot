@@ -1,11 +1,11 @@
 package com.ssiot.remote.data.model;
 
-import net.sourceforge.jtds.jdbc.DateTime;
+import java.sql.Timestamp;
 
 public class LatestDataModel {
 
     public int _latestdataid;
-    public DateTime _collectiontime;
+    public Timestamp _collectiontime;
     public String _uniqueid;
     public int _channel;
     public int _sensorno;

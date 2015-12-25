@@ -40,6 +40,13 @@ public class MoniCalibrationFrag extends BaseFragment{
     private Spinner sensorSpinner;
     private Spinner channelSpinner;
     private Spinner standardSpinner;
+    private String mSlectedShortName = "";
+    private int mSlectedChannel = 0;
+    private 
+    
+    TextView bdButton;//标定button
+    TextView jzButton;
+    Button mSendBtn;
     
     HashMap<String,ArrayList<Integer>> hashMap;
     
@@ -79,24 +86,38 @@ public class MoniCalibrationFrag extends BaseFragment{
         channelSpinner = (Spinner) v.findViewById(R.id.cali_channel);
         standardSpinner = (Spinner) v.findViewById(R.id.cali_standard);
         
-        RadioButton bdButton = (RadioButton) v.findViewById(R.id.cali_bd);
-        RadioButton jzButton = (RadioButton) v.findViewById(R.id.cali_jz);
-        RadioGroup rg = (RadioGroup) v.findViewById(R.id.cali_bd_jz);
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        bdButton = (TextView) v.findViewById(R.id.cali_bd);
+        jzButton = (TextView) v.findViewById(R.id.cali_jz);
+        bdButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.cali_bd:
-                        bar1.setVisibility(View.VISIBLE);
-                        bar2.setVisibility(View.GONE);
-                        break;
-                    case R.id.cali_jz:
-                        bar1.setVisibility(View.GONE);
-                        bar2.setVisibility(View.VISIBLE);
-                        break;
-                    default:
-                        break;
-                }
+            public void onClick(View v) {
+                bar1.setVisibility(View.VISIBLE);
+                bar2.setVisibility(View.INVISIBLE);
+                bdButton.setSelected(true);
+                jzButton.setSelected(false);
+            }
+        });
+        jzButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bar1.setVisibility(View.INVISIBLE);
+                bar2.setVisibility(View.VISIBLE);
+                bdButton.setSelected(false);
+                jzButton.setSelected(true);
+            }
+        });
+        bdButton.setSelected(true);
+        mSendBtn = (Button) v.findViewById(R.id.cali_send);
+        mSendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO
+//                        new AjaxGetNodesDataByUserkey().SendModify(modifyId, mSlectedChannel, nodeno, jzValue, mSlectedShortName);
+                    }
+                }).start();                
             }
         });
         initDecreaseIncreaseBar(v);
@@ -114,8 +135,8 @@ public class MoniCalibrationFrag extends BaseFragment{
     }
     
     private void initDecreaseIncreaseBar(View rootView){
-        Button decreaBtn = (Button) rootView.findViewById(R.id.cali_decrease);
-        Button increaBtn = (Button) rootView.findViewById(R.id.cali_increase);
+        TextView decreaBtn = (TextView) rootView.findViewById(R.id.cali_decrease);
+        TextView increaBtn = (TextView) rootView.findViewById(R.id.cali_increase);
         final EditText editText = (EditText) rootView.findViewById(R.id.cali_edit);
         decreaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,13 +176,27 @@ public class MoniCalibrationFrag extends BaseFragment{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ArrayList<String> channelDatas = new ArrayList<String>();
-                ArrayList<Integer> arrayInt = hashMap.get(sensorDatas.get(position));
+                final ArrayList<Integer> arrayInt = hashMap.get(sensorDatas.get(position));
                 for (int i = 0; i < arrayInt.size(); i ++){
                     channelDatas.add("" + arrayInt.get(i));
                 }
                 ArrayAdapter<String> channel_adapter = new ArrayAdapter<String>(getActivity(),
                         android.R.layout.simple_spinner_item,channelDatas);
                 channelSpinner.setAdapter(channel_adapter);
+                channelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                            long id) {
+                        mSlectedChannel = arrayInt.get(position);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+                
+                
+                mSlectedShortName = sensorDatas.get(position);
             }
 
             @Override

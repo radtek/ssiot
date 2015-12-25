@@ -24,7 +24,10 @@ public class User{
             strSql.append(" where " + strWhere);
         }
         ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        return DataTableToList(ds);
+        if (null != ds){
+            return DataTableToList(ds);
+        }
+        return null;
     }
     
     public List<UserModel> DataTableToList(ResultSet c){

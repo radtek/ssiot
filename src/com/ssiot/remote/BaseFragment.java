@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,13 +16,16 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 public class BaseFragment extends Fragment{
+    private static final String tag = "BaseFragment";
     Dialog mDialog = null;
     
     private static final int MSG_SHOW_DLG = 104;
     private static final int MSG_DISMISS_DLG = 105;
+    private static final int MSG_LONGTIME = 106;//要确保是原来的dialog
     private Handler baseHandler = new Handler(){
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -31,7 +35,18 @@ public class BaseFragment extends Fragment{
                 case MSG_DISMISS_DLG:
                     dismissMyDialog();
                     break;
-
+                case MSG_LONGTIME:
+                    if (null != mDialog  && mDialog.isShowing() && mDialog.equals(msg.obj)){
+                        Log.w(tag, "-----dialog time out dismiss");
+                        Toast.makeText(getActivity(), "等待超时,请检查网络后重试！", Toast.LENGTH_SHORT).show();
+//                        try {
+//                            DbHelperSQL.connection.Close();//TODO 是否造成崩溃 TODO TODO 卡死主线程！
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+                        mDialog.dismiss();
+                    }
+                    break;
                 default:
                     break;
             }
@@ -52,6 +67,11 @@ public class BaseFragment extends Fragment{
         }
         mDialog = Utils.createLoadingDialog(getMyActivity(), msg);
         mDialog.show();
+        baseHandler.removeMessages(MSG_LONGTIME);
+        Message m = baseHandler.obtainMessage(MSG_LONGTIME);
+        final Dialog d = mDialog;
+        m.obj = d;
+        baseHandler.sendMessageDelayed(m, 10 * 1000);
     }
     
     public void sendShowMyDlg(String msg){

@@ -101,7 +101,9 @@ public class Node{
                 strSql.append(" where " + strWhere);
             }
             ResultSet rs = DbHelperSQL.Query(strSql.toString());
-            objModel= DataTableToList(rs);
+            if (null != rs){
+                objModel= DataTableToList(rs);
+            }
         }
         return objModel;
     }

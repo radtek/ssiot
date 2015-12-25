@@ -331,13 +331,15 @@ public class MoreLineView  extends View {
 
     private void refreshTopLineLength(int verticalGridNum){
         // For prevent popup can't be completely showed when backgroundGridHeight is too small.
-        // But this code not so good.
-        if((mViewHeight-topLineLength-bottomTextHeight-bottomTextTopMargin)/
-                (verticalGridNum+2)<getPopupHeight()){
+        // But this code not so good.//竖着的格子比较多时有问题？？ jingbo delete this
+//        if((mViewHeight-topLineLength-bottomTextHeight-bottomTextTopMargin)/
+//                (verticalGridNum+2)<getPopupHeight()){
             topLineLength = getPopupHeight()+DOT_OUTER_CIR_RADIUS+DOT_INNER_CIR_RADIUS+2;
-        }else{
-            topLineLength = MIN_TOP_LINE_LENGTH;
-        }
+            Log.v(tag, "-----------topLineLength:"+topLineLength + "   getPopupHeight"+getPopupHeight());
+//        }else{
+//            topLineLength = MIN_TOP_LINE_LENGTH;
+//            Log.v(tag, "-----------  topLineLength:"+topLineLength + "     getPopupHeight"+getPopupHeight());
+//        }
     }
 
     @Override

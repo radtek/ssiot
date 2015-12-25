@@ -1,6 +1,6 @@
 package com.ssiot.remote.data.model;
 
-import net.sourceforge.jtds.jdbc.DateTime;
+import java.sql.Timestamp;
 
 public class UserModel{
     
@@ -11,7 +11,7 @@ public class UserModel{
     public String _username;
     public int _areaid;
     public int _gender=0;
-    public DateTime _birthdate;
+    public Timestamp _birthdate;
     public int _userrole;
     public int _userstatus;
     public String _email;

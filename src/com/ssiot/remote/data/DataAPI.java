@@ -362,6 +362,8 @@ public class DataAPI {
                             if ("节点编号".equals(sensorname) ||
                                     "RANK".equals(sensorname) ||
                                     "RANK2".equals(sensorname) ||
+                                    "OrderNumber".equals(sensorname) ||
+                                    "电池电压".equals(sensorname) ||
                                     "安装地点".equals(sensorname) ||
                                     "更新时间".equals(sensorname) ){
                                 continue;

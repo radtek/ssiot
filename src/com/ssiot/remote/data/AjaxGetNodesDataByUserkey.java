@@ -199,8 +199,9 @@ public class AjaxGetNodesDataByUserkey{
     //发送保存校准数据
     public boolean SendModify(int modifyId, int channel,int nodeNo2,String jzValue, String sensorShortName){//jzValue 就是value 校准值
         try {
+            NodeModel nodeModel = nodeBll.GetModelByNodeNo(""+nodeNo2);//获取节点信息
             if (modifyId == 0){//校准
-                NodeModel nodeModel = nodeBll.GetModelByNodeNo(""+nodeNo2);//获取节点信息
+                
               //根据传感器名称获取传感器对象
                 SensorModel sensorObj = DataAPI.GetSensorModelBySensorName(sensorShortName);
                 if (settingbll.Exists(nodeModel._uniqueid, 1, sensorObj._sensorno, channel)){//更新
@@ -214,11 +215,7 @@ public class AjaxGetNodesDataByUserkey{
                     settingModel_New._sendtime = dt;
                     settingModel_New._sendstate = 0; 
                     settingModel_New._resendcount = 0;
-                    if (settingbll.Update(settingModel_New)){
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return settingbll.Update(settingModel_New);
                 } else {//新增
                     SettingModel  settingModel_Add = new SettingModel();
                     settingModel_Add._uniqueid = nodeModel._uniqueid;
@@ -234,9 +231,8 @@ public class AjaxGetNodesDataByUserkey{
                     int count = settingbll.Add(settingModel_Add);
                     return count > 0;
                 }
-            } else {//标定
+            } else {//标定 sensorModifyData表里的ID值
                 SensorModifyDataModel sensorModifyDataModel = sensorModifyDataBll.GetModel(modifyId);
-                NodeModel nodeModel = nodeBll.GetModelByNodeNo(""+nodeNo2);
                 SettingModel settingModel = new SettingModel();
                 settingModel._settingmark = sensorModifyDataModel._sensorno;
                 settingModel._chanel = channel;

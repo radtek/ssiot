@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -241,12 +242,18 @@ public class MoniDataFrag extends BaseFragment{
             long time1 = SystemClock.uptimeMillis();
             LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
-            
             TextView timeText = new TextView(context);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             timeText.setText("" + n2m._detailTime);
             timeText.setEms(5);
+            timeText.setGravity(Gravity.CENTER);
+            timeText.setMaxLines(2);
+            timeText.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
             rootLayout.addView(timeText, lp);
+            
+            View dividerView = new View(context);
+            LinearLayout.LayoutParams lpdivider = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
+            rootLayout.addView(dividerView, lpdivider);
             
 //            View leftView = timeText;
             for (int j = 0; j < n2m._nodeData_list.size(); j ++){
@@ -257,11 +264,15 @@ public class MoniDataFrag extends BaseFragment{
                     t.setText("");
                 }
                 t.setSingleLine();
-                t.setMaxEms(5);
-                t.setMinEms(5);
-                LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                lp2.leftMargin = 10; 
-                lp2.rightMargin = 10;
+                t.setGravity(Gravity.CENTER);
+//                t.setMaxEms(5);
+//                t.setMinEms(5);
+                t.setEms(5);
+//                t.setPadding(0, 10, 0, 10);
+                t.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
+                LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+//                lp2.leftMargin = 10; 
+//                lp2.rightMargin = 10;
                 rootLayout.addView(t,lp2);
 //                leftView = t;
             }
@@ -270,13 +281,15 @@ public class MoniDataFrag extends BaseFragment{
         }
         
         private View buildHeaderView(NodeView2Model n2m){
-            LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了
+            LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了 解决了一个bug
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
             
             TextView timeText = new TextView(context);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             timeText.setText("时间");
+            timeText.setGravity(Gravity.CENTER);
             timeText.setEms(5);
+            timeText.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
             rootLayout.addView(timeText, lp);
             
 //            View leftView = timeText;
@@ -286,9 +299,11 @@ public class MoniDataFrag extends BaseFragment{
                 t.setSingleLine();
                 t.setMaxEms(5);
                 t.setMinEms(5);
+                t.setGravity(Gravity.CENTER);
+                t.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
                 LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                lp2.leftMargin = 10; 
-                lp2.rightMargin = 10;
+//                lp2.leftMargin = 10; 
+//                lp2.rightMargin = 10;
                 rootLayout.addView(t,lp2);
 //                leftView = t;
             }
