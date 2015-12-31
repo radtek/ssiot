@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ExpertFragment extends Fragment{
     public static final String tag = "ExpertFragment";
@@ -17,37 +18,33 @@ public class ExpertFragment extends Fragment{
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        mFExpertBtnClickListener = (FExpertBtnClickListener) getActivity();
         setHasOptionsMenu(true);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         View v = inflater.inflate(R.layout.fragment_expert, container, false);
-//        Button b = (Button) v.findViewById(R.id.btn_expert_f);
-//        b.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                if (null != mFExpertBtnClickListener){
-//                    mFExpertBtnClickListener.onFExpertBtnClick();
-//                }
-//            }
-//        });
+        TextView fishView = (TextView) v.findViewById(R.id.diagnose_fish);
+        fishView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mFExpertBtnClickListener){
+                    mFExpertBtnClickListener.onFExpertBtnClick();
+                }
+            }
+        });
         return v;
     }
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Auto-generated method stub
 //        inflater.inflate(R.menu.menu_expert, menu);
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
 //        switch (item.getItemId()) {
 //            case R.id.action_settings:
 //                Log.v(tag, "----------------action-settting");

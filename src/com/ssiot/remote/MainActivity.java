@@ -31,18 +31,18 @@ import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.ssiot.remote.ExpertFragment.FExpertBtnClickListener;
 import com.ssiot.remote.MainFragment.FMainBtnClickListener;
 import com.ssiot.remote.SettingFrag.FSettingBtnClickListener;
-import com.ssiot.remote.control.ControlNodeListFrag;
-import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
-import com.ssiot.remote.data.NodeHelper;
+import com.ssiot.remote.expert.DiagnoseFishActivity;
+import com.ssiot.remote.expert.DiagnoseFishSelectActivity;
 import com.ssiot.remote.monitor.HeaderTabFrag;
 import com.ssiot.remote.myzxing.MipcaActivityCapture;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener{
+public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener ,FExpertBtnClickListener{
     private static final String tag = "SSIOT-Main";
     public final static int REQUEST_CODE_SCAN = 1;
     private final static String TAG_MONITOR = "tag_monitor";
@@ -456,5 +456,11 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
             mUpdaManager = new UpdateManager(MainActivity.this, mHandler);
         }
         mUpdaManager.startGetRemoteVer();
+    }
+
+    @Override
+    public void onFExpertBtnClick() {
+        Intent intent = new Intent(MainActivity.this, DiagnoseFishSelectActivity.class);
+        startActivity(intent);
     }
 }

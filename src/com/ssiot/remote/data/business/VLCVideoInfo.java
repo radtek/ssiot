@@ -133,6 +133,7 @@ public class VLCVideoInfo {
             vModel._type = c.getString("Type");
 //            
             vModel._tcpport = c.getInt("TcpPort");
+            vModel._remark = c.getString("Remark");
 //            Log.v(tag, "-------tcpport---------------------------------" + vModel._tcpport + vModel._address);
             // TODO
             return vModel;

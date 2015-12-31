@@ -38,7 +38,10 @@ public class BaseFragment extends Fragment{
                 case MSG_LONGTIME:
                     if (null != mDialog  && mDialog.isShowing() && mDialog.equals(msg.obj)){
                         Log.w(tag, "-----dialog time out dismiss");
-                        Toast.makeText(getActivity(), "等待超时,请检查网络后重试！", Toast.LENGTH_SHORT).show();
+                        if (null != getActivity()){
+                            Toast.makeText(getActivity(), "等待超时,请检查网络后重试！", Toast.LENGTH_SHORT).show();
+                        }
+                        
 //                        try {
 //                            DbHelperSQL.connection.Close();//TODO 是否造成崩溃 TODO TODO 卡死主线程！
 //                        } catch (Exception e) {

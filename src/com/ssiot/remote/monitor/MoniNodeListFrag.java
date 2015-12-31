@@ -49,6 +49,7 @@ public class MoniNodeListFrag extends BaseFragment{
     
     private static final int MSG_GETNODES_END = 1;
     public static final int MSG_GET_ONEIMAGE_END = 2;
+    private static final int MSG_REFRESH = 3;
     private Handler mHandler = new Handler(){
         public void handleMessage(android.os.Message msg) {
             if (!isVisible()){
@@ -71,6 +72,9 @@ public class MoniNodeListFrag extends BaseFragment{
 //                    mNodeAdapter.notifyDataSetChanged();//不能notify，会无限循环
                     ThumnailHolder thumb = (ThumnailHolder) msg.obj;
                     thumb.imageView.setImageBitmap(thumb.bitmap);
+                    break;
+                case MSG_REFRESH:
+                    new GetAllMoniNodeThread().start();
                     break;
 
                 default:
@@ -109,13 +113,11 @@ public class MoniNodeListFrag extends BaseFragment{
         mNodeAdapter = new MonitorListAdapter(getActivity(), mNodes,null,null,mHandler);
         mNodeListView.setAdapter(mNodeAdapter);
         mNodeAdapter.notifyDataSetChanged();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mNodes = new AjaxGetNodesDataByUserkey().GetAllNodesDataByUserkey(userKey);
-                mHandler.sendEmptyMessage(MSG_GETNODES_END);
-            }
-        }).start();
+        if (!Utils.isNetworkConnected(getActivity())){
+            Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_LONG).show();
+        } else {
+            new GetAllMoniNodeThread().start();
+        }
         return v;
     }
     
@@ -194,5 +196,15 @@ public class MoniNodeListFrag extends BaseFragment{
     //回调接口，留给activity使用
     public interface FMoniNodeListBtnClickListener {  
         void onFMoniNodeListBtnClick(int position);  
+    }
+    
+    private class GetAllMoniNodeThread extends Thread{
+        @Override
+        public synchronized void run() {
+            sendShowMyDlg("正在查询");
+            mNodes = new AjaxGetNodesDataByUserkey().GetAllNodesDataByUserkey(userKey);
+            sendDismissDlg();
+            mHandler.sendEmptyMessage(MSG_GETNODES_END);
+        }
     }
 }
