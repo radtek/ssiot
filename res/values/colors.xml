@@ -25,6 +25,8 @@
     <drawable name="ssiot_green">#ff69c911</drawable>
     <color name="ssiotgreen">#ff69c911</color>
     <color name="ssiot_title_yellow">#fff39800</color>
+    <color name="datalist_header">#ffeb6100</color>
+    <color name="datalist_green">#ff009944</color>
     
     <color name="icon_yellow">#fffcdc</color>
     <color name="icon_green">#d9f0ea</color>
@@ -44,4 +46,11 @@
     <drawable name="radio_monitor_off">#ff8fc31f</drawable>
     <drawable name="radio_monitor_on">#ff0000ff</drawable>
     <color name="radio_on">#ff00ff00</color>
+
+	<color name="node_yellow">#fff39800</color>
+	<color name="data_bk_grey">#99e9e9e9</color>
+	<color name="node_bk_grey">#99c9c9c9</color>
+	
+	<color name="grey_divider">#ffbfbfbf</color>
+	<color name="his_title_green">#ff50a700</color>
 </resources>

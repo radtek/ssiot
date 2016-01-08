@@ -44,7 +44,9 @@ public class GetImageThread extends Thread{
         URL myFileURL;
         Bitmap bitmap=null;
         try{
-            myFileURL = new URL("http://yun.ssiot.com/"+url);
+            Log.v(tag, "----start getftpbitmap---" + url);
+			//原先都是http://yun.ssiot.com/的 后来加入溯源 需要cloud了 20160107 http://yun.ssiot.com/
+            myFileURL = new URL(url);
             //获得连接
             HttpURLConnection conn=(HttpURLConnection)myFileURL.openConnection();
             //设置超时时间为6000毫秒，conn.setConnectionTiem(0);表示没有时间限制
@@ -67,6 +69,16 @@ public class GetImageThread extends Thread{
             bitmap = resizeBitmap(bitmap, 128, 128);
             //关闭数据流
             is.close();
+            String fileUrl = "";
+            if (url.startsWith("http://yun.ssiot.com/")){
+                fileUrl = url.substring(url.length()-21, url.length());
+            } else if (url.startsWith("http://cloud.ssiot.com/")){
+                fileUrl = url.substring(url.length()-22, url.length());
+            } else {
+                Log.e(tag, "-----unkonw ftp img file url:" + url);
+                return bitmap;
+            }
+            Log.v(tag, "----- ftp img file url:" + url);
             saveBitmap(bitmap, Environment.getExternalStorageDirectory() + "/"+SsiotConfig.CACHE_DIR +"/" + url);
         }catch(Exception e){
             e.printStackTrace();

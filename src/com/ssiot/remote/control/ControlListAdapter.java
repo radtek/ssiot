@@ -81,7 +81,7 @@ public class ControlListAdapter extends BaseAdapter{
                 holder.control_img.setImageBitmap(BitmapFactory.decodeFile(f.getAbsolutePath()));
             } else {
                 holder.control_img.setImageBitmap(null);
-                new GetImageThread(holder.control_img, m._image,uiHandler).start();
+                new GetImageThread(holder.control_img, "http://yun.ssiot.com/"+m._image,uiHandler).start();
             }
         } else {
             holder.control_img.setImageBitmap(null);

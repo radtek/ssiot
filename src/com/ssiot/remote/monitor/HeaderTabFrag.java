@@ -149,7 +149,8 @@ public class HeaderTabFrag extends BaseFragment{
         @Override
         public void showDetail(NodeView2Model n2m) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            Fragment fragment = new MoniDetailHolderFrag();
+//            Fragment fragment = new MoniDetailHolderFrag();//TODO
+            Fragment fragment = new MoniDataAndChartFrag();
             Bundle bundle = new Bundle();
             bundle.putString("nodetitle", n2m._location);
             bundle.putBoolean("status", n2m._isonline.equals("在线"));

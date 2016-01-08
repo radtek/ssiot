@@ -32,8 +32,12 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.ssiot.remote.ExpertFragment.FExpertBtnClickListener;
+import com.ssiot.remote.history.HistoryDetailFragment;
+import com.ssiot.remote.history.HistoryFragment;
+import com.ssiot.remote.history.HistoryFragment.FHisBtnClickListener;
 import com.ssiot.remote.MainFragment.FMainBtnClickListener;
 import com.ssiot.remote.SettingFrag.FSettingBtnClickListener;
+import com.ssiot.remote.data.model.TraceProfileModel;
 import com.ssiot.remote.expert.DiagnoseFishActivity;
 import com.ssiot.remote.expert.DiagnoseFishSelectActivity;
 import com.ssiot.remote.monitor.HeaderTabFrag;
@@ -42,7 +46,7 @@ import com.ssiot.remote.myzxing.MipcaActivityCapture;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener ,FExpertBtnClickListener{
+public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener ,FExpertBtnClickListener, FHisBtnClickListener{
     private static final String tag = "SSIOT-Main";
     public final static int REQUEST_CODE_SCAN = 1;
     private final static String TAG_MONITOR = "tag_monitor";
@@ -194,6 +198,7 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.title_green));
         
         mCache = new MyCache(this);
         Bundle b = getIntent().getExtras();
@@ -211,6 +216,9 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
                     .add(R.id.container, mMainFragment)
                     .commit();
 //            mMainFragment.setClickListener(mfMainBtnClickListener);
+        } else {
+            savedInstanceState.remove("android:support:fragments");//解决getactivity为空的问题？？
+            Log.v(tag, "---------------fragcount&&&&&&&&&&:"+getSupportFragmentManager().getBackStackEntryCount());
         }
         
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -462,5 +470,20 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
     public void onFExpertBtnClick() {
         Intent intent = new Intent(MainActivity.this, DiagnoseFishSelectActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onFHisBtnClick(TraceProfileModel m, boolean forceScan) {
+        FragmentTransaction mTransaction = getSupportFragmentManager().beginTransaction();
+        HistoryDetailFragment hisDetailFragment = new HistoryDetailFragment();
+        mTransaction.replace(R.id.container, hisDetailFragment, TAG_HISTORY_DETAIL);
+        Bundle bundle2 = new Bundle();
+//        bundle2.putString("title", bundle.getString("result"));
+//        bundle2.putString("code", m._code);
+        hisDetailFragment.setArguments(bundle2);
+        hisDetailFragment.setModel(m);
+        mTransaction.addToBackStack(null);
+        mTransaction.commit();
+        
     }
 }

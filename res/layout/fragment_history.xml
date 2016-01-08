@@ -22,6 +22,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
+        android:background="#fff0f0f0"
         >
         <Button 
             android:id="@+id/startsearch"
@@ -48,28 +49,43 @@
             android:layout_alignTop="@id/startcamera"
             android:layout_alignBottom="@id/startcamera"
             android:background="@drawable/search_bk"
+            android:hint="输入或扫描二维码"
+            android:singleLine="true"
             />
     </RelativeLayout>
     
     <RelativeLayout
         android:id="@+id/his_his_part"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/his_control_part"
-        android:paddingTop="20dp" >
+        android:layout_marginTop="20dp"
+        android:background="#ffffffff" >
 
         <TextView
-            android:id="@+id/his_his_title"
+            android:id="@+id/his_his_t1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/his_list_title"
-            android:paddingLeft="20dp"
+            android:background="@drawable/his_title_bk"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
             android:gravity="center_vertical"
             android:text="@string/search_his_list_title" />
-
-        <ListView
+        
+        <include 
+            android:id="@+id/his_his_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/his_his_t1"
+            layout="@layout/his_list_item"/>
+        
+        <ListView
+            android:id="@+id/his_his_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/his_his_title" />
     </RelativeLayout>
 
 </RelativeLayout>

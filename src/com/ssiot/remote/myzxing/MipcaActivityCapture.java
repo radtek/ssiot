@@ -74,7 +74,7 @@ public class MipcaActivityCapture extends ActionBarActivity implements Callback 
 		});
 		hasSurface = false;
 		inactivityTimer = new InactivityTimer(this);
-		Toast.makeText(this, "具体功能正在开发中", Toast.LENGTH_LONG).show();
+		//Toast.makeText(this, "具体功能正在开发中", Toast.LENGTH_LONG).show();
 	}
 
 	@Override

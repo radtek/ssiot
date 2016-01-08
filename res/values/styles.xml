@@ -34,27 +34,46 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    
-    <style name="top_tab">  
-    <item name="android:layout_height">wrap_content</item>  
-    <item name="android:layout_width">match_parent</item>  
-    <item name="android:layout_weight">1</item>  
-    <item name="android:gravity">center</item>  
-    <item name="android:textSize">14sp</item>  
-    <item name="android:paddingTop">8dip</item>  
-    <item name="android:paddingBottom">8dip</item>
-    <item name="android:paddingLeft">8dip</item>
-    <item name="android:paddingRight">8dip</item>  
-    <item name="android:drawablePadding">0dip</item>  
-    <item name="android:background">@drawable/radio_monitor_select</item>  
-    <item name="android:textColor">@color/radio_on</item>  
-    <item name="android:button">@null</item>  
-</style>
+    <style name="top_tab">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">8dip</item>
+        <item name="android:paddingBottom">8dip</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:paddingRight">8dip</item>
+        <item name="android:drawablePadding">0dip</item>
+        <item name="android:background">@drawable/radio_monitor_select</item>
+        <item name="android:textColor">@color/radiobutton_select</item>
+        <item name="android:button">@null</item>
+    </style>
 
-<style name="diagnose_icon">  
+    <style name="diagnose_icon">
         <item name="android:padding">15dp</item>
         <item name="android:textSize">10sp</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:lines">1</item>
     </style>
+
+    <style name="his_title_bar_style">
+        <item name="android:textColor">@color/his_title_green</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+    
+    <style name="his_archives_icon_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/his_title_green</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_horizontal</item>
+<!--         <item name="android:paddingLeft">15dp</item> -->
+<!--         <item name="android:paddingRight">15dp</item> -->
+    </style>
+
 </resources>
