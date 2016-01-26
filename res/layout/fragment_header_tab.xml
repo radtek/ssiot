@@ -21,6 +21,7 @@
             android:drawableLeft="@drawable/radio_control_icon"  
             android:text="控制" />  
         <RadioButton  
+            android:id="@+id/radiobutton_map"
             style="@style/top_tab"  
             android:drawableLeft="@drawable/radio_map_icon"  
             android:drawablePadding="0dp"

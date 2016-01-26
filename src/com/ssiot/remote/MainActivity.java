@@ -2,7 +2,6 @@
 package com.ssiot.remote;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.app.AlertDialog;
@@ -20,15 +19,11 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.ssiot.remote.ExpertFragment.FExpertBtnClickListener;
@@ -38,14 +33,12 @@ import com.ssiot.remote.history.HistoryFragment.FHisBtnClickListener;
 import com.ssiot.remote.MainFragment.FMainBtnClickListener;
 import com.ssiot.remote.SettingFrag.FSettingBtnClickListener;
 import com.ssiot.remote.data.model.TraceProfileModel;
-import com.ssiot.remote.expert.DiagnoseFishActivity;
 import com.ssiot.remote.expert.DiagnoseFishSelectActivity;
 import com.ssiot.remote.monitor.HeaderTabFrag;
-import com.ssiot.remote.myzxing.MipcaActivityCapture;
 
 import java.util.HashMap;
 import java.util.List;
-
+//TODO 灌南电商定制merge
 public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener ,FExpertBtnClickListener, FHisBtnClickListener{
     private static final String tag = "SSIOT-Main";
     public final static int REQUEST_CODE_SCAN = 1;
@@ -68,75 +61,6 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
     
     public static int AreaID= -1;
     private MyCache mCache;
-    /*
-    FMainBtnClickListener mfMainBtnClickListener = new FMainBtnClickListener() {
-        
-        @Override
-        public void onFMainBtnClick(String itmTxt) {
-            FragmentTransaction mTransaction = getSupportFragmentManager().beginTransaction();
-            if (itmTxt.equals(getResources().getString(R.string.iconstr_monitor))){
-                MonitorFragment monitorFragment = new MonitorFragment();
-                mTransaction.replace(R.id.container, monitorFragment, TAG_MONITOR);
-                Bundle bundle = new Bundle();
-                bundle.putString("uniqueid", mUniqueID);
-                monitorFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            } else if (itmTxt.equals(getResources().getString(R.string.iconstr_control))){
-                ControlFragment controlFragment = new ControlFragment();
-                mTransaction.replace(R.id.container, controlFragment, TAG_CONTROL);
-                Bundle bundle = new Bundle();
-                bundle.putString("uniqueid", mUniqueID);
-                controlFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            } else if (itmTxt.equals(getResources().getString(R.string.iconstr_history))){
-                Log.v(tag, "---------------------history");
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, MipcaActivityCapture.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, REQUEST_CODE_SCAN);
-//                startActivity(intent);
-            } else if (itmTxt.equals(getResources().getString(R.string.iconstr_video))){
-                if (!Utils.isNetworkConnected(MainActivity.this)){
-                    Toast.makeText(MainActivity.this, R.string.please_check_net, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                VideoFragment videoFragment = new VideoFragment();
-                mTransaction.replace(R.id.container, videoFragment, TAG_VIDEO);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", "ttttteeeeesssst");
-                videoFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            } else if (itmTxt.equals(getResources().getString(R.string.iconstr_expert))){
-                
-                ExpertFragment expertFragment = new ExpertFragment();
-                mTransaction.replace(R.id.container, expertFragment, TAG_EXPERT);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", "ttttteeeeesssst");
-                expertFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            } else if (itmTxt.equals(getResources().getString(R.string.iconstr_info))){
-                InfoFragment infoFragment = new InfoFragment();
-                mTransaction.replace(R.id.container, infoFragment, TAG_INFO);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", "ttttteeeeesssst");
-                infoFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            } else if (itmTxt.equals("setting")){//设置界面
-                SettingFrag settingFragment = new SettingFrag();
-                mTransaction.replace(R.id.container, settingFragment, TAG_SETTING);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("title", "ttttteeeeesssst");
-//                settingFragment.setArguments(bundle);
-                mTransaction.addToBackStack(null);
-                mTransaction.commit();
-            }
-        }
-    };*/
     
     public static final int MSG_GETVERSION_END = 1;
     public static final int MSG_DOWNLOADING_PREOGRESS = 2;
@@ -162,6 +86,8 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
                         Intent i = new Intent(SettingFrag.ACTION_SSIOT_UPDATE);
                         i.putExtra("checkresult", 2);
                         sendBroadcast(i);
+                    } else {
+                        Toast.makeText(MainActivity.this, "本地版本高于服务器版本", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case MSG_DOWNLOADING_PREOGRESS:
@@ -199,7 +125,7 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.title_green));
-        
+        startService(new Intent(this, SsiotService.class));
         mCache = new MyCache(this);
         Bundle b = getIntent().getExtras();
         if (null != b){
@@ -309,6 +235,8 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
             case R.id.action_logout:
                 Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
+                SsiotService.cancel = true;
+                stopService(new Intent(this, SsiotService.class));
                 finish();
                 Editor e = mPref.edit();
                 e.putString("password", "");
@@ -462,6 +390,11 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
     public void onFSettingBtnClick() {
         if (mUpdaManager == null){
             mUpdaManager = new UpdateManager(MainActivity.this, mHandler);
+        }
+        if (mPref.getBoolean(Utils.PREF_AUTOUPDATE, true) == false){
+            Editor editor = mPref.edit();
+            editor.putBoolean(Utils.PREF_AUTOUPDATE, true);
+            editor.commit();
         }
         mUpdaManager.startGetRemoteVer();
     }

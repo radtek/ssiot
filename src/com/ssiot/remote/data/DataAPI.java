@@ -4,6 +4,7 @@ package com.ssiot.remote.data;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ssiot.remote.data.business.AlarmRule;
 import com.ssiot.remote.data.business.Area;
 import com.ssiot.remote.data.business.ControlDevice;
 import com.ssiot.remote.data.business.ControlLog;
@@ -14,6 +15,7 @@ import com.ssiot.remote.data.business.Node;
 import com.ssiot.remote.data.business.Sensor;
 import com.ssiot.remote.data.business.User;
 import com.ssiot.remote.data.business.VLCVideoInfo;
+import com.ssiot.remote.data.model.AlarmRuleModel;
 import com.ssiot.remote.data.model.AreaModel;
 import com.ssiot.remote.data.model.ControlActionInfoModel;
 import com.ssiot.remote.data.model.ControlLogModel;
@@ -47,6 +49,7 @@ public class DataAPI {
     public static ControlLog ControllogService = new ControlLog();
     
     public static ControlDevice controlDeviceBll = new ControlDevice();
+    public static AlarmRule alarmRuleBll = new AlarmRule();
     
 
     public static String GetAreaIDByUserIDs(String userids){
@@ -82,6 +85,16 @@ public class DataAPI {
         return null;
     }
     
+    //(包括其子帐户)
+    public static String GetAllAreaIDsByAccount(String account) {
+        List<UserModel> models = mUserService.GetModelList(" Account='" + account + "'");
+        if (null != models && models.size() > 0){
+            UserModel mUserModel = models.get(0);
+            return GetSelfAndChildrenAreaIDsByAreaID(mUserModel._areaid);
+        }
+        return null;
+    }
+    
     public static String GetAreaIDsByUserKeys(String userkey) {
         List<UserModel> models = mUserService.GetModelList(" UniqueID='" + userkey + "'");
         if (null != models && models.size() > 0){
@@ -91,7 +104,7 @@ public class DataAPI {
         Log.e(tag, "------GetAreaIDsByUserKeys-----null");
         return "";
     }
-
+    
     private static String GetSelfAndChildrenAreaIDsByAreaID(int areaid) {
         String areaidsStr = "";
         // String catchkey = "GetSelfAndChildrenAreaIDsByAreaID_" +
@@ -314,7 +327,8 @@ public class DataAPI {
         if (!TextUtils.isEmpty(nodenolist)){
             strwhere = "NodeNo in (" + nodenolist + ")";
         } else {
-            strwhere = "1=1";
+//            strwhere = "1=1";//bug 有时非angel会显示所有节点
+            return new ArrayList<NodeModel>();
         }
         return mNodeSevice.GetModelList(strwhere);
     }
@@ -409,7 +423,7 @@ public class DataAPI {
     
   /// 获取流水数据 in line 885
     /// </summary>
-    /// <param name="grainsize">粒度 10分钟,逐小时,逐日,逐月,逐年</param>
+    /// <param name="grainsize">粒度 十分钟,逐小时,逐日,逐月,逐年</param>
     /// <param name="valuetype">查询类型 平均值,最大值,最小值,累计值</param>
     /// <param name="begintime">开始时间 2014/4/8 14:17:30</param>
     /// <param name="endtime">结束时间 2014/4/8 14:17:30</param>
@@ -422,8 +436,18 @@ public class DataAPI {
     /// <param name="nodenolist">节点编号列表 逗号相隔</param>
     /// <returns></returns>
     public static ResultSet GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
-            boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {
+            boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {//TODO20160115临时改的 _old
         return mLiveDataSevice.GetData(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
+    }
+    
+    public static ResultSet GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
+            boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {
+        return mLiveDataSevice.GetData_old(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
+    }
+    
+    public static int GetDataCount(String grainsize, String valuetype, String begintime, 
+            String endtime, String orderby, boolean unit, int range, String nodenolist){
+        return mLiveDataSevice.GetDataCount(grainsize, valuetype, begintime, endtime, orderby, unit, range, nodenolist);
     }
     
  // 根据节点编号 in line 997
@@ -587,5 +611,31 @@ public class DataAPI {
             e.printStackTrace();
         }
         return controlDeviceView_list;
+    }
+    
+    public static AlarmRuleModel GetAlarmRule(String nodeuniqueid){
+        List<AlarmRuleModel> models = alarmRuleBll.GetModelList(" NodeUniqueID='" + nodeuniqueid + "'");
+        if (null != models && models.size() > 0){
+            return models.get(0);
+        }
+        return null;
+    }
+    
+    public static boolean SaveAlarmRule(AlarmRuleModel model){
+        if (TextUtils.isEmpty(model._uniqueID) || TextUtils.isEmpty(model._relation) || TextUtils.isEmpty(model._ruleStr)){
+            return false;
+        }
+        if (alarmRuleBll.Exists(model._uniqueID)){//
+            return alarmRuleBll.Update(model);
+        } else {
+            return alarmRuleBll.Add(model) > 0;
+        }
+    }
+    
+    public static boolean DeleteAlarmRule(String unique){
+        if (!TextUtils.isEmpty(unique)){
+            return alarmRuleBll.Delete(unique);
+        }
+        return false;
     }
 }

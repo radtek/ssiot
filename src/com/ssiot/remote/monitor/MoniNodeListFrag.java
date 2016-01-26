@@ -56,7 +56,7 @@ public class MoniNodeListFrag extends BaseFragment{
                 Log.e(tag, "----fragment is not visible----!!!!" + msg.what);
                 return;
             }
-            Log.v(tag, "---handleMessage----" + msg.what + " size:" + mNodes.size());
+            Log.v(tag, "---handleMessage----" + msg.what + " size:" + ((null == mNodes) ? "null" : ""+mNodes.size()));
             switch (msg.what) {
                 case MSG_GETNODES_END:
                     if (null != mNodes && mNodes.size() > 0 && null != mNodeAdapter){

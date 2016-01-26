@@ -50,7 +50,7 @@ public class AjaxGetNodesDataByUserkey{
     private ControlActionInfo controlActionInfoBll = new ControlActionInfo();
     private ControlDevice controlDeviceBll = new ControlDevice();
     private ControlLog controllogbll = new ControlLog();
-    private SensorModifyData sensorModifyDataBll = new SensorModifyData();
+    
     private Node nodeBll = new Node();
     private com.ssiot.remote.data.business.Setting settingbll = new com.ssiot.remote.data.business.Setting();
     private SettingInfo1 settingInfoBll = new SettingInfo1();
@@ -98,176 +98,9 @@ public class AjaxGetNodesDataByUserkey{
         return new ArrayList<NodeViewModel>();
     }
     
-    //根据节点编号加载要素和通道
-    public HashMap<String,ArrayList<Integer>> GetSensorInfoByNodeNo(String nodeNo){//jingbo 做了修改，只返回一个列表！
-        HashMap<String,ArrayList<Integer>> hashList = new HashMap<String,ArrayList<Integer>>();
-        try {
-            List<SensorViewModel> sensorView_list2 = new ArrayList<SensorViewModel>();
-            if (!TextUtils.isEmpty(nodeNo)){
-                sensorView_list2 = DataAPI.GetSensorListByNodeNoString(nodeNo);
-                if (null != sensorView_list2 && sensorView_list2.size() > 0){
-                    for (SensorViewModel m : sensorView_list2){
-//                        strList.add(m._shortname + m._channel);
-                        if (!hashList.containsKey(m._shortname)){
-                            ArrayList<Integer> channels = new ArrayList<Integer>();
-                            channels.add(m._channel);
-                            hashList.put(m._shortname, channels);
-                        } else {
-                            hashList.get(m._shortname).add(m._channel);
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return hashList;
-    }
     
-    //根据要素值（shortName）加载修正类型  
-    public String GetModifyTypeBySensorName(String sensorName){//jingbo: 原先是返回两个字符串
-        if (!TextUtils.isEmpty(sensorName)){
-            SensorModel sensorModel = DataAPI.GetSensorModelBySensorName(sensorName);
-            if (null != sensorModel){
-                List<SensorModifyDataModel> sensorModifyData_list = sensorModifyDataBll.GetModelList("SensorNo=" + sensorModel._sensorno);
-                boolean isBiaoDing = false;//标定
-                boolean isJiaoZhun = false;//校准
-                String respStr = "";
-                for (SensorModifyDataModel modifyData :sensorModifyData_list){
-                    switch (modifyData._type) {
-                        case 1:
-                            isBiaoDing = true;
-                            break;
-                        case 3:
-                            isJiaoZhun = true;
-                            break;
-                        default:
-                            break;
-                    }
-                    if (isBiaoDing && isJiaoZhun){
-                        break;
-                    }
-                }
-                if (isBiaoDing && isJiaoZhun){
-                    respStr = "1,3";
-                } else if (isBiaoDing){
-                    respStr = "1";
-                } else if (isJiaoZhun){
-                    respStr = "3";
-                }
-                return respStr;
-            }
-        }
-        return "";
-    }
     
-    //根据要素与类型加载修正值
-    //nodeno节点编号(校准用)
-    //channel通道（校准用）
-    public ArrayList<String> GetModifyDataBySensorAndType(String sensorName, int modifyType, int nodeno, int channel){
-        if (TextUtils.isEmpty(sensorName) || modifyType < 0){
-            return null;
-        } else {
-            if (modifyType == 3){
-                List<SensorModifyDataModel> sensorModifyData_list = MobileAPI.GetSensorModifyDataListBySensorNameAndType(sensorName,modifyType);
-//                return sensorModifyData_list;
-                ArrayList<String> ret = new ArrayList<String>();
-                if (sensorModifyData_list != null){
-                    for (SensorModifyDataModel m : sensorModifyData_list){
-                        ret.add(m._id + ":" + m._remark);//jingbo 例如 5：标准液4
-                    }
-                }
-                return ret;
-            } else if (modifyType == 1){//校准
-                if (nodeno >= 0 &&  channel >= 0){
-                    //根据传感器名称获取传感器相关信息
-                    SensorModel sensorModel = DataAPI.GetSensorModelBySensorName(sensorName);
-                    //根据节点编号获取节点信息
-                    NodeModel nodeModel = DataAPI.GetNodeListByNodenolist(""+nodeno).get(0);
-                    //获取上次发送成功的校准信息
-                    SettingModel settingModel = MobileAPI.GetJiaoZhunBySensorNameAndType(nodeModel._uniqueid, modifyType, sensorModel._sensorno, channel);
-//                    return settingModel._value;
-                    ArrayList<String> ret = new ArrayList<String>();
-                    ret.add(""+settingModel._value);
-                    return ret;
-                }
-            }
-            return null;
-        }
-    }
     
-    //发送保存校准数据
-    public boolean SendModify(int modifyId, int channel,int nodeNo2,String jzValue, String sensorShortName){//jzValue 就是value 校准值
-        try {
-            NodeModel nodeModel = nodeBll.GetModelByNodeNo(""+nodeNo2);//获取节点信息
-            if (modifyId == 0){//校准
-                
-              //根据传感器名称获取传感器对象
-                SensorModel sensorObj = DataAPI.GetSensorModelBySensorName(sensorShortName);
-                if (settingbll.Exists(nodeModel._uniqueid, 1, sensorObj._sensorno, channel)){//更新
-                    SettingModel settingModel_New = settingbll.GetSettigModel("UniqueID='" + nodeModel._uniqueid + 
-                            "' AND Type=1 and SettingMark=" + sensorObj._sensorno + " and Chanel=" + channel + " ORDER BY ID DESC");
-                    settingModel_New._other = 0;
-                    float temp_ft = Float.parseFloat(jzValue);
-                    settingModel_New._value = temp_ft;
-                    Timestamp dt = new Timestamp(System.currentTimeMillis());
-                    settingModel_New._timespan = (int) dt.getTime()/1000;//TODO
-                    settingModel_New._sendtime = dt;
-                    settingModel_New._sendstate = 0; 
-                    settingModel_New._resendcount = 0;
-                    return settingbll.Update(settingModel_New);
-                } else {//新增
-                    SettingModel  settingModel_Add = new SettingModel();
-                    settingModel_Add._uniqueid = nodeModel._uniqueid;
-                    settingModel_Add._type = 1;
-                    settingModel_Add._settingmark = sensorObj._sensorno;
-                    settingModel_Add._chanel = channel;
-                    settingModel_Add._other = 0; 
-                    float temp_ft = Float.parseFloat(jzValue);
-                    settingModel_Add._value = temp_ft;
-                    Timestamp dt = new Timestamp(System.currentTimeMillis());
-                    settingModel_Add._timespan = (int) dt.getTime()/1000;
-                    settingModel_Add._sendtime = dt;
-                    int count = settingbll.Add(settingModel_Add);
-                    return count > 0;
-                }
-            } else {//标定 sensorModifyData表里的ID值
-                SensorModifyDataModel sensorModifyDataModel = sensorModifyDataBll.GetModel(modifyId);
-                SettingModel settingModel = new SettingModel();
-                settingModel._settingmark = sensorModifyDataModel._sensorno;
-                settingModel._chanel = channel;
-                settingModel._other = sensorModifyDataModel._other;
-                settingModel._type = sensorModifyDataModel._type;
-                settingModel._uniqueid = nodeModel._uniqueid;
-                settingModel._value = (float)(sensorModifyDataModel._value);
-                Timestamp dt = new Timestamp(System.currentTimeMillis());
-                settingModel._timespan = (int) dt.getTime()/1000;
-                settingModel._sendtime = dt;
-                int count = settingbll.Add(settingModel);
-                return count > 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    //验证是否发送成功( 这种写法存在一定的风险：当多个人同时对这个点修改时可能出现反馈不准)
-    public int ModifyIsOK(int type_yz, int channel_yz, int nodeno_yz, String shortName_yz){
-        try {
-            if (!TextUtils.isEmpty(shortName_yz) && type_yz >= 0 && channel_yz >= 0 && nodeno_yz >= 0){
-                SensorModel sensorModel = DataAPI.GetSensorModelBySensorName(shortName_yz);
-                NodeModel nodeModel = DataAPI.GetNodeListByNodenolist(""+nodeno_yz).get(0);
-              //获取上次发送成功的校准信息
-                SettingModel settingModel = settingbll.GetSettigModel("UniqueID='" + nodeModel._uniqueid 
-                        + "' and Type=" + type_yz + " and SettingMark=" + sensorModel._sensorno + " and Chanel=" + channel_yz + " order by ID desc");
-                return settingModel._sendstate;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 3;
-    }
     
     //加载上报频率
     public LoadSetting GetReportFrequency(String nodeNoSetting){
@@ -353,8 +186,7 @@ public class AjaxGetNodesDataByUserkey{
                         settingModel._type = settingInfoModel._type;
                         settingModel._uniqueid = uniqueid;
                         settingModel._value = (float)settingInfoModel._value;
-                        if (settingbll.Add(settingModel) != 0)
-                        {
+                        if (settingbll.Add(settingModel) != 0) {
                             isAddSettingSuccess = true;
                         }
                     }
@@ -379,21 +211,20 @@ public class AjaxGetNodesDataByUserkey{
         try {
             if (TextUtils.isEmpty(userkey) || TextUtils.isEmpty(grainsize) || TextUtils.isEmpty(nodeno)) {
                 return null;
-            }
-            else {
+            } else {
                 if ("十分钟".equals(grainsize)){
-                    grainsize = "10分钟";
-                    beginTime = buildTime(-2 * 3600 * 1000);
+                    grainsize = "十分钟";
+                    beginTime = buildTime(-2 * 3600);
                 } else if ("小时".equals(grainsize)){
-                    grainsize = "逐小时"; beginTime = buildTime(-24 * 3600 * 1000);
+                    grainsize = "逐小时"; beginTime = buildTime(-24 * 3600);
                 } else if ("天".equals(grainsize)){
-                    grainsize = "逐日"; beginTime = buildTime(-15 * 24 * 3600 * 1000);
+                    grainsize = "逐日"; beginTime = buildTime(-15 * 24 * 3600);
                 } else if ("月".equals(grainsize)){
-                    grainsize = "逐月"; beginTime = buildTime(-365 * 24 * 3600 * 1000);
+                    grainsize = "逐月"; beginTime = buildTime(-365 * 24 * 3600);
                 } else if ("年".equals(grainsize)){
-                    grainsize = "逐年"; beginTime = buildTime(-10 * 365 * 24 * 3600 * 1000);
+                    grainsize = "逐年"; beginTime = buildTime(-10 * 365 * 24 * 3600);
                 } else {
-                    grainsize = "逐小时"; beginTime = buildTime(-24 * 3600 * 1000);
+                    grainsize = "逐小时"; beginTime = buildTime(-24 * 3600);
                 }
                 //获取节点数据
                 List<NodeView2Model> nodeView2_list = MobileAPI.GetNodesDataByNodenosAndQueryType(nodeno, grainsize, "平均值", beginTime, endTime);
@@ -403,6 +234,15 @@ public class AjaxGetNodesDataByUserkey{
             e.printStackTrace();
         }
         return null;
+    }
+    
+    //add by gejingbo 20160115
+    public List<NodeView2Model> GetNodesDetailData(String userkey, String nodeno, String grainsize, String beginTime, String endTime){
+        return MobileAPI.GetNodesDataByNodenosAndQueryType(nodeno, grainsize, "平均值", beginTime, endTime);
+    }
+    
+    public int GetDataTotalCount(String grainsize, String startime, String endtime, String ids){
+        return DataAPI.GetDataCount(grainsize, "平均值", startime, endtime, "更新时间 DESC", true, 10000, ids);//grainsize, valuetype, begintime, endtime, orderby, unit, range, nodenolist);
     }
     
     //根据Usekey获取控制节点的扩展信息

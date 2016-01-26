@@ -37,18 +37,18 @@ public class Setting{
     
     public boolean Exists(String uniqueId,int type,int SettingMark,int Channel) {
         StringBuilder strSql = new StringBuilder();
-        strSql.append("select count(1) from Setting");
-        strSql.append(" where UniqueID=@UniqueID and Type=@Type and SettingMark=@SettingMark and Chanel=@Chanel");
+        strSql.append("select * from Setting");//count(1)
+        strSql.append(" where UniqueID=? and Type=? and SettingMark=? and Chanel=?");
 //        SqlParameter[] parameters = { new SqlParameter("@UniqueID",SqlDbType.Char,8),new SqlParameter("@Type",SqlDbType.Int,4),new SqlParameter("@SettingMark",SqlDbType.Int,4),new SqlParameter("@Chanel",SqlDbType.TinyInt,1)};
 //        parameters[0].Value = uniqueId;
 //        parameters[1].Value = type;
 //        parameters[2].Value = SettingMark;
 //        parameters[3].Value = Channel;
-        ArrayList<String> paraArray = new ArrayList<String>();
+        ArrayList<Object> paraArray = new ArrayList<Object>();
         paraArray.add(uniqueId);
-        paraArray.add(""+type);
-        paraArray.add(""+SettingMark);
-        paraArray.add(""+Channel);//TODO int变string是否有问题
+        paraArray.add(type);
+        paraArray.add(SettingMark);
+        paraArray.add(Channel);//TODO int变string是否有问题
         return DbHelperSQL.Exists_a(strSql.toString(), paraArray);
     }
     

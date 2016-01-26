@@ -24,6 +24,7 @@
         android:id="@+id/cameralist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/videolist_title" />
+        android:layout_below="@id/videolist_title"
+        android:layoutAnimation="@anim/list_tab_left" />
 
 </RelativeLayout>

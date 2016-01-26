@@ -40,7 +40,7 @@
         <RadioButton
             android:id="@+id/radio_moni_alarm"
             style="@style/top_tab"
-            android:drawableTop="@drawable/moni_config"
+            android:drawableTop="@drawable/moni_alarm"
             android:text="预警" />
     </RadioGroup>
     

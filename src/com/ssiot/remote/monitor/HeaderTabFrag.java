@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.ssiot.remote.BaseFragment;
@@ -47,7 +48,9 @@ public class HeaderTabFrag extends BaseFragment{
         View v = inflater.inflate(R.layout.fragment_header_tab, container, false);
         
         radioGroup = (RadioGroup) v.findViewById(R.id.rg_tab);
-        
+        RadioButton radioButtonMoni = (RadioButton) v.findViewById(R.id.radiobutton_moni);
+        RadioButton radioButtonCtr = (RadioButton) v.findViewById(R.id.radiobutton_control);
+        RadioButton radioButtonVideo = (RadioButton) v.findViewById(R.id.radiobutton_map);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  
             @Override  
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -61,16 +64,20 @@ public class HeaderTabFrag extends BaseFragment{
         });
         switch (defaultTab) {
             case 1:
-                radioGroup.check(R.id.radiobutton_moni);
+//                radioGroup.check(R.id.radiobutton_moni);//bug fragment 加载两次
+                radioButtonMoni.setChecked(true);
                 break;
             case 2:
-                radioGroup.check(R.id.radiobutton_control);
+//                radioGroup.check(R.id.radiobutton_control);
+                radioButtonCtr.setChecked(true);
                 break;
             case 3:
-                radioGroup.check(R.id.radiobutton_moni);
+//                radioGroup.check(R.id.radiobutton_moni);
+                radioButtonVideo.setChecked(true);
                 break;
             default:
-                radioGroup.check(R.id.radiobutton_moni);
+//                radioGroup.check(R.id.radiobutton_moni);
+                radioButtonMoni.setChecked(true);
                 break;
         }
         
@@ -149,13 +156,14 @@ public class HeaderTabFrag extends BaseFragment{
         @Override
         public void showDetail(NodeView2Model n2m) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            Fragment fragment = new MoniDetailHolderFrag();//TODO
-            Fragment fragment = new MoniDataAndChartFrag();
+            Fragment fragment = new MoniDetailHolderFrag();//TODO
+//            Fragment fragment = new MoniDataAndChartFrag();
             Bundle bundle = new Bundle();
             bundle.putString("nodetitle", n2m._location);
             bundle.putBoolean("status", n2m._isonline.equals("在线"));
             bundle.putBoolean("isgprs", "GPRS".equalsIgnoreCase(n2m._onlinetype));
             bundle.putInt("nodeno", n2m._nodeno);
+            bundle.putString("uniqueid", n2m._uniqueid);
             fragment.setArguments(bundle);
             transaction.replace(R.id.detail_content, fragment);
             transaction.addToBackStack(null);

@@ -105,6 +105,9 @@ public class HistoryDetailFragment extends BaseFragment{
     }
     
     private void findAllViews(View rootView){
+        if (model == null) {
+            return;
+        }
         TextView mProNameView = (TextView) rootView.findViewById(R.id.pro_name);
         TextView mProVarietyView = (TextView) rootView.findViewById(R.id.pro_variety);
         TextView mProBatchView = (TextView) rootView.findViewById(R.id.pro_batch);
@@ -118,7 +121,11 @@ public class HistoryDetailFragment extends BaseFragment{
             mProNameView.setText(model._name);
             mProVarietyView.setText("品种:"+model._variety);
             mProBatchView.setText("批次:"+model._batchno);
-            mProTimeView.setText("上市时间:"+model._listingDate.toString());
+            String timeString = model._listingDate.toString();
+            if (timeString.length() >= 16){
+                timeString = timeString.substring(0,16);
+            }
+            mProTimeView.setText("上市时间:"+timeString);
         }
         new GetImageThread(mImgView, "http://cloud.ssiot.com/"+model._image, mHandler).start();
         new Thread(new Runnable() {
@@ -215,7 +222,7 @@ public class HistoryDetailFragment extends BaseFragment{
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+//        inflater.inflate(R.menu.his_detail, menu);
     }
     
     @Override
@@ -277,19 +284,16 @@ public class HistoryDetailFragment extends BaseFragment{
             }
             @Override
             public int getCount() {
-                // TODO Auto-generated method stub
                 return mModels.size();
             }
 
             @Override
             public Object getItem(int position) {
-                // TODO Auto-generated method stub
                 return mModels.get(position);
             }
 
             @Override
             public long getItemId(int position) {
-                // TODO Auto-generated method stub
                 return position;
             }
 

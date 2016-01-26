@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.ssiot.remote.R;
@@ -48,6 +49,8 @@ public class MoniDetailHolderFrag extends Fragment{
         View v = inflater.inflate(R.layout.frag_moni_detail_holder, container, false);
         moniChildFragmentManager = getChildFragmentManager();
         rgBottom = (RadioGroup) v.findViewById(R.id.bottom_tab);
+        RadioButton radio_moni_data = (RadioButton) v.findViewById(R.id.radio_moni_data);
+        
         rgBottom.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  
             @Override  
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -57,7 +60,8 @@ public class MoniDetailHolderFrag extends Fragment{
                 transaction.commit();
             }
         });
-        rgBottom.check(R.id.radio_moni_data);
+//        rgBottom.check(R.id.radio_moni_data);
+        radio_moni_data.setChecked(true);
         return v;
     }
     
@@ -101,11 +105,11 @@ public class MoniDetailHolderFrag extends Fragment{
         Fragment fragment = null;
         switch (index) {
             case R.id.radio_moni_data:
-                fragment = new MoniDataFrag();
+                fragment = new MoniDataFrag2();
                 fragment.setArguments(mBundle);
                 break;
             case R.id.radio_moni_chart:
-                fragment = new MoniChartFrag();
+                fragment = new MoniChartFrag2();
                 fragment.setArguments(mBundle);
                 break;
             case R.id.radio_moni_calibration:

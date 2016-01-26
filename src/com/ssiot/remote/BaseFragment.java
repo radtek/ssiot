@@ -26,6 +26,7 @@ public class BaseFragment extends Fragment{
     private static final int MSG_SHOW_DLG = 104;
     private static final int MSG_DISMISS_DLG = 105;
     private static final int MSG_LONGTIME = 106;//要确保是原来的dialog
+    public static final int MSG_MSG = 107;
     private Handler baseHandler = new Handler(){
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
@@ -50,11 +51,25 @@ public class BaseFragment extends Fragment{
                         mDialog.dismiss();
                     }
                     break;
+                case MSG_MSG:
+                    try {
+                        String str = (String) msg.obj;
+                        Toast.makeText(getActivity(), str, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     break;
             }
         };
     };
+    
+    public void showToastMSG(String str){
+        Message msg = baseHandler.obtainMessage(MSG_MSG);
+        msg.obj = str;
+        baseHandler.sendMessage(msg);
+    }
     
     public boolean canGoback(){
         return false;
@@ -74,7 +89,7 @@ public class BaseFragment extends Fragment{
         Message m = baseHandler.obtainMessage(MSG_LONGTIME);
         final Dialog d = mDialog;
         m.obj = d;
-        baseHandler.sendMessageDelayed(m, 10 * 1000);
+        baseHandler.sendMessageDelayed(m, 15 * 1000);
     }
     
     public void sendShowMyDlg(String msg){

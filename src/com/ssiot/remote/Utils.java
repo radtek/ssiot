@@ -19,7 +19,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -45,6 +47,12 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public static String buildTime(long seconds){//当前时间向前向后加减多少秒
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = new Date(System.currentTimeMillis() + seconds * 1000);
+        return formatter.format(d);
     }
     
     public static Dialog createLoadingDialog(Context context, String msg) {  

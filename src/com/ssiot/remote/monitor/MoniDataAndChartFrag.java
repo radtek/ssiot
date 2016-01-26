@@ -149,8 +149,27 @@ public class MoniDataAndChartFrag extends BaseFragment{
         public void run() {
             sendShowMyDlg("正在查询");
             if (nodeno >= 0){
-                List<NodeView2Model> nList = new AjaxGetNodesDataByUserkey().GetNodesDataByUserkeyAndType(MainActivity.mUniqueID, ""+nodeno, grainSize);
-
+                AjaxGetNodesDataByUserkey ajaxTool = new AjaxGetNodesDataByUserkey();
+                long time1 = System.currentTimeMillis();
+                List<NodeView2Model> nList = ajaxTool.GetNodesDataByUserkeyAndType(MainActivity.mUniqueID, ""+nodeno, grainSize);
+                long time2 = System.currentTimeMillis();
+                String grainStr = grainSize;
+                if ("十分钟".equals(grainSize)){
+                    grainStr = "十分钟";
+//                    beginTime = buildTime(-2 * 3600 * 1000);
+                } else if ("小时".equals(grainSize)){
+                    grainStr = "逐小时";// beginTime = buildTime(-24 * 3600 * 1000);
+                } else if ("天".equals(grainSize)){
+                    grainStr = "逐日";// beginTime = buildTime(-15 * 24 * 3600 * 1000);
+                } else if ("月".equals(grainSize)){
+                    grainStr = "逐月";// beginTime = buildTime(-365 * 24 * 3600 * 1000);
+                } else if ("年".equals(grainSize)){
+                    grainStr = "逐年";// beginTime = buildTime(-10 * 365 * 24 * 3600 * 1000);
+                } else {
+                    grainStr = "逐小时";// beginTime = buildTime(-24 * 3600 * 1000);
+                }
+                int count = ajaxTool.GetDataTotalCount(grainStr, "2015-10-25 12:35:26", "2016-01-13 12:35:26", ""+nodeno);
+                Log.v(tag, "-----getdatatime:" +(time2-time1) + " countTime:" + (System.currentTimeMillis()-time2) + "  "+count);
                 mListData = nList;
 //                Log.v(tag, "------------size:"+nList.size());
 //                if (null != nList){

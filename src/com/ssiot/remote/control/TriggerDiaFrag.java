@@ -106,6 +106,10 @@ public class TriggerDiaFrag extends DialogFragment{
         };
     };
     
+    public TriggerDiaFrag(){
+        Log.e(tag, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!empty constructor");//bug  Unable to instantiate fragment
+    }
+    
     public TriggerDiaFrag(boolean mode){
         isTriMODE = mode;
     }

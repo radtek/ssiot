@@ -30,8 +30,12 @@ public class DbHelperSQL{
     
     //doc http://www.java3z.com/cwbwebhome/article/article2/21115.html?id=1922 使用离线的rowset 下载了sun的rowset包
     public static synchronized ResultSet Query(String SQLString) {//must close resultset!!! in outside
+        return Query(SQLString, 9);
+     }
+    
+    public static synchronized ResultSet Query(String SQLString, int timeOutSec) {//
         synchronized (objlock) {
-            Log.v(tag, "1######Query_1:"+SQLString);
+            Log.v(tag, "1######Query_1:"+SQLString + "##############" + timeOutSec);
             long time1 = SystemClock.uptimeMillis();
           try {
               
@@ -41,22 +45,17 @@ public class DbHelperSQL{
                       return null;
                   }
               }
-//               Log.v(tag, "#############"+SQLString);
-//             if (SQLString.length() > 6000){
-//                 Utils.setStringToFile(SQLString);
-//             }
+//            if (SQLString.length() > 6000){
+//            Utils.setStringToFile(SQLString);
+//        }
               Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
-              stmt = (Statement) connection.createStatement();
-              stmt.setQueryTimeout(6);
+              stmt = (Statement) connection.createStatement();//ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE
+              stmt.setQueryTimeout(timeOutSec);
               ResultSet rs = stmt.executeQuery(SQLString);
-//              CachedRowSetImpl crs = new CachedRowSetImpl();
-//              crs.populate(rs);
-//              rs.close();
-//              stmt.close();
-//              connection.Close();
               Log.v(tag, "3#-------------query cost time" + (SystemClock.uptimeMillis()-time1));
               return rs;
           } catch (SQLException ex) {
+              Log.e(tag, "-----SQLException-----costTime:" + (SystemClock.uptimeMillis()-time1));
               closeAll();
               ex.printStackTrace();
           } catch (Exception e) {
@@ -81,20 +80,30 @@ public class DbHelperSQL{
         return false;
     }
     
-    public static void closeAll(){
+    private static void closeAll(){
+        Log.v(tag, "----closeAll------");
         try {
             if (null != stmt){
-                stmt.close();
+                stmt.close();//TODO java.sql.SQLException: sp_cursorclose: The cursor identifier value provided (abce013) is not valid.20160125
+                stmt = null;
+            }
+            if (null != preStatement){
+                preStatement.close();
+                preStatement = null;
             }
             if (null != connection){
                 connection.Close();
                 connection = null;
             }
-            if (null != preStatement){
-                preStatement.close();
-            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    public static void outSideClose(){
+        synchronized (objlock) {
+            Log.v(tag, "----outSideClose------");
+            closeAll();
         }
     }
     
@@ -172,7 +181,7 @@ public class DbHelperSQL{
         }
     }
     
-    public static boolean Exists_a(String SQLString, ArrayList<String> cmdParams){
+    public static boolean Exists_a(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
             Log.v(tag, "1#带参数Exist_a####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -184,7 +193,8 @@ public class DbHelperSQL{
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
                 preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
-                    preStatement.setString((i+1), cmdParams.get(i));
+//                    preStatement.setString((i+1), cmdParams.get(i));
+                    preStatement.setObject(i+1, cmdParams.get(i));
                 }
                 preStatement.setQueryTimeout(9);
                 ResultSet rs = preStatement.executeQuery();
@@ -193,6 +203,8 @@ public class DbHelperSQL{
                     rs.close();
                     preStatement.close();
                     return true;
+                } else {
+                    return false;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -295,9 +307,9 @@ public class DbHelperSQL{
         
         public boolean Open(){
             String JDriver = "net.sourceforge.jtds.jdbc.Driver";
-            String connectDB = "jdbc:jtds:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433/iot2014;loginTimeout=9;socketTimeout=9";
-//            String JDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-//            String connectDB = "jdbc:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433;DatabaseName=iot2014";
+            String connectDB = "jdbc:jtds:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433/iot2014;loginTimeout=9;socketTimeout=25";
+//            String JDriver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";//驱动程序无法通过使用安全套接字层(SSL)加密与 SQL Server 建立安全连接。错误:“Socket closed” ??jre jdk??
+//            String connectDB = "jdbc:sqlserver://ssiot2014.sqlserver.rds.aliyuncs.com:3433;DatabaseName=iot2014;loginTimeout=9;socketTimeout=25";
             long timebegingopen = SystemClock.uptimeMillis();
             try {
                 Class.forName(JDriver);// 加载数据库引擎，返回给定字符串名的类
@@ -329,7 +341,7 @@ public class DbHelperSQL{
         public Statement createStatement(){
             if (null!= con){
                 try {
-                    return con.createStatement();
+                    return con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);//modify in 20160113 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -355,6 +367,7 @@ public class DbHelperSQL{
             if (null != con){
                 try {
                     con.close();
+                    con = null;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -109,7 +109,7 @@ public class VideoFragment extends Fragment{
                         Log.e(tag, "-----get video ==null, uniqueIdString:" +uniqueIdString +" areaIds:"+areaIds);
                         mVideoModels = new ArrayList<VLCVideoInfoModel>();
                     }
-                    DbHelperSQL.closeAll();
+                    DbHelperSQL.outSideClose();
                     mHandler.sendEmptyMessage(MSG_QUERY_OK);
                     if(null != d && d.isShowing()){
                         d.dismiss();

@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,17 +30,23 @@ import com.ssiot.remote.MyCache;
 import com.ssiot.remote.R;
 import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
 import com.ssiot.remote.data.model.view.NodeView2Model;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class MoniDataFrag extends BaseFragment{
     public static final String tag = "DataFragment";
     private FDataBtnClickListener mFDataBtnClickListener;
+    private Context mContext;
     TextView mTitleView;
     ImageView mOnlineView;
     ImageView mNetTypeView;
+    TextView mTimeTextTitle;
+    ListView mLeftList;
+    LinearLayout mHeaderHolder;
     ListView tableList;
-    List<NodeView2Model> mListData;
+    List<NodeView2Model> mListData = new ArrayList<NodeView2Model>();
     DataTableAdapter mAdapter;
     private Bundle mBundle;
     private int nodeno = -1;
@@ -50,9 +58,11 @@ public class MoniDataFrag extends BaseFragment{
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case MSG_GET_END:
-                    if (null != mListData){//
-                        mAdapter = new DataTableAdapter(getParentFragment().getActivity(), mListData);
-                        tableList.setAdapter(mAdapter);
+                    if (null != mListData){
+                        if (mListData.size() > 0){
+                            mAdapter.buildHeaderView(mListData.get(0), mHeaderHolder);
+                            buildLeftView(mTimeTextTitle, mLeftList, mListData);
+                        }
                         mAdapter.notifyDataSetChanged();
                     }
                     break;
@@ -69,6 +79,7 @@ public class MoniDataFrag extends BaseFragment{
         setHasOptionsMenu(true);
         mBundle = getArguments();
         nodeno = mBundle.getInt("nodeno", -1);
+        mContext = getActivity();
     }
     
     @Override
@@ -77,7 +88,14 @@ public class MoniDataFrag extends BaseFragment{
         mTitleView = (TextView) v.findViewById(R.id.moni_title);
         mOnlineView = (ImageView) v.findViewById(R.id.moni_status);
         mNetTypeView = (ImageView) v.findViewById(R.id.moni_net_type);
+        mTimeTextTitle = (TextView) v.findViewById(R.id.left_holdertitle);
+        mLeftList = (ListView) v.findViewById(R.id.table_left_list);
+        mHeaderHolder = (LinearLayout) v.findViewById(R.id.header_holderLinear);
         tableList = (ListView) v.findViewById(R.id.table_list);
+        mAdapter = new DataTableAdapter(getActivity(), mListData);
+        tableList.setAdapter(mAdapter);
+//        setScroll(mLeftList, tableList);
+        setListViewOnTouchAndScrollListener(mLeftList, tableList);
         initTitleBar();
         new GetMoniDataThread().start();
         
@@ -114,8 +132,8 @@ public class MoniDataFrag extends BaseFragment{
             sendShowMyDlg("正在查询");
             if (nodeno >= 0){
                 List<NodeView2Model> nList = new AjaxGetNodesDataByUserkey().GetNodesDataByUserkeyAndType(MainActivity.mUniqueID, ""+nodeno, grainSize);
-
-                mListData = nList;
+                mListData.clear();
+                mListData.addAll(nList);
 //                Log.v(tag, "------------size:"+nList.size());
 //                if (null != nList){
 //                    for (int i = 0; i < nList.size(); i ++){
@@ -171,6 +189,49 @@ public class MoniDataFrag extends BaseFragment{
         void onFDataBtnClick();  
     }
     
+    private void buildLeftView(TextView timeTextTitle, ListView leftList, List<NodeView2Model> listData){
+        timeTextTitle.setText("时间");
+        timeTextTitle.setGravity(Gravity.CENTER);
+        timeTextTitle.setEms(5);
+        timeTextTitle.setBackgroundColor(mContext.getResources().getColor(R.color.datalist_green));
+        
+        leftList.setAdapter(new LeftListAdapter(mContext, listData));
+        leftList.setVerticalScrollBarEnabled(false);
+    }
+    
+    private class LeftListAdapter extends BaseAdapter{
+        private Context context;
+        List<NodeView2Model> mDat;
+        public LeftListAdapter(Context c, List<NodeView2Model> d){
+            mDat = d;
+            context = c;
+        }
+        @Override
+        public int getCount() {
+            return mDat.size();
+        }
+        @Override
+        public Object getItem(int position) {
+            return mDat.get(position);
+        }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            NodeView2Model n2m = mDat.get(position);
+            TextView timeText = new TextView(context);
+            timeText.setText("" + n2m._detailTime);
+            timeText.setEms(5);
+            timeText.setGravity(Gravity.CENTER);
+            timeText.setMaxLines(2);
+            timeText.setBackgroundColor(context.getResources().getColor(R.color.ssiot_title_yellow));
+            return timeText;
+        }
+        
+    }
+    
     private class DataTableAdapter extends BaseAdapter{
         
         private LayoutInflater mInflater;
@@ -186,10 +247,10 @@ public class MoniDataFrag extends BaseFragment{
         
         @Override
         public int getCount() {
-            if (mData.size() == 0){//没有值就不显示标题，否则在buildHeaderView会空指针
-                return 0;
-            }
-            return mData.size() + 1;
+//            if (mData.size() == 0){//没有值就不显示标题，否则在buildHeaderView会空指针
+//                return 0;
+//            }
+            return mData.size();
         }
 
         @Override
@@ -204,37 +265,12 @@ public class MoniDataFrag extends BaseFragment{
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            /*
-            convertView = new RelativeLayout(context);
-            RelativeLayout rootLayout = (RelativeLayout) convertView;
-            if (0 == position){
-                
-            } else {
-                
-            }
-            
-            NodeView2Model n2m = mData.get(position);
-            TextView timeText = new TextView(context);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            timeText.setText("" + n2m._updatetime);
-            rootLayout.addView(timeText, lp);
-            
-            View leftView = timeText;
-            for (int j = 0; j < n2m._nodeData_list.size(); j ++){
-                TextView t = new TextView(context);
-                t.setText(""+n2m._nodeData_list.get(j)._data + n2m._nodeData_list.get(j)._unit);
-                RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                lp2.addRule(RelativeLayout.RIGHT_OF, leftView.getId());
-                rootLayout.addView(t,lp2);
-                leftView = t;
-            }*/
-//            Log.v(tag, "-----getview----" + position);
-            if (0 == position) {
-                convertView = buildHeaderView(mData.get(0));
-            } else {
-                convertView = buildView(mData.get(position - 1));
-            }
+//            if (0 == position) {
+//                convertView = buildHeaderView(mData.get(0),new LinearLayout(context));
+//            } else {
+//                convertView = buildView(mData.get(position - 1));
+//            }
+            convertView = buildView(mData.get(position));
             return convertView;
         }
         
@@ -242,14 +278,14 @@ public class MoniDataFrag extends BaseFragment{
             long time1 = SystemClock.uptimeMillis();
             LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
-            TextView timeText = new TextView(context);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            timeText.setText("" + n2m._detailTime);
-            timeText.setEms(5);
-            timeText.setGravity(Gravity.CENTER);
-            timeText.setMaxLines(2);
-            timeText.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
-            rootLayout.addView(timeText, lp);
+//            TextView timeText = new TextView(context);
+//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+//            timeText.setText("" + n2m._detailTime);
+//            timeText.setEms(5);
+//            timeText.setGravity(Gravity.CENTER);
+//            timeText.setMaxLines(2);
+//            timeText.setBackgroundColor(context.getResources().getColor(R.color.ssiot_title_yellow));
+//            rootLayout.addView(timeText, lp);
             
             View dividerView = new View(context);
             LinearLayout.LayoutParams lpdivider = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -269,7 +305,7 @@ public class MoniDataFrag extends BaseFragment{
 //                t.setMinEms(5);
                 t.setEms(5);
 //                t.setPadding(0, 10, 0, 10);
-                t.setBackgroundColor(getResources().getColor(R.color.ssiot_title_yellow));
+                t.setBackgroundColor(context.getResources().getColor(R.color.ssiot_title_yellow));
                 LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
 //                lp2.leftMargin = 10; 
 //                lp2.rightMargin = 10;
@@ -280,19 +316,21 @@ public class MoniDataFrag extends BaseFragment{
             return rootLayout;
         }
         
-        private View buildHeaderView(NodeView2Model n2m){
-            LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了 解决了一个bug
+        public View buildHeaderView(NodeView2Model n2m,LinearLayout rootLayout){
+//            LinearLayout rootLayout = new LinearLayout(context);//在xml中固定了listview的高度后就没重复调用了 解决了一个bug
             rootLayout.setOrientation(LinearLayout.HORIZONTAL);
+            rootLayout.removeAllViews();
+//            TextView timeText = new TextView(context);
+//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//            timeText.setText("时间");
+//            timeText.setGravity(Gravity.CENTER);
+//            timeText.setEms(5);
+//            timeText.setBackgroundColor(context.getResources().getColor(R.color.datalist_green));
+//            rootLayout.addView(timeText, lp);
             
-            TextView timeText = new TextView(context);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            timeText.setText("时间");
-            timeText.setGravity(Gravity.CENTER);
-            timeText.setEms(5);
-            timeText.setBackgroundColor(getResources().getColor(R.color.datalist_green));
-            rootLayout.addView(timeText, lp);
-            
-//            View leftView = timeText;
+            View dividerView = new View(context);
+            LinearLayout.LayoutParams lpdivider = new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT);
+            rootLayout.addView(dividerView, lpdivider);
             for (int j = 0; j < n2m._nodeData_list.size(); j ++){
                 TextView t = new TextView(context);
                 t.setText(n2m._nodeData_list.get(j)._name);
@@ -300,7 +338,7 @@ public class MoniDataFrag extends BaseFragment{
                 t.setMaxEms(5);
                 t.setMinEms(5);
                 t.setGravity(Gravity.CENTER);
-                t.setBackgroundColor(getResources().getColor(R.color.datalist_header));
+                t.setBackgroundColor(context.getResources().getColor(R.color.datalist_header));
                 LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 //                lp2.leftMargin = 10; 
 //                lp2.rightMargin = 10;
@@ -311,4 +349,111 @@ public class MoniDataFrag extends BaseFragment{
         }
         
     }
+    
+    private void setScroll(final ListView listView1, final ListView listView2){
+        listView1.setOnScrollListener(new OnScrollListener() {
+            
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                    int totalItemCount) {
+                
+                int x = listView1.getScrollX();
+                int y = listView1.getScrollY();
+                Log.v(tag, "----onScroll--------" +x + " "+ y);
+                listView2.scrollTo(x, y);
+            }
+        });
+    }
+    
+    public void setListViewOnTouchAndScrollListener(final ListView listView1, final ListView listView2) {
+        // 设置listview2列表的scroll监听，用于滑动过程中左右不同步时校正
+        OnScrollListener v2ScrollListener = new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                Log.v(tag, "-----------v2onScrollStateChanged-----------"+ scrollState);
+//                if (scrollState == 1 || scrollState == 2){
+//                    
+//                } else if (scrollState == 0){
+//                    listView1.setOnScrollListener(l)
+//                }
+                // 如果停止滑动
+                if (scrollState == 0 || scrollState == 1) {
+                    // 获得第一个子view
+                    View subView = view.getChildAt(0);
+
+                    if (subView != null) {
+                        final int top = subView.getTop();
+                        final int top1 = listView1.getChildAt(0).getTop();
+                        final int position = view.getFirstVisiblePosition();
+
+                        // 如果两个首个显示的子view高度不等
+                        if (top != top1) {
+                            listView1.setSelectionFromTop(position, top);
+                        }
+                    }
+                }
+            }
+
+            public void onScroll(AbsListView view, final int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount) {
+                View subView = view.getChildAt(0);
+                if (subView != null) {
+                    final int top = subView.getTop();
+                    // //如果两个首个显示的子view高度不等
+                    int top1 = listView1.getChildAt(0).getTop();
+                    if (!(top1 - 7 < top && top < top1 + 7)) {
+                        listView1.setSelectionFromTop(firstVisibleItem, top);
+//                        listView2.setSelectionFromTop(firstVisibleItem, top);
+                    }
+
+                }
+            }
+        };
+        
+        OnScrollListener v1ScrollListener = new OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                Log.v(tag, "-----------v1onScrollStateChanged-----------"+ scrollState);
+                if (scrollState == 0 || scrollState == 1) {
+                    // 获得第一个子view
+                    View subView = view.getChildAt(0);
+
+                    if (subView != null) {
+                        final int top = subView.getTop();
+                        final int top1 = listView2.getChildAt(0).getTop();
+                        final int position = view.getFirstVisiblePosition();
+
+                        // 如果两个首个显示的子view高度不等
+                        if (top != top1) {
+                            listView1.setSelectionFromTop(position, top);
+                            listView2.setSelectionFromTop(position, top);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, final int firstVisibleItem,
+                    int visibleItemCount, int totalItemCount) {
+                View subView = view.getChildAt(0);
+                if (subView != null) {
+                    final int top = subView.getTop();
+//                    listView1.setSelectionFromTop(firstVisibleItem, top);
+                    listView2.setSelectionFromTop(firstVisibleItem, top);
+
+                }
+            }
+        };
+        listView2.setOnScrollListener(v2ScrollListener);
+        // 设置listview1列表的scroll监听，用于滑动过程中左右不同步时校正
+//        listView1.setOnScrollListener(v1ScrollListener);
+    }
+    
 }

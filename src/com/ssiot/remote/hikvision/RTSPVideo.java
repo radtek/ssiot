@@ -52,7 +52,7 @@ public class RTSPVideo extends ActionBarActivity{
     private void play2(String mPath){
         final String pathStr = mPath;
         try {
-            mMediaPlayer.setDataSource(mPath);
+            mMediaPlayer.setDataSource(mPath.trim());
             mMediaPlayer.prepare();
             mMediaPlayer.setDisplay(mVideoView.getHolder());
             mMediaPlayer.start();

@@ -18,7 +18,6 @@
         android:background="@drawable/pb_time_checker_bk"
         android:thumb="@drawable/seekbar_thumb"
         android:max="4"/>
-    
 
     <LinearLayout 
         android:id="@+id/moni_time_txt"
@@ -59,16 +58,60 @@
             android:text="年"/>
     </LinearLayout>
     
-    <HorizontalScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/moni_time_txt" >
+    <LinearLayout
+        android:id="@+id/left_holder"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/moni_time_txt"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp" >
+
+        <TextView
+            android:id="@+id/left_holdertitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间" />
 
         <ListView
-            android:id="@+id/table_list"
+            android:id="@+id/table_left_list"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_margin="5dp" />
+            android:layout_height="match_parent"
+            android:layout_margin="0dp" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/moni_time_txt"
+        android:layout_toRightOf="@id/left_holder" >
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="0dp">
+            
+            <LinearLayout 
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/header_holderLinear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/table_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        
     </HorizontalScrollView>
 
 </RelativeLayout>

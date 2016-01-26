@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class LocalDBHelper extends SQLiteOpenHelper{
+    public static final String TABLE_TRACEPROFILE = "traceprofiles";
+    public static final String TABLE_ALARM = "alarmrule";
     /**  
      *   
      * @param context 应用程序上下文  
@@ -27,6 +29,11 @@ public class LocalDBHelper extends SQLiteOpenHelper{
                 + "ProName varchar,"  
                 + "ProBatchNo varchar,"  
                 + "ProListingDate varchar)"); //integer
+//        db.execSQL("create table if not exists alarmrule("  
+//                + "id integer primary key," 
+//                + "NodeUniqueID varchar,"
+//                + "Relation varchar,"  
+//                + "Rule varchar)"); //integer
 //        db.execSQL("CREATE TABLE localssiot (personid integer primary key autoincrement, name varchar(20))");  
     }
         // 通过version的增加来执行数据库版本更新，版本号改为6的同时，调用onUpgrade ，让程序员执行具体更新；  
@@ -35,6 +42,7 @@ public class LocalDBHelper extends SQLiteOpenHelper{
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!on update " + oldVersion + " "+newVersion);
 //        db.execSQL("ALTER TABLE localssiot ADD phone VARCHAR(12) NULL ");
         db.execSQL("DROP TABLE IF EXISTS traceprofiles");
+//        db.execSQL("DROP TABLE IF EXISTS alarmrule");
         onCreate(db);//一个山寨的方法 http://blog.csdn.net/zhouy1989/article/details/7484715 
         
         //TODO 升级时有问题 如果数据表格不对应！！不会更新 TODO

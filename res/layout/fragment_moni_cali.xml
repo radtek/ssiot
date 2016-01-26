@@ -78,7 +78,6 @@
             android:layout_toLeftOf="@id/cali_channel"
             android:text="通道:"/>
 
-        
     </RelativeLayout>
     
     <RelativeLayout
@@ -86,22 +85,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/cali_channel_bar"
-        android:layout_marginTop="10dp"
-         >
-        
-        <Spinner
-            android:id="@+id/cali_standard"
+        android:layout_marginTop="10dp" >
+
+        <LinearLayout
+            android:id="@+id/cali_stan_linear"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/spinner_back" />
-        <TextView 
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/cali_stan_edit"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:numeric="decimal"
+                android:hint="手动输入" />
+
+            <Spinner
+                android:id="@+id/cali_standard"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_back" />
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/cali_stan_t"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/cali_standard"
-            android:text="标准:"/>
+            android:layout_toLeftOf="@id/cali_stan_linear"
+            android:text="标准:" />
     </RelativeLayout>
     
     <RelativeLayout
@@ -142,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/cali_decrease"
                 android:layout_toLeftOf="@id/cali_increase"
-                android:numeric="integer"
+                android:numeric="decimal"
                 android:gravity="center" />
         </RelativeLayout>
         

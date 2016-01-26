@@ -75,6 +75,9 @@ public class LoginActivity extends ActionBarActivity {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("userkey", uniqueID);
                         startActivity(intent);
+                        
+                        Intent myintent = new Intent(LoginActivity.this, SsiotService.class);
+                        startService(myintent);
                         finish();
                     } else {
                         Toast.makeText(getApplicationContext(), "用户名或密码有误",

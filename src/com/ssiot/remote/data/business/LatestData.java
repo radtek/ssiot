@@ -69,7 +69,8 @@ public class LatestData{
         ResultSet rs = null;
         String strwhere = "";
         if (TextUtils.isEmpty(nodelist)){
-            strwhere = " where 1=1";
+//            strwhere = " where 1=1";//bug
+            return null;
         } else {
             strwhere = "WHERE UniqueID IN (SELECT UniqueID FROM Node WHERE NodeNo IN("+nodelist+"))";
         }

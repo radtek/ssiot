@@ -3,7 +3,7 @@
     android:id="@+id/dialog_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffffff"
+    android:background="#00ffffff"
     android:gravity="center"
     android:minHeight="60dp"
     android:minWidth="180dp"

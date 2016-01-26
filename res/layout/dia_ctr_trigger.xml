@@ -7,20 +7,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible" >
-
-        <ListView
-            android:id="@+id/tri_node_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
         
         <Button 
             android:id="@+id/tri_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tri_node_list"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="下一步"/>
+        
+        <ListView
+            android:id="@+id/tri_node_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/tri_next" />
         
     </RelativeLayout>
 
@@ -67,7 +68,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tri_element_list"
-            android:gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
             android:text="完成"/>
     </RelativeLayout>
 

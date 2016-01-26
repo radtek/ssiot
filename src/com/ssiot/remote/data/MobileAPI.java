@@ -36,6 +36,9 @@ public class MobileAPI{
             ResultSet last_ds = DataAPI.GetLastData(nodenos);
             List<NodeView2Model> nodeView_list1 = new ArrayList<NodeView2Model>();//存储在线
             List<NodeView2Model> nodeView_list2 = new ArrayList<NodeView2Model>();//离线
+            if (null == last_ds){
+                return null;
+            }
             while(last_ds.next()){
                 NodeView2Model nodeView2 = new NodeView2Model();
                 String isOnline = "";
@@ -130,7 +133,7 @@ public class MobileAPI{
                 String beginTime = ConvertToSpecificDateTimeString(minDateTime, -12, "yyyy-MM-dd HH:mm:ss");
                 String endTime = ConvertToSpecificDateTimeString(minDateTime, -8, "yyyy-MM-dd HH:mm:ss");
               //获取对在线节点延迟十分钟的数据
-                ResultSet ds = DataAPI.GetData("10分钟", "平均值", beginTime, endTime, "更新时间 DESC", -1, -1, true, 10000, null, onlineNodenos);
+                ResultSet ds = DataAPI.GetData_old("十分钟", "平均值", beginTime, endTime, "更新时间 DESC", -1, -1, true, 10000, null, onlineNodenos);
                 
                 List<NodeView2Model> onlineNodeView2_list = new ArrayList<NodeView2Model>();//用于存储延迟十分钟的在线节点数据
                 if (ds!=null){
@@ -282,7 +285,7 @@ public class MobileAPI{
                                     nodeView2._updatetime = Timestamp.valueOf(timeStr + "-01 00:00:00");
                                     break;
                                 case 4:
-                                    nodeView2._updatetime = Timestamp.valueOf(timeStr + "-01-01 00:00:00");
+                                    nodeView2._updatetime = Timestamp.valueOf(timeStr + "-01-01 01:00:00");
                                     break;
                                     
                                 default:

@@ -122,8 +122,8 @@ public class VLCVideoInfo {
     private VLCVideoInfoModel DataRowToModel(ResultSet c) {// 先.next !!
         VLCVideoInfoModel vModel = new VLCVideoInfoModel();
         try {
-            vModel._vlcvideoinfoid = Integer.parseInt(c.getString("VLCVideoInfoID"));
-            vModel._areaid = Integer.parseInt(c.getString("AreaID"));
+            vModel._vlcvideoinfoid = c.getInt("VLCVideoInfoID");
+            vModel._areaid = c.getInt("AreaID");
             vModel._username = c.getString("UserName");
             vModel._password = c.getString("PassWord");
             vModel._url = c.getString("URL");
@@ -131,8 +131,11 @@ public class VLCVideoInfo {
             vModel._port = c.getString("Port");
             vModel._address = c.getString("Address");
             vModel._type = c.getString("Type");
-//            
-            vModel._tcpport = c.getInt("TcpPort");
+            try {
+                vModel._tcpport = c.getInt("TcpPort");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             vModel._remark = c.getString("Remark");
 //            Log.v(tag, "-------tcpport---------------------------------" + vModel._tcpport + vModel._address);
             // TODO

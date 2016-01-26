@@ -19,7 +19,13 @@ public class TraceImages{
         }
         ResultSet ds = DbHelperSQL.Query(strSql.toString());
         if (null != ds){
-            return DataTableToList(ds);
+            List<TraceImagesModel> list = DataTableToList(ds);
+            try {
+                ds.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
         }
         return null;
     }
