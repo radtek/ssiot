@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,11 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,11 +23,10 @@ import com.ssiot.remote.R;
 import com.ssiot.remote.Utils;
 import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
 import com.ssiot.remote.data.model.view.NodeView2Model;
-import com.ssiot.remote.data.model.view.NodeViewModel;
-import com.ssiot.remote.monitor.MonitorListAdapter;
-import com.ssiot.remote.monitor.MonitorListAdapter.DetailListener;
-import com.ssiot.remote.monitor.MonitorListAdapter.ShowAllListener;
-import com.ssiot.remote.monitor.MonitorListAdapter.ThumnailHolder;
+import com.ssiot.remote.monitor.MonitorListAdapter2;
+import com.ssiot.remote.monitor.MonitorListAdapter2.DetailListener;
+import com.ssiot.remote.monitor.MonitorListAdapter2.ShowAllListener;
+import com.ssiot.remote.monitor.MonitorListAdapter2.ThumnailHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +38,7 @@ public class MoniNodeListFrag extends BaseFragment{
     private String userKey = "";
     List<NodeView2Model> mNodes = new ArrayList<NodeView2Model>();
     ListView mNodeListView;
-    MonitorListAdapter mNodeAdapter;
+    MonitorListAdapter2 mNodeAdapter;
     
     private static final int MSG_GETNODES_END = 1;
     public static final int MSG_GET_ONEIMAGE_END = 2;
@@ -61,7 +54,7 @@ public class MoniNodeListFrag extends BaseFragment{
                 case MSG_GETNODES_END:
                     if (null != mNodes && mNodes.size() > 0 && null != mNodeAdapter){
                         Log.v(tag, "----------refresh node list");
-                        mNodeAdapter = new MonitorListAdapter(getParentFragment().getActivity(), mNodes,mShowAllListener,mDetailListener,mHandler);
+                        mNodeAdapter = new MonitorListAdapter2(getParentFragment().getActivity(), mNodes,mShowAllListener,mDetailListener,mHandler);
                         mNodeListView.setAdapter(mNodeAdapter);
                         mNodeAdapter.notifyDataSetChanged();
                     } else {
@@ -110,7 +103,7 @@ public class MoniNodeListFrag extends BaseFragment{
             Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_SHORT).show();
         }
         mNodeListView = (ListView) v.findViewById(R.id.moni_list);
-        mNodeAdapter = new MonitorListAdapter(getActivity(), mNodes,null,null,mHandler);
+        mNodeAdapter = new MonitorListAdapter2(getActivity(), mNodes,null,null,mHandler);
         mNodeListView.setAdapter(mNodeAdapter);
         mNodeAdapter.notifyDataSetChanged();
         if (!Utils.isNetworkConnected(getActivity())){
@@ -123,7 +116,6 @@ public class MoniNodeListFrag extends BaseFragment{
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Auto-generated method stub
         inflater.inflate(R.menu.menu_monitor, menu);
     }
     
@@ -134,7 +126,8 @@ public class MoniNodeListFrag extends BaseFragment{
                 if (!Utils.isNetworkConnected(getActivity())){
                     Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_LONG).show();
                 } else {
-                    showRefreshAnimation(item);
+                    showRefreshAnimation(item,mNodeListView);
+                    mHandler.sendEmptyMessage(MSG_REFRESH);
                 }
                 break;
 
@@ -153,7 +146,7 @@ public class MoniNodeListFrag extends BaseFragment{
     
     MenuItem refreshItem;
     @SuppressLint("NewApi")
-    private void showRefreshAnimation(MenuItem item) {
+    public void showRefreshAnimation(MenuItem item, View uibase) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
             hideRefreshAnimation();
             refreshItem = item;
@@ -165,7 +158,12 @@ public class MoniNodeListFrag extends BaseFragment{
             animation.setRepeatMode(Animation.RESTART);
             animation.setRepeatCount(Animation.INFINITE);
             refreshActionView.startAnimation(animation);
-            //TODO real action
+            uibase.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    hideRefreshAnimation();
+                }
+            }, 800);
         }
     }
     

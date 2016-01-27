@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/data_bk_grey" >
 
     <TextView 
         android:id="@+id/data_type"
@@ -16,12 +17,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:src="@drawable/compare_down"/>
+        android:src="@drawable/compare_down"
+        android:visibility="gone"/>
     
     <TextView android:id="@+id/data_data"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/data_compare"
+        android:layout_alignParentRight="true"
         android:maxLines="1"
         android:text="25度"
         android:textSize="13sp"/>
@@ -32,11 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/data_type"
         android:layout_toLeftOf="@id/data_data"
-        
         style="?android:attr/progressBarStyleHorizontal"
-        
         android:progressDrawable="@drawable/progressbar_style"
         android:background="@drawable/my_progress_bg"
+        android:visibility="gone"
         android:progress="50"/>
     
     

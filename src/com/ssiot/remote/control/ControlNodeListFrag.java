@@ -42,6 +42,7 @@ public class ControlNodeListFrag extends BaseFragment{
     
     private static final int MSG_GETNODES_END = 1;
     public static final int MSG_GET_ONEIMAGE_END = 2;
+    private static final int MSG_REFRESH = 3;
     private Handler mHandler = new Handler(){
         public void handleMessage(android.os.Message msg) {
             if (!isVisible()){
@@ -66,6 +67,9 @@ public class ControlNodeListFrag extends BaseFragment{
 //                    mNodeAdapter.notifyDataSetChanged();//不能notify，会无限循环
                     GetImageThread.ThumnailHolder thumb = (GetImageThread.ThumnailHolder) msg.obj;
                     thumb.imageView.setImageBitmap(thumb.bitmap);
+                    break;
+                case MSG_REFRESH:
+                    new GetCtrNodeThread().start();
                     break;
 
                 default:
@@ -93,13 +97,7 @@ public class ControlNodeListFrag extends BaseFragment{
         mNodeListView = (ListView) v.findViewById(R.id.control_list);
         mNodeAdapter = new ControlListAdapter(getActivity(), mNodes,null,mHandler);
         mNodeListView.setAdapter(mNodeAdapter);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mNodes = new AjaxGetNodesDataByUserkey().GetControlNodesByUserkey(userKey);
-                mHandler.sendEmptyMessage(MSG_GETNODES_END);
-            }
-        }).start();
+        new GetCtrNodeThread().start();
         return v;
     }
     
@@ -115,7 +113,8 @@ public class ControlNodeListFrag extends BaseFragment{
                 if (!Utils.isNetworkConnected(getActivity())){
                     Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_LONG).show();
                 } else {
-                    showRefreshAnimation(item);
+                    showRefreshAnimation(item,mNodeListView);
+                    mHandler.sendEmptyMessage(MSG_REFRESH);
                 }
                 break;
 
@@ -178,5 +177,15 @@ public class ControlNodeListFrag extends BaseFragment{
     //回调接口，留给activity使用
     public interface FControlNodeListBtnClickListener {  
         void onFControlNodeListBtnClick(int position);  
+    }
+    
+    private class GetCtrNodeThread extends Thread{
+        @Override
+        public void run() {
+            sendShowMyDlg("正在查询");
+            mNodes = new AjaxGetNodesDataByUserkey().GetControlNodesByUserkey(userKey);
+            sendDismissDlg();
+            mHandler.sendEmptyMessage(MSG_GETNODES_END);
+        }
     }
 }

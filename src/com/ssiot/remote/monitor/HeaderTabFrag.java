@@ -23,7 +23,7 @@ import com.ssiot.remote.control.ControlNodeListFrag;
 import com.ssiot.remote.data.model.view.ControlNodeViewModel;
 import com.ssiot.remote.data.model.view.NodeView2Model;
 import com.ssiot.remote.monitor.MoniNodeListFrag.FMoniNodeListBtnClickListener;
-import com.ssiot.remote.monitor.MonitorListAdapter.DetailListener;
+import com.ssiot.remote.monitor.MonitorListAdapter2.DetailListener;
 
 public class HeaderTabFrag extends BaseFragment{
     public static final String tag = "HeaderTabFragment";
