@@ -3,7 +3,9 @@ package com.ssiot.remote.data.business;
 import android.text.TextUtils;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.ControlDeviceModel;
+import com.ssiot.remote.data.model.view.ControlDeviceViewModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,22 +15,53 @@ import java.util.List;
 public class ControlDevice{
     
     public List<ControlDeviceModel> GetModelList(String strWhere){
-        ResultSet ds = GetList_dataaccess(strWhere);
-        return DataTableToList(ds);
+        SsiotResult sResult = GetList_dataaccess(strWhere);
+        List<ControlDeviceModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public ResultSet GetControlDeviceInfo(int controlNodeId, String nodeUnique) {
+    public List<ControlDeviceViewModel> GetControlDeviceInfo(int controlNodeId, String nodeUnique) {
+        List<ControlDeviceViewModel> controlDeviceView_list = new ArrayList<ControlDeviceViewModel>();
         try {
             if(controlNodeId <= 0 || TextUtils.isEmpty(nodeUnique)) {
                 throw new Exception(" Parameters Exception");
             }
-            return GetControlDeviceInfo_dataaccess(controlNodeId, nodeUnique);
-
+            SsiotResult sResult = GetControlDeviceInfo_dataaccess(controlNodeId, nodeUnique);
+            if (null != sResult && null != sResult.mRs) {
+                ResultSet ds = sResult.mRs;
+                while (ds.next()) {
+                    ControlDeviceViewModel controlDeviceView = new ControlDeviceViewModel();
+                    
+                    controlDeviceView.DeviceID = ds.getInt("DeviceID");
+                    controlDeviceView.ControlNodeID = ds.getInt("ControlNodeID");
+                    controlDeviceView.DeviceNo = ds.getInt("DeviceNo");
+                    controlDeviceView.DeviceName = ds.getString("DeviceName");
+                    controlDeviceView.RunTime = ds.getInt("RunTime");
+                    controlDeviceView.StartTime = ds.getString("StartTime");
+                    controlDeviceView.ControlActionID = ds.getInt("ControlActionID");
+                    controlDeviceView.ControlType = ds.getInt("ControlType");
+                    controlDeviceView.CollectUniqueIDs = ds.getString("CollectUniqueIDs");
+                    controlDeviceView.ControlCondition = ds.getString("ControlCondition");
+                    controlDeviceView.OperateTime = ds.getTimestamp("OperateTime");
+                    controlDeviceView.StateNow = ds.getInt("StateNow");
+                    controlDeviceView.Operate = ds.getString("Operate");
+                    
+                    controlDeviceView_list.add(controlDeviceView);
+                }
+            }
+            if (null != sResult){
+                sResult.close();
+            }
         }catch (Exception e){
             e.printStackTrace();
-            
         }
-        return null;
+        return controlDeviceView_list;
     }
     
     public List<ControlDeviceModel> DataTableToList(ResultSet dt) 
@@ -53,7 +86,6 @@ public class ControlDevice{
         ControlDeviceModel m = new ControlDeviceModel();
         try {
             m._id = Integer.parseInt(c.getString("ID"));
-            ///////////////////////////////////////////////////////TODO
             m._controlnodeid = c.getInt("ControlNodeID");
             m._deviceno = c.getInt("DeviceNo");
             m._devicename = c.getString("DeviceName");
@@ -76,18 +108,18 @@ public class ControlDevice{
     //-----------------------------
     
     
-    public ResultSet GetList_dataaccess(String strWhere) {
+    private SsiotResult GetList_dataaccess(String strWhere) {
         StringBuilder strSql=new StringBuilder();
         strSql.append("select ID,ControlNodeID,DeviceNo,DeviceName,DeviceType,Address,Remark,Extern,CreateTime,State ");
         strSql.append(" FROM ControlDevice ");
         if(strWhere.trim()!="") {
             strSql.append(" where "+strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
     //line459
-    public  ResultSet GetControlDeviceInfo_dataaccess(int controlNodeId,String nodeUnique) {
+    private  SsiotResult GetControlDeviceInfo_dataaccess(int controlNodeId,String nodeUnique) {
         try {
             StringBuilder strSql = new StringBuilder();
             strSql.append("SELECT Tbl1.ID AS [DeviceID],Tbl1.ControlNodeID,Tbl1.DeviceNo,Tbl1.deviceName AS [DeviceName],CL.RunTime, CL.EditTime AS [StartTime],Tbl2.ID AS[ControlActionID],Tbl2.ControlType,Tbl2.CollectUniqueIDs,Tbl2.ControlCondition,Tbl2.OperateTime,Tbl2.StateNow,Tbl2.Operate FROM (SELECT ID,ControlNodeID,DeviceNo,deviceName FROM dbo.ControlDevice ");
@@ -102,7 +134,7 @@ public class ControlDevice{
             parameters.add(""+controlNodeId);
             parameters.add(nodeUnique);
             parameters.add(nodeUnique);
-            return DbHelperSQL.Query(strSql.toString(), parameters);
+            return DbHelperSQL.getInstance().Query(strSql.toString(), parameters);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

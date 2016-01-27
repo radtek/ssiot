@@ -18,9 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ssiot.remote.BaseFragment;
 import com.ssiot.remote.R;
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
 import com.ssiot.remote.data.model.SettingInfo1Model;
 
@@ -92,8 +94,11 @@ public class MoniConfigFrag extends BaseFragment{
         mRemarkEdit = (EditText) v.findViewById(R.id.conf_remark);
         mBtn = (Button) v.findViewById(R.id.conf_btn);
         initTitleBar(v);
-        new GetReportFreqThread().start();
-        
+        if (Utils.isNetworkConnected(getActivity())){
+            new GetReportFreqThread().start();
+        } else {
+            Toast.makeText(getActivity(), "无网络，请检查！", Toast.LENGTH_SHORT).show();
+        }
         return v;
     }
     

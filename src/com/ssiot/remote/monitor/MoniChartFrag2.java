@@ -25,6 +25,7 @@ import com.ssiot.remote.data.model.view.NodeView2Model;
 import com.ssiot.remote.BaseFragment;
 import com.ssiot.remote.MainActivity;
 import com.ssiot.remote.R;
+import com.ssiot.remote.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -135,7 +136,11 @@ public class MoniChartFrag2 extends BaseFragment{
         chart = (LineChartView) v.findViewById(R.id.chart);
         initTitleBar();
         initTopbar();
-        new GetMoniDataThread().start();
+        if (Utils.isNetworkConnected(getActivity())){
+            new GetMoniDataThread().start();
+        } else {
+            Toast.makeText(getActivity(), "无网络，请检查！", Toast.LENGTH_SHORT).show();
+        }
         return v;
     }
     
@@ -152,7 +157,7 @@ public class MoniChartFrag2 extends BaseFragment{
             sendShowMyDlg("正在查询");
             if (nodeno >= 0){
                 List<NodeView2Model> nList = new AjaxGetNodesDataByUserkey().GetNodesDetailData(MainActivity.mUniqueID, ""+nodeno, grainSize,startTime,endTime);
-                DbHelperSQL.outSideClose();
+                DbHelperSQL.getInstance().outSideClose();
                 mListData.clear();
                 mListData.addAll(nList);
             } else {

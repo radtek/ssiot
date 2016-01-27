@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.LatestDataModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
 
@@ -21,33 +22,40 @@ public class LatestData{
     }
     
     public List<LatestDataModel> GetModelList(String strWhere){
-        ResultSet ds = GetList(strWhere);
-        return DataTableToList(ds);
+        List<LatestDataModel> list = null;
+        SsiotResult sResult = GetList(strWhere);
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public ResultSet GetLastData(){
+    public SsiotResult GetLastData(){
         return GetLastData("节点编号", -1, -1, true, "");
     }
     
-    public ResultSet GetLastData(String nodelist){
+    public SsiotResult GetLastData(String nodelist){
         return GetLastData("节点编号", -1, -1, true, nodelist);
     }
     
-    public ResultSet GetLastData(String nodelist, int startNum, int endNum){
+    public SsiotResult GetLastData(String nodelist, int startNum, int endNum){
         return GetLastData("节点编号", startNum, endNum, true, nodelist);
     }
     
-    public ResultSet GetLastData(String orderby ,String nodelist, int startNum, int endNum){
+    public SsiotResult GetLastData(String orderby ,String nodelist, int startNum, int endNum){
         return GetLastData(orderby, startNum, endNum, true, nodelist);
     }
     
-    public ResultSet GetLastData(String orderby, int beginindex, int endindex, boolean unit, String nodelist) {
+    public SsiotResult GetLastData(String orderby, int beginindex, int endindex, boolean unit, String nodelist) {
 //        String key = orderby + beginindex + endindex + unit + nodelist;
 //        String hashkey = key.GetHashCode().ToString();//获取hashkey为字典ID
 //        // string CacheKey = "LatestData-GetLastData-" + hashkey.ToString();
 //        String CacheKey = Guid.NewGuid().ToString();
 //        object objModel = Angel.Common.Web.DataCache.GetCache(CacheKey);
-        ResultSet objModel = null;
+        SsiotResult objModel = null;
         if (objModel == null) {
             try {
                 objModel = GetLastData_data(orderby, beginindex, endindex, unit, nodelist);
@@ -61,12 +69,16 @@ public class LatestData{
                 e.printStackTrace();
             }
         }
-        return (ResultSet) objModel;
+        return (SsiotResult) objModel;
     }
     
+//    public GetTwoNodeView2ListBynode_list_GetLastData(){
+//        
+//    }
+    
  // 获取最新数据列表
-    public ResultSet GetLastData_data(String orderby, int beginindex, int endindex, boolean unit,String nodelist){
-        ResultSet rs = null;
+    private SsiotResult GetLastData_data(String orderby, int beginindex, int endindex, boolean unit,String nodelist){
+        SsiotResult rs = null;
         String strwhere = "";
         if (TextUtils.isEmpty(nodelist)){
 //            strwhere = " where 1=1";//bug
@@ -127,7 +139,7 @@ public class LatestData{
                 sb_sql.append(" ) AS [Table3] WHERE 1=1");
                 sb_sql.append(" AND [Table3].[RANK] BETWEEN "+beginindex+" AND "+endindex+" ");
             }
-            rs = DbHelperSQL.Query(sb_sql.toString());
+            rs = DbHelperSQL.getInstance().Query(sb_sql.toString());
         }
         return rs;
     }
@@ -166,13 +178,13 @@ public class LatestData{
         return null;
     }
     
-    public ResultSet GetList(String strWhere) {
+    private SsiotResult GetList(String strWhere) {
         StringBuilder strSql=new StringBuilder();
         strSql.append("select LatestDataID,CollectionTime,UniqueID,Channel,SensorNo,Data,IsLive ");
         strSql.append(" FROM LatestData ");
         if(strWhere.trim() != "") {
             strSql.append(" where "+strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
 }

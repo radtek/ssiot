@@ -25,7 +25,7 @@ public class NodeHelper{
         long time1 = SystemClock.uptimeMillis();
         String nodenos = "";//Request["nodenos"];
         String nodeplace = "";//Request["nodeplace"];
-        ResultSet node_ds;
+        SsiotResult sResult;
         List<NodeModel> nodemodellists = new ArrayList<NodeModel>();//存放节点
         //判断是否通过安装地点查询
         if (TextUtils.isEmpty(nodeplace)) {
@@ -56,7 +56,7 @@ public class NodeHelper{
         if (!nodenos.contains(",") || pageIndex == null || 
                 TextUtils.isEmpty(pageIndex) || pageSize == null
                 || TextUtils.isEmpty(pageSize)){
-            node_ds = DataAPI.GetLastData("更新时间 DESC", nodenos);
+            sResult = DataAPI.GetLastData("更新时间 DESC", nodenos);
         } else {
             int pgIndex = 1;
             int pgSize = 0;
@@ -66,10 +66,14 @@ public class NodeHelper{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            node_ds = DataAPI.GetLastData("更新时间 DESC", nodenos, ((pgIndex - 1) * pgSize + 1), pgIndex * pgSize);
+            sResult = DataAPI.GetLastData("更新时间 DESC", nodenos, ((pgIndex - 1) * pgSize + 1), pgIndex * pgSize);
         }
         
         Log.v(tag, "(((((((((((((((((((((((((((((((-------------------");
+        if (null == sResult){
+            return;
+        }
+        ResultSet node_ds = sResult.mRs;
         int index = 0;
         try {
             if (null != node_ds){
@@ -88,6 +92,9 @@ public class NodeHelper{
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        if (null != sResult){
+            sResult.close();
         }
         Log.v(tag, ")))))))))))))))))))))))))))))))-----lines:" + index + " time:"+ (SystemClock.uptimeMillis() - time1));
         //TODO

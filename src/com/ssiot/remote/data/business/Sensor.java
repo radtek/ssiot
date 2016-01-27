@@ -1,10 +1,8 @@
 package com.ssiot.remote.data.business;
 
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.ssiot.remote.data.DbHelperSQL;
-import com.ssiot.remote.data.model.LatestDataModel;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.SensorModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
 
@@ -17,49 +15,59 @@ public class Sensor {
     
     public List<SensorViewModel> GetSensorListByNodeNoString(String nodenos) {//在ProductSensor表中！！?
         List<SensorViewModel> list = null;
-        ResultSet sensords = null;
+        SsiotResult sResult = null;
         if (TextUtils.isEmpty(nodenos)) {
-            sensords = DbHelperSQL.Query("SELECT DISTINCT  SensorNo ,  Channel ,  SensorName ,  ShortName ,  Unit , Accuracy ,MinValue ,MaxValue,  Color ,  SensorCategoryNo " +
+            sResult = DbHelperSQL.getInstance().Query("SELECT DISTINCT  SensorNo ,  Channel ,  SensorName ,  ShortName ,  Unit , Accuracy ,MinValue ,MaxValue,  Color ,  SensorCategoryNo " +
             		"FROM    [ProductSensor]  JOIN [Sensor] ON [ProductSensor].SensorID = [Sensor].SensorNO WHERE   CAST([SensorID] AS VARCHAR) + '_' + CAST([Channel] AS VARCHAR) IN ( SELECT  CAST([SensorID] AS VARCHAR) + '_' + CAST([Channel] AS VARCHAR)  FROM    productsensor  )");
         } else {
-            sensords = DbHelperSQL.Query("SELECT DISTINCT  SensorNo ,  Channel ,  SensorName ,  ShortName ,  Unit ,  Accuracy , MinValue ,MaxValue,  Color ,  SensorCategoryNo " +
+            sResult = DbHelperSQL.getInstance().Query("SELECT DISTINCT  SensorNo ,  Channel ,  SensorName ,  ShortName ,  Unit ,  Accuracy , MinValue ,MaxValue,  Color ,  SensorCategoryNo " +
             		"FROM    [ProductSensor]  JOIN [Sensor] ON [ProductSensor].SensorID = [Sensor].SensorNO WHERE   CAST([SensorID] AS VARCHAR) + '_' + CAST([Channel] AS VARCHAR) IN ( SELECT  CAST([SensorID] AS VARCHAR) + '_' + CAST([Channel] AS VARCHAR)  FROM    productsensor  WHERE   ProductID IN ( SELECT DISTINCT  ProductID FROM     [Node] WHERE    NodeNo in (" + nodenos + " )) )");
         }
 
         try {
-            if (sensords != null) {
+            if (null != sResult && null != sResult.mRs) {
+                ResultSet sensords = sResult.mRs;
                 list = new ArrayList<SensorViewModel>();
                 while(sensords.next()){
                     SensorViewModel model = DataRowToViewModel(sensords);
                     list.add(model);
                 }
-                sensords.close();
+//                sensords.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (null != sResult){
+            sResult.close();
         }
         
         return list;
     }
     
-    public List<SensorModel> GetModelList(String strWhere)
-    {
-        ResultSet ds = GetList_dataaccess(strWhere);
-        return DataTableToList(ds);
+    public List<SensorModel> GetModelList(String strWhere){
+        SsiotResult sResult = GetList_dataaccess(strWhere);
+        List<SensorModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     //-------------------------------------------------------
-    public ResultSet GetList_dataaccess(String strWhere) {
+    private SsiotResult GetList_dataaccess(String strWhere) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("select SensorNo,SensorCategoryNo,SensorName,ShortName,Unit,Accuracy,MinValue,MaxValue,Color ");
         strSql.append(" FROM Sensor ");
         if (!TextUtils.isEmpty(strWhere.trim())) {
             strSql.append(" where " + strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
-    public List<SensorModel> DataTableToList(ResultSet c){
+    private List<SensorModel> DataTableToList(ResultSet c){
         List<SensorModel> mModels = new ArrayList<SensorModel>();
         SensorModel mm = new SensorModel();
         try {
@@ -76,7 +84,7 @@ public class Sensor {
         return mModels;
     }
     
-    public SensorModel DataRowToModel(ResultSet rs){
+    private SensorModel DataRowToModel(ResultSet rs){
         SensorModel m = new SensorModel();
         try {
             m._sensorno = Integer.parseInt(rs.getString("SensorNo"));

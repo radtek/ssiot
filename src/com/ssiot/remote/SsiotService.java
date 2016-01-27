@@ -17,20 +17,24 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.ssiot.remote.data.DataAPI;
+import com.ssiot.remote.data.DbHelperSQL;
 import com.ssiot.remote.data.business.AlarmRule;
 import com.ssiot.remote.data.business.ControlActionInfo;
 import com.ssiot.remote.data.business.LiveData;
 import com.ssiot.remote.data.business.Node;
+import com.ssiot.remote.data.business.Sensor;
 import com.ssiot.remote.data.model.AlarmRuleBean;
 import com.ssiot.remote.data.model.AlarmRuleModel;
 import com.ssiot.remote.data.model.ControlActionInfoModel;
 import com.ssiot.remote.data.model.LiveDataModel;
 import com.ssiot.remote.data.model.NodeModel;
+import com.ssiot.remote.data.model.SensorModel;
 import com.ssiot.remote.monitor.MoniAlarmFrag;
 
 import java.nio.channels.SelectableChannel;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SsiotService extends Service{
@@ -46,6 +50,7 @@ public class SsiotService extends Service{
     private LiveDataBackWorker mWorker;
     List<AlarmRuleModel> mAlarmModels;
     private List<NotiInfo> notiInfos = new ArrayList<SsiotService.NotiInfo>();
+    List<SensorModel> sensor_dic;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -86,17 +91,28 @@ public class SsiotService extends Service{
             cancel = false;
             while (!cancel) {
                 synchronized (lock) {
+                    
                     try {
                         Thread.sleep(10 * 1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    
+                    if (false == mPref.getBoolean("alarm", true)){//TODO
+                        Log.v(tag, "-----alarm set false-----" + new Date().toString());
+                        continue;
+                    }
+                    if (!Utils.isNetworkConnected(SsiotService.this)){
+                        Log.v(tag, "-----no net-----" + new Date().toString());
+                        continue;
+                    }
+                    if (null == sensor_dic || sensor_dic.size() == 0){
+                        sensor_dic = new Sensor().GetModelList("1=1");
+                    }
                     getWitchToCompare("");
                     
                     
                     String alarmUniques = "";
-                    if (null != mAlarmModels){//找出包含的节点
+                    if (null != mAlarmModels && mAlarmModels.size() > 0){//找出包含的节点
                         for (int i = 0; i < mAlarmModels.size(); i ++){
                             alarmUniques += mAlarmModels.get(i)._uniqueID + ",";
                         }
@@ -106,9 +122,14 @@ public class SsiotService extends Service{
                     } else {
                         continue;//没有预警规则
                     }
-                    List<LiveDataModel> tmp = liveDataBll.GetNewestDataFromLiveData(10000," UniqueID in(" +alarmUniques+")" );
+                    List<LiveDataModel> tmp = null;
+                    if (!TextUtils.isEmpty(alarmUniques)){
+                        tmp = liveDataBll.GetNewestDataFromLiveData(10000," UniqueID in(" +alarmUniques+")" );
+                    }
                     newestDataList.clear();
-                    newestDataList.addAll(tmp);
+                    if (tmp != null && tmp.size() > 0){
+                        newestDataList.addAll(tmp);
+                    }
                     compare(newestDataList, mAlarmModels);
                 }
             }
@@ -254,7 +275,8 @@ public class SsiotService extends Service{
                 builder.setContentTitle("预警节点:" + singleNodeDatas.get(0)._uniqueid);
                 
                 for (int i = 0; i < singleNodeDatas.size(); i ++){
-                    contentTxt += ""+singleNodeDatas.get(i)._sensorno +  singleNodeDatas.get(i)._data + ";";
+                    LiveDataModel liveDataModel = singleNodeDatas.get(i);
+                    contentTxt += buildContentText(liveDataModel);
                 }
                 builder.setContentText("监测值：" + contentTxt);
                 Log.v(tag, "---notimsg:" + contentTxt);
@@ -282,6 +304,25 @@ public class SsiotService extends Service{
             }
             return noti;
         }
+    }
+    
+    private String buildContentText(LiveDataModel live){
+        String str = "";
+        if (null != sensor_dic && sensor_dic.size() > 0){
+            for (int i = 0; i < sensor_dic.size(); i ++){
+                if (live._sensorno == sensor_dic.get(i)._sensorno){
+                    if (TextUtils.isEmpty(sensor_dic.get(i)._unit)){
+                        str = ""+sensor_dic.get(i)._sensorname + live._channel + ":" + live._data + ";";
+                    } else {
+                        str = ""+sensor_dic.get(i)._sensorname + live._channel + ":" + live._data + sensor_dic.get(i)._unit + ";";
+                    }
+                    break;
+                }
+            }
+        } else {
+            str = ""+live._sensorno + live._channel + ":" + live._data + ";";
+        }
+        return str;
     }
     
     private boolean nearlyExists(String unique, List<NotiInfo> notis){

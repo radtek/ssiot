@@ -51,4 +51,27 @@
         android:text="更多功能，敬请期待"
         android:textSize="16sp"/>
     
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/app_info"
+        android:padding="10dp"
+        android:background="@drawable/bg_card_normal">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="预警通知功能"/>
+        
+        <CheckBox 
+            android:id="@+id/alarm_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:checked="true"
+            android:button="@drawable/check_circle_selector"/>
+    </RelativeLayout>
+    
 </RelativeLayout>

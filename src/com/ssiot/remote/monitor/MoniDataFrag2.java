@@ -161,8 +161,11 @@ public class MoniDataFrag2 extends BaseFragment{
         initTitleBar();
         initTopbar();
         initBottomBar();
-        new GetMoniDataThread().start();
-        
+        if (Utils.isNetworkConnected(getActivity())){
+            new GetMoniDataThread().start();
+        } else {
+            Toast.makeText(getActivity(), "无网络，请检查！", Toast.LENGTH_SHORT).show();
+        }
         return v;
     }
     
@@ -280,7 +283,7 @@ public class MoniDataFrag2 extends BaseFragment{
             if (nodeno >= 0){
 //                List<NodeView2Model> nList = new AjaxGetNodesDataByUserkey().GetNodesDataByUserkeyAndType(MainActivity.mUniqueID, ""+nodeno, grainSize);
                 List<NodeView2Model> nList = new AjaxGetNodesDataByUserkey().GetNodesDetailData(MainActivity.mUniqueID, ""+nodeno, grainSize,startTime,endTime);
-                DbHelperSQL.outSideClose();
+                DbHelperSQL.getInstance().outSideClose();
                 mListData.clear();
                 mListData.addAll(nList);
             } else {

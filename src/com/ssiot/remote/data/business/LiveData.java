@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.LiveDataModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
 
@@ -52,22 +53,26 @@ public class LiveData{
         if (!TextUtils.isEmpty(orderby)) {
 //            sb_sql.append(" ORDER BY "+orderby+" ");
         }
-        ResultSet ds = DbHelperSQL.Query(sb_sql.toString());
-        try {
-            if (null != ds && ds.last()){
-                int size = ds.getRow();
-                ds.close();
-                return size;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(sb_sql.toString());
+        int size = 0;
+        if (null != sResult && null != sResult.mRs){
+            ResultSet ds = sResult.mRs;
+            try {
+                if (null != ds && ds.last()){
+                    size = ds.getRow();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-       
-       return 0;
+        if (null != sResult){
+            sResult.close();
+        }
+       return size;
     }
     
     //from cloud svn 2016-01-13 原先的getdata有top10000的问题  
-    public ResultSet GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
+    public SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
             int beginindex, int endindex, boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist){
         Log.v("LiveData", "---------GetData---" + begintime + grainsize);
         //传感器列表
@@ -77,7 +82,7 @@ public class LiveData{
         } else {
             list = mSensorDataAccess.GetSensorListByNodeNoString(nodenolist);
         }
-        if (list.size() > 0) {
+        if (null != list && list.size() > 0) {
             StringBuilder sb_sql = new StringBuilder();
             //用于节点编号，安装地点和更新时间三列的生成
             sb_sql.append("SELECT NodeNo AS 节点编号 , Location AS 安装地点 , [DATETIME] AS 更新时间 ,");
@@ -149,7 +154,7 @@ public class LiveData{
                  sb_sql.append(" ) AS [Table] WHERE 1=1");
                  sb_sql.append(" AND [Table].[RANK] >= "+beginindex+" AND [Table].[RANK] <"+endindex+" ");
              }
-             ResultSet ds = DbHelperSQL.Query(sb_sql.toString(),20);//add timeout in 20160118 this function cost long time
+             SsiotResult ds = DbHelperSQL.getInstance().Query(sb_sql.toString(),20);//add timeout in 20160118 this function cost long time
              return ds;
         }
         return null;
@@ -157,9 +162,9 @@ public class LiveData{
                  
     
     //获取流水数据(只在前range条中查找)//前10000条的限制加在前面，所以不卡，但可能有问题 暂时只用在所有节点列表显示界面
-    public ResultSet GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
+    public SsiotResult GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
             int beginindex, int endindex, boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist){
-        ResultSet ds = null;
+        SsiotResult ds = null;
         //传感器列表
         List<SensorViewModel> list = new ArrayList<SensorViewModel>();
 
@@ -237,16 +242,16 @@ public class LiveData{
                 sb_sql.append(" ) AS [Table] WHERE 1=1");
                 sb_sql.append(" AND [Table].[RANK] >= "+beginindex+" AND [Table].[RANK] <"+endindex+" ");
             }
-            ds = DbHelperSQL.Query(sb_sql.toString());
+            ds = DbHelperSQL.getInstance().Query(sb_sql.toString());
         }
         return ds;
     }
     
     //精确查找获取数据
-    public ResultSet GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
+    public SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
             int beginindex, int endindex, boolean unit, String nodenolist)
     {
-        ResultSet ds = null;
+        SsiotResult ds = null;
         // 传感器View列表
         List<SensorViewModel> list = new ArrayList<SensorViewModel>();
         if (!TextUtils.isEmpty(nodenolist)) {
@@ -294,9 +299,10 @@ public class LiveData{
             String timecolumn = strs[4];//"[CollectionTime]";
             
           //根据Nodeno（节点编号）获取节点标识列表串
-            ResultSet ds_nodeUniqs = GetNodeUnqiuesByNodeNos(nodenolist);
+            SsiotResult sResult = GetNodeUnqiuesByNodeNos(nodenolist);
             String nodeUniques = "";//节点标识列表（已用"'"号区分）
-              if(ds_nodeUniqs!=null) {
+              if(null != sResult && null != sResult.mRs) {
+                  ResultSet ds_nodeUniqs = sResult.mRs;
                   try {
                       while(ds_nodeUniqs.next()){
                           nodeUniques += "'" +ds_nodeUniqs.getString("UniqueID") + "',";
@@ -304,6 +310,9 @@ public class LiveData{
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+              }
+              if (null != sResult){
+                  sResult.close();
               }
               if (!TextUtils.isEmpty(nodeUniques) && nodeUniques.endsWith(",")){
                   nodeUniques = nodeUniques.substring(0, nodeUniques.length()-1);
@@ -328,7 +337,7 @@ public class LiveData{
                   sb_sql.append(" ) AS [Table] WHERE 1=1");
                   sb_sql.append(" AND [Table].[RANK] >= "+beginindex+" AND [Table].[RANK] <" + endindex);
               }
-              ds = DbHelperSQL.Query(sb_sql.toString());
+              ds = DbHelperSQL.getInstance().Query(sb_sql.toString());
         }
 
         return ds;
@@ -422,7 +431,7 @@ public class LiveData{
             if (!TextUtils.isEmpty(nodenolist)) {
                 sb_sql.append(" AND 节点编号 IN ("+nodenolist+")");
             }
-            ResultSet ds = DbHelperSQL.Query(sb_sql.toString());
+            ResultSet ds = DbHelperSQL.getInstance().Query(sb_sql.toString());
             if (ds.last()){
                 return ds.getRow();
             }
@@ -501,17 +510,16 @@ public class LiveData{
         String strSql = "SELECT 0 AS [LiveDataID], T2.CollectionTime ,T2.UniqueID,T2.Channel,T2.SensorNo,T2.Data FROM " +
         		"( SELECT T1.LiveDataID ,T1.CollectionTime,T1.UniqueID,T1.Channel,T1.SensorNo,T1.Data,RANK()OVER(PARTITION BY UniqueID ORDER BY CollectionTime DESC)" +
         		"AS [rowNumber]  FROM (SELECT TOP "+scanCount+" * FROM LiveData)T1  where "+where+" )T2 WHERE T2.rowNumber=1 ORDER BY T2.CollectionTime DESC;";
-        ResultSet ds = DbHelperSQL.Query(strSql);
-        if (null != ds){
-            List<LiveDataModel> list = DataTableToList(ds);
-            try {
-                ds.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return list;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql);
+        List<LiveDataModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            ResultSet ds = sResult.mRs;
+            list = DataTableToList(ds);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     public List<LiveDataModel> DataTableToList(ResultSet c){
@@ -550,12 +558,12 @@ public class LiveData{
     } 
     
     
-    public ResultSet GetNodeUnqiuesByNodeNos(String nodenos) {
+    private SsiotResult GetNodeUnqiuesByNodeNos(String nodenos) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("select UniqueID");
         strSql.append(" FROM Node ");
         strSql.append("where NodeNo in (" + nodenos + ")");
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
 }

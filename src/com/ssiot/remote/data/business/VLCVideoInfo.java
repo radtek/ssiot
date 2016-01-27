@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.VLCVideoInfoModel;
 
 import java.sql.ResultSet;
@@ -19,58 +20,59 @@ public class VLCVideoInfo {
     public List<VLCVideoInfoModel> GetVLCByPage(String strWhere, String orderby, int startIndex,
             int endIndex) {
         List<VLCVideoInfoModel> VLC_list = new ArrayList<VLCVideoInfoModel>();
-        ResultSet ds = GetListByPage(strWhere, orderby, startIndex, endIndex);
+        SsiotResult sResult = GetListByPage(strWhere, orderby, startIndex, endIndex);
         try {
-            if (ds != null) {
-                while (ds.next()) {
-                    VLC_list.add(DataRowToModel(ds));
+            if (null != sResult && null != sResult.mRs) {
+                while (sResult.mRs.next()) {
+                    VLC_list.add(DataRowToModel(sResult.mRs));
                 }
-                // foreach(DataRow row in ds.Tables[0].Rows)
-                // {
-                // VLC_list.Add(dal.DataRowToModel(row));
-                // }
             }
-            ds.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (null != sResult){
+            sResult.close();
         }
         return VLC_list;
     }
     
     public List<VLCVideoInfoModel> GetVLCmap(String strWhere) {
         List<VLCVideoInfoModel> VLC_list = new ArrayList<VLCVideoInfoModel>();
-        ResultSet ds = GetList(strWhere);
+        SsiotResult sResult = GetList(strWhere);
         try {
-            if(ds!=null) {
-                while(ds.next()){
-                    VLCVideoInfoModel v = DataRowToModel(ds);
+            if(null != sResult && sResult.mRs != null) {
+                while(sResult.mRs.next()){
+                    VLCVideoInfoModel v = DataRowToModel(sResult.mRs);
                     if (null != v){
                         VLC_list.add(v);
                     } else {
                         Log.e(tag, "-------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!VLCVideoInfoModel get null");
                     }
-                    
                 }
             }
-            ds.close();
+//            ds.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        if(ds!=null) {
-//            foreach(DataRow row in ds.Tables[0].Rows)
-//            {
-//                VLC_list.Add(dal.DataRowToModel(row));
-//            }
-//        }
+        if (null != sResult){
+            sResult.close();
+        }
         return VLC_list;
     }
     
     public List<VLCVideoInfoModel> GetModelList(String strWhere) {
-        ResultSet ds = GetList(strWhere);
-        return DataTableToList(ds);
+        SsiotResult sResult = GetList(strWhere);
+        List<VLCVideoInfoModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public List<VLCVideoInfoModel> DataTableToList(ResultSet dt) {
+    private List<VLCVideoInfoModel> DataTableToList(ResultSet dt) {
         List<VLCVideoInfoModel> modelList = new ArrayList<VLCVideoInfoModel>();
         try {
             while(dt.next()){
@@ -90,18 +92,18 @@ public class VLCVideoInfo {
     // ------------------------------
     
     //获得数据列表
-    private ResultSet GetList(String strWhere) {
+    private SsiotResult GetList(String strWhere) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("select VLCVideoInfoID,AreaID,AreaName,UserName,PassWord,URL,IP,Port,Address,Channel,Subtype,Type,CreateTime,Remark,Longitude,Latitude,TcpPort ");
         strSql.append(" FROM VLCVideoInfo ");
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
     // 分页获取数据列表
-    private ResultSet GetListByPage(String strWhere, String orderby, int startIndex, int endIndex) {
+    private SsiotResult GetListByPage(String strWhere, String orderby, int startIndex, int endIndex) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("SELECT * FROM ( ");
         strSql.append(" SELECT ROW_NUMBER() OVER (");
@@ -116,7 +118,7 @@ public class VLCVideoInfo {
         }
         strSql.append(" ) TT");
         strSql.append(" WHERE TT.Row between {" + startIndex+"} and {"+endIndex+"}");
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
 
     private VLCVideoInfoModel DataRowToModel(ResultSet c) {// 先.next !!

@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.SettingModel;
 
 import java.sql.ResultSet;
@@ -32,7 +33,7 @@ public class Setting{
         paraArray.add(model._sendtime);
         paraArray.add(model._sendstate);
         paraArray.add(model._resendcount);
-        return DbHelperSQL.Update_object(strSql.toString(), paraArray);
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), paraArray);
     }
     
     public boolean Exists(String uniqueId,int type,int SettingMark,int Channel) {
@@ -49,7 +50,7 @@ public class Setting{
         paraArray.add(type);
         paraArray.add(SettingMark);
         paraArray.add(Channel);//TODO int变string是否有问题
-        return DbHelperSQL.Exists_a(strSql.toString(), paraArray);
+        return DbHelperSQL.getInstance().Exists_a(strSql.toString(), paraArray);
     }
     
     public boolean Update(SettingModel model){
@@ -101,7 +102,7 @@ public class Setting{
 //        parameters[8].Value = model.SendState;
 //        parameters[9].Value = model.ReSendCount;
 //        parameters[10].Value = model.ID;
-        return DbHelperSQL.Update_object(strSql.toString(), paraArray) > 0;
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), paraArray) > 0;
     }
     
     public SettingModel GetSettingModel_dataaccess(String sqlStr){
@@ -109,17 +110,20 @@ public class Setting{
         queryStr.append("select  top 1 ID,UniqueID,Type,SettingMark,Chanel,Other,Value,TimeSpan,SendTime,SendState,ReSendCount from Setting ");
         queryStr.append(" where "+sqlStr);
         
-        ResultSet ds = DbHelperSQL.Query(queryStr.toString());
+        SettingModel m = null;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(queryStr.toString());
         try {
-            if (ds != null && ds.next()){
-                SettingModel m = DataRowToModel(ds);
-                ds.close();
-                return m;
+            if (null != sResult && sResult.mRs != null && sResult.mRs.next()){
+                m = DataRowToModel(sResult.mRs);
+//                ds.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return m;
     }
     
     private SettingModel DataRowToModel(ResultSet s){

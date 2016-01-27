@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.AlarmRuleModel;
 
 import java.sql.ResultSet;
@@ -21,7 +22,7 @@ public class AlarmRule{
         parameters.add(model._uniqueID);
         parameters.add(model._relation);
         parameters.add(model._ruleStr);
-        return DbHelperSQL.Update_object(strSql.toString(), parameters);
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), parameters);
     }
     
     public boolean Exists(String uniqueID){
@@ -29,7 +30,7 @@ public class AlarmRule{
         strSql.append("select * from AlarmRule where NodeUniqueID=?");
         ArrayList<Object> parameters = new ArrayList<Object>();
         parameters.add(uniqueID);
-        return DbHelperSQL.Exists_a(strSql.toString(), parameters);
+        return DbHelperSQL.getInstance().Exists_a(strSql.toString(), parameters);
     }
     
     public boolean Update(AlarmRuleModel model){//注意 是以NodeUniqueID 为查询的
@@ -46,13 +47,13 @@ public class AlarmRule{
         parameters.add(model._ruleStr);
         parameters.add(model._uniqueID);
         
-        int rows = DbHelperSQL.Update_object(strSql.toString(), parameters);
+        int rows = DbHelperSQL.getInstance().Update_object(strSql.toString(), parameters);
         return rows > 0;
     }
     
     public boolean Delete(String nodeunique){
         String cmd = "delete from AlarmRule where NodeUniqueID='" + nodeunique + "'";
-        return DbHelperSQL.Update(cmd) > 0;
+        return DbHelperSQL.getInstance().Update(cmd) > 0;
     }
     
     public List<AlarmRuleModel> GetModelList(String strWhere) {
@@ -62,17 +63,15 @@ public class AlarmRule{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            List<AlarmRuleModel> list = DataTableToList(ds);
-            try {
-                ds.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return list;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<AlarmRuleModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     public List<AlarmRuleModel> DataTableToList(ResultSet c){
@@ -85,7 +84,6 @@ public class AlarmRule{
                     models.add(m);
                 }
             }
-            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

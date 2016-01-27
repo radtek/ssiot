@@ -1,6 +1,8 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
+import com.ssiot.remote.data.model.ProfilesContentModel;
 import com.ssiot.remote.data.model.SensorModifyDataModel;
 
 import java.sql.ResultSet;
@@ -11,19 +13,26 @@ import java.util.List;
 public class SensorModifyData{
     
     public List<SensorModifyDataModel> GetModelList(String strWhere){
-        ResultSet ds = GetList_dataaccess(strWhere);
-        return DataTableToList(ds);
+        SsiotResult sResult = GetList_dataaccess(strWhere);
+        List<SensorModifyDataModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     //------------------------------------------------------
-    public ResultSet GetList_dataaccess(String strWhere) {
+    private SsiotResult GetList_dataaccess(String strWhere) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("select ID,SensorNo,Type,Other,Value,Remark ");
         strSql.append(" FROM SensorModifyData ");
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
     public SensorModifyDataModel GetModel(int ID){
@@ -35,18 +44,21 @@ public class SensorModifyData{
 //        };
 //        parameters[0].Value = ID; 
 
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        SensorModifyDataModel model = null;
         try {
-            if (ds != null && ds.next()) {
-                SensorModifyDataModel model = DataRowToModel(ds);
-                ds.close();
-                return model;
+            if (null != sResult && sResult.mRs != null && sResult.mRs.next()) {
+                model = DataRowToModel(sResult.mRs);
+//                ds.close();
             }
-            ds.close();
+//            ds.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return model;
     }
     
     

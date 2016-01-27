@@ -4,6 +4,7 @@ import android.R.integer;
 import android.text.TextUtils;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.ControlActionInfoModel;
 
 import java.sql.ResultSet;
@@ -32,7 +33,7 @@ public class ControlActionInfo{
         parameters.add(model._statenow);
         parameters.add(model._operate);
         parameters.add(model._remark);
-        return DbHelperSQL.Update_object(strSql.toString(), parameters);
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), parameters);
     }
     
     public boolean Update(ControlActionInfoModel model){
@@ -63,7 +64,7 @@ public class ControlActionInfo{
         parameters.add(model._remark);
         parameters.add(model._id);
         
-        int rows = DbHelperSQL.Update_object(strSql.toString(), parameters);
+        int rows = DbHelperSQL.getInstance().Update_object(strSql.toString(), parameters);
         return rows > 0;
     }
     
@@ -77,7 +78,7 @@ public class ControlActionInfo{
 //        };
 //        parameters[0].Value = ID; 
 
-        int rows=DbHelperSQL.Update(strSql.toString());//,parameters);
+        int rows=DbHelperSQL.getInstance().Update(strSql.toString());//,parameters);
         if (rows > 0) {
             return true;
         } else {
@@ -90,8 +91,15 @@ public class ControlActionInfo{
     }
     
     public List<ControlActionInfoModel> GetModelList(String strWhere){
-        ResultSet ds = GetList_dataaccess(strWhere);
-        return DataTableToList(ds);
+        SsiotResult sResult = GetList_dataaccess(strWhere);
+        List<ControlActionInfoModel> list = null;
+        if (null != sResult && sResult.mRs != null){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     //-----------------------------------------------------------------
@@ -107,21 +115,23 @@ public class ControlActionInfo{
 //        parameters[0].Value = ID; 
 
         ControlActionInfoModel model = new ControlActionInfoModel();
-        ResultSet ds = DbHelperSQL.Query(strSql.toString(), parameters);
-        if (null != ds){
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString(), parameters);
+        if (null != sResult && null != sResult.mRs){
             try {
-                if (ds.next()){
-                    return DataRowToModel(ds);
+                if (sResult.mRs.next()){
+                    model = DataRowToModel(sResult.mRs);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
         }
-        return null;
+        if (sResult != null){
+            sResult.close();
+        }
+        return model;
     }
     
-    public ResultSet GetList_dataaccess(String strWhere)
+    private SsiotResult GetList_dataaccess(String strWhere)
     {
         StringBuilder strSql=new StringBuilder();
         strSql.append("select ID,AreaID,ControlName,UniqueID,DeviceNo,ControlType,CollectUniqueIDs,ControlCondition,OperateTime,StateNow,Operate,Remark ");
@@ -131,7 +141,7 @@ public class ControlActionInfo{
         }
      //   SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@strWhere", strWhere) };
 
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
     
     private List<ControlActionInfoModel> DataTableToList(ResultSet c){

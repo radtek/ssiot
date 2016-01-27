@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.AreaModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,22 +31,24 @@ public class Area{
 //        parameters[0].Value = AreaID;
         ArrayList<String> paramArray = new ArrayList<String>();
         paramArray.add("" + AreaID);
-        ResultSet ds = DbHelperSQL.Query(strSql.toString(), paramArray);
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString(), paramArray);
+        AreaModel model = null;
         try {
-            if (null != ds){
-                if (ds.next()) {
-                    return DataRowToModel(ds);
+            if (null != sResult && null != sResult.mRs){
+                if (sResult.mRs.next()) {
+                    model = DataRowToModel(sResult.mRs);
                 }
-                ds.close();
                 Log.v(tag, "-------------GetModel-ok");
             } else {
                 Log.e(tag, "-------------resultset=null !!!!!!!!!!!!"+strSql.toString());
             }
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return model;
     }
     
     public List<AreaModel> GetModelList(String strWhere) {
@@ -55,8 +58,15 @@ public class Area{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet rs = DbHelperSQL.Query(strSql.toString());
-        return DataTableToList(rs);
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<AreaModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     private List<AreaModel> DataTableToList(ResultSet c){
@@ -85,8 +95,13 @@ public class Area{
         List<AreaModel> area_list = new ArrayList<AreaModel>();
         if (!TextUtils.isEmpty(areacode)) {
             String sql = "  SELECT * FROM Area WHERE AreaCode LIKE '" + areacode.trim() + "%'";
-            ResultSet ds = DbHelperSQL.Query(sql);
-            area_list = DataTableToList(ds);
+            SsiotResult sResult = DbHelperSQL.getInstance().Query(sql);
+            if (null != sResult && null != sResult.mRs){
+                area_list = DataTableToList(sResult.mRs);
+            }
+            if (null != sResult){
+                sResult.close();
+            }
         }
         return area_list;
     }

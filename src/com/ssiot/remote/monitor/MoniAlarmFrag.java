@@ -1,16 +1,10 @@
 package com.ssiot.remote.monitor;
 
-import android.R.integer;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,20 +25,15 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.ssiot.remote.BaseFragment;
 import com.ssiot.remote.R;
 import com.ssiot.remote.Utils;
-import com.ssiot.remote.control.TriggerDiaFrag.TriRuleElementBean;
 import com.ssiot.remote.data.DataAPI;
 import com.ssiot.remote.data.DbHelperSQL;
 import com.ssiot.remote.data.model.AlarmRuleBean;
 import com.ssiot.remote.data.model.AlarmRuleModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
-import com.ssiot.remote.dblocal.LocalDBHelper;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -156,7 +145,11 @@ public class MoniAlarmFrag extends BaseFragment{
                 new SaveRuleThread().start();
             }
         });
-        new GetSensorDatasThread().start();
+        if (Utils.isNetworkConnected(getActivity())){
+            new GetSensorDatasThread().start();
+        } else {
+            Toast.makeText(getActivity(), "无网络，请检查！", Toast.LENGTH_SHORT).show();
+        }
         return v;
     }
     
@@ -182,7 +175,7 @@ public class MoniAlarmFrag extends BaseFragment{
                 sendShowMyDlg("");
                 mSensorList = DataAPI.GetSensorListByNodeNoString(""+nodeno);
                 getRules(uniqueID);
-                DbHelperSQL.outSideClose();
+                DbHelperSQL.getInstance().outSideClose();
                 mHandler.sendEmptyMessage(MSG_GET_END);
                 sendDismissDlg();
             }
@@ -218,7 +211,7 @@ public class MoniAlarmFrag extends BaseFragment{
             } else {
                 b = DataAPI.SaveAlarmRule(mAlarmModel);
             }
-            DbHelperSQL.outSideClose();
+            DbHelperSQL.getInstance().outSideClose();
             if (!b){
                 Log.e(tag, "save fail!!!!!!!!!!!!!!" + mAlarmModel.toString());
             }

@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.UserModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,14 +24,18 @@ public class User{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            return DataTableToList(ds);
+        List<UserModel> list = null;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public List<UserModel> DataTableToList(ResultSet c){
+    private List<UserModel> DataTableToList(ResultSet c){
         List<UserModel> mUserModels = new ArrayList<UserModel>();
 //        int rowCount = c.size();
         UserModel userModel = new UserModel();

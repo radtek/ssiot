@@ -1,6 +1,8 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
+import com.ssiot.remote.data.model.TraceCertificationModel;
 import com.ssiot.remote.data.model.TracePesticidesModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,20 +19,18 @@ public class TracePesticides{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            List<TracePesticidesModel> list = DataTableToList(ds);
-            try {
-                ds.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return list;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<TracePesticidesModel> list = null;
+        if (null != sResult && sResult.mRs != null){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public List<TracePesticidesModel> DataTableToList(ResultSet c){
+    private List<TracePesticidesModel> DataTableToList(ResultSet c){
         List<TracePesticidesModel> models = new ArrayList<TracePesticidesModel>();
         TracePesticidesModel m = new TracePesticidesModel();
         try {
@@ -40,7 +40,7 @@ public class TracePesticides{
                     models.add(m);
                 }
             }
-            c.close();
+//            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.TraceCertificationModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,20 +18,18 @@ public class TraceCertification{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            List<TraceCertificationModel> list = DataTableToList(ds);
-            try {
-                ds.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return list;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<TraceCertificationModel> list = null;
+        if (null != sResult && sResult.mRs != null){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
-    public List<TraceCertificationModel> DataTableToList(ResultSet c){
+    private List<TraceCertificationModel> DataTableToList(ResultSet c){
         List<TraceCertificationModel> models = new ArrayList<TraceCertificationModel>();
         TraceCertificationModel m = new TraceCertificationModel();
         try {

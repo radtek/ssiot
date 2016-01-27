@@ -349,9 +349,10 @@ public class DataAPI {
     }
     
     //获取节点视图包含传感器名称和在线离线 in line 678
-    public static List<NodeViewModel> GetNodeInfoShow(ResultSet dt){
+    private static List<NodeViewModel> GetNodeInfoShow(SsiotResult sResult){
         List<NodeViewModel> nodeviewlist = new ArrayList<NodeViewModel>();
-        if (null != dt){
+        if (null != sResult && null != sResult.mRs){
+            ResultSet dt = sResult.mRs;
             try {
                 while(dt.next()){
                     NodeViewModel model = new NodeViewModel();
@@ -400,6 +401,9 @@ public class DataAPI {
                 e.printStackTrace();
             }
         }
+        if (null != sResult){
+            sResult.close();
+        }
         return nodeviewlist;
     }
     
@@ -435,12 +439,12 @@ public class DataAPI {
     /// <param name="range">区间 默认写 10000</param>
     /// <param name="nodenolist">节点编号列表 逗号相隔</param>
     /// <returns></returns>
-    public static ResultSet GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
+    public static SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
             boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {//TODO20160115临时改的 _old
         return mLiveDataSevice.GetData(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
     }
     
-    public static ResultSet GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
+    public static SsiotResult GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
             boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {
         return mLiveDataSevice.GetData_old(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
     }
@@ -451,31 +455,31 @@ public class DataAPI {
     }
     
  // 根据节点编号 in line 997
-    public static ResultSet GetLastDataByUserIDs(String userid){
+    public static SsiotResult GetLastDataByUserIDs(String userid){
         String nodelist = GetNodeNoStringByUserIDs(userid);
         Log.v(tag, "----------GetLastDataByUserIDs-----nodelist:" + nodelist);
         return GetLastData(nodelist);
     }
     
-    public static ResultSet GetLastData(String nodenolist){
+    public static SsiotResult GetLastData(String nodenolist){
         return mLatestDataSevice.GetLastData(nodenolist);
     }
     
     //jingbo add this method
-    public static ResultSet GetLastData(String orderby, String nodenolist){
+    public static SsiotResult GetLastData(String orderby, String nodenolist){
         if (TextUtils.isEmpty(nodenolist)){
             return null;
         }
-        ResultSet ds = mLatestDataSevice.GetLastData(orderby, nodenolist, -1, -1);
+        SsiotResult ds = mLatestDataSevice.GetLastData(orderby, nodenolist, -1, -1);
         return ds;
     }
     
     //默认? int startNum = -1, int endNum = -1
-    public static ResultSet GetLastData(String orderby, String nodenolist, int startNum, int endNum){
+    public static SsiotResult GetLastData(String orderby, String nodenolist, int startNum, int endNum){
         if (TextUtils.isEmpty(nodenolist)){
             return null;
         }
-        ResultSet ds = mLatestDataSevice.GetLastData(orderby, nodenolist, startNum, endNum);
+        SsiotResult ds = mLatestDataSevice.GetLastData(orderby, nodenolist, startNum, endNum);
 //        DataTable dt = ds.Tables[0];//以下此处不明白
 //        IEnumerable<DataRow> query = from o in dt.AsEnumerable()
 //                let nodenos = nodenolist.Split(',')
@@ -580,37 +584,7 @@ public class DataAPI {
     }
     
     public static List<ControlDeviceViewModel> GetDeviceActionInfo(int controlNodeId ,String nodeUnique){
-        List<ControlDeviceViewModel> controlDeviceView_list = new ArrayList<ControlDeviceViewModel>();
-        try {
-            ResultSet ds = controlDeviceBll.GetControlDeviceInfo(controlNodeId, nodeUnique);
-            if (ds != null) {
-                while (ds.next()) {
-                    ControlDeviceViewModel controlDeviceView = new ControlDeviceViewModel();
-                    
-                    controlDeviceView.DeviceID = ds.getInt("DeviceID");
-                    controlDeviceView.ControlNodeID = ds.getInt("ControlNodeID");
-                    controlDeviceView.DeviceNo = ds.getInt("DeviceNo");
-                    controlDeviceView.DeviceName = ds.getString("DeviceName");
-                    controlDeviceView.RunTime = ds.getInt("RunTime");
-                    controlDeviceView.StartTime = ds.getString("StartTime");
-                    controlDeviceView.ControlActionID = ds.getInt("ControlActionID");
-                    controlDeviceView.ControlType = ds.getInt("ControlType");
-                    controlDeviceView.CollectUniqueIDs = ds.getString("CollectUniqueIDs");
-                    controlDeviceView.ControlCondition = ds.getString("ControlCondition");
-                    controlDeviceView.OperateTime = ds.getTimestamp("OperateTime");
-                    controlDeviceView.StateNow = ds.getInt("StateNow");
-                    controlDeviceView.Operate = ds.getString("Operate");
-                    
-                    controlDeviceView_list.add(controlDeviceView);
-                }
-                return controlDeviceView_list;
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return controlDeviceView_list;
+        return controlDeviceBll.GetControlDeviceInfo(controlNodeId, nodeUnique);
     }
     
     public static AlarmRuleModel GetAlarmRule(String nodeuniqueid){

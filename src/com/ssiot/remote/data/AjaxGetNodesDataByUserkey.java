@@ -1,17 +1,14 @@
 package com.ssiot.remote.data;
 
-import android.R.integer;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ssiot.remote.Utils;
-import com.ssiot.remote.R.color;
 import com.ssiot.remote.data.business.ControlActionInfo;
 import com.ssiot.remote.data.business.ControlDevice;
 import com.ssiot.remote.data.business.ControlLog;
 import com.ssiot.remote.data.business.Node;
 import com.ssiot.remote.data.business.Sensor;
-import com.ssiot.remote.data.business.SensorModifyData;
 import com.ssiot.remote.data.business.SettingInfo1;
 import com.ssiot.remote.data.model.ControlActionInfoModel;
 import com.ssiot.remote.data.model.ControlDeviceModel;
@@ -19,7 +16,6 @@ import com.ssiot.remote.data.model.ControlLogModel;
 import com.ssiot.remote.data.model.ControlNodeModel;
 import com.ssiot.remote.data.model.NodeModel;
 import com.ssiot.remote.data.model.SensorModel;
-import com.ssiot.remote.data.model.SensorModifyDataModel;
 import com.ssiot.remote.data.model.SettingInfo1Model;
 import com.ssiot.remote.data.model.SettingModel;
 import com.ssiot.remote.data.model.view.ControlActionViewModel;
@@ -31,9 +27,7 @@ import com.ssiot.remote.data.model.view.NodeView2Model;
 import com.ssiot.remote.data.model.view.NodeViewModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
 
-import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,8 +35,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.sql.RowSet;
 
 public class AjaxGetNodesDataByUserkey{
     private static final String tag = "AjaxGetNodesDataByUserkey";

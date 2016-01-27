@@ -1,9 +1,8 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.ProfilesContentModel;
-import com.ssiot.remote.data.model.TraceProfileModel;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,11 +17,15 @@ public class ProfilesContent{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            return DataTableToList(ds);
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<ProfilesContentModel> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     public List<ProfilesContentModel> DataTableToList(ResultSet c){
@@ -35,7 +38,7 @@ public class ProfilesContent{
                     models.add(m);
                 }
             }
-            c.close();
+//            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

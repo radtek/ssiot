@@ -1,11 +1,11 @@
 package com.ssiot.remote.data;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.ssiot.remote.ContextUtilApp;
-import com.ssiot.remote.Utils;
 import com.ssiot.remote.receiver.SsiotReceiver;
 
 import java.sql.Connection;
@@ -15,60 +15,117 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DbHelperSQL{
     private static final String tag = "DbHelperSQL";
-    private static SqlConnection connection;
-    private static Statement stmt;
-    private static PreparedStatement preStatement;
-    private static Object objlock = new Object();
-        
+    private static DbHelperSQL mDbHelperSQL;
+    private SqlConnection connection;
+    private Object objlock = new Object();
+    private List<SsiotResult> usingResultList = new ArrayList<SsiotResult>();
     public static String connectionString = "";//Angel.DBUtility.PubConstant.ConnectionString;
+    TimerTask currentTask;
     public DbHelperSQL(){
         
     }
     
+    private boolean usingListEmpty(){
+        for (int i = 0; i < usingResultList.size(); i ++){
+            if (usingResultList.get(i).using == false){
+                usingResultList.remove(i);
+                i --;
+            }
+        }
+        if (null == usingResultList || usingResultList.size() == 0){
+            return true;
+        }
+        for (int j = 0; j < usingResultList.size(); j ++){
+            try {
+                Log.e(tag, "----------------!!!!!!using column1:"+usingResultList.get(j).mRs.getMetaData().getColumnName(1));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    
+    private void sendDelayClose(){
+//        mHandler.removeMessages(MSG_DELAY_CLOSE);
+//        mHandler.sendEmptyMessageDelayed(MSG_DELAY_CLOSE, 25 * 1000);
+        if (null != currentTask){
+            currentTask.cancel();
+            currentTask = null;
+        }
+        TimerTask closeTask = new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (objlock) {
+                    if (usingListEmpty()){
+                        if (connection != null){
+                            connection.Close();
+                            connection = null;
+                        }
+                    } else {
+                        sendDelayClose();
+                    }
+                }
+            }
+        };
+        currentTask = closeTask;
+        Timer timer = new Timer();
+        timer.schedule(closeTask, 25 * 1000);
+    }
+    
+    public static DbHelperSQL getInstance(){
+        if (mDbHelperSQL == null){
+            mDbHelperSQL = new DbHelperSQL();
+        }
+        return mDbHelperSQL;
+    }
+    
     //doc http://www.java3z.com/cwbwebhome/article/article2/21115.html?id=1922 使用离线的rowset 下载了sun的rowset包
-    public static synchronized ResultSet Query(String SQLString) {//must close resultset!!! in outside
+    public synchronized SsiotResult Query(String SQLString) {//must close resultset!!! in outside
         return Query(SQLString, 9);
      }
     
-    public static synchronized ResultSet Query(String SQLString, int timeOutSec) {//
+    public synchronized SsiotResult Query(String SQLString, int timeOutSec) {//
         synchronized (objlock) {
-            Log.v(tag, "1######Query_1:"+SQLString + "##############" + timeOutSec);
+            Log.v(tag, "1######Query_1:" + SQLString + "##############" + timeOutSec);
             long time1 = SystemClock.uptimeMillis();
-          try {
-              
-              if (!connectIsOk(connection)){
-                  connection = new SqlConnection(connectionString);
-                  if (!connection.Open()){
-                      return null;
-                  }
-              }
-//            if (SQLString.length() > 6000){
-//            Utils.setStringToFile(SQLString);
-//        }
-              Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
-              stmt = (Statement) connection.createStatement();//ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE
-              stmt.setQueryTimeout(timeOutSec);
-              ResultSet rs = stmt.executeQuery(SQLString);
-              Log.v(tag, "3#-------------query cost time" + (SystemClock.uptimeMillis()-time1));
-              return rs;
-          } catch (SQLException ex) {
-              Log.e(tag, "-----SQLException-----costTime:" + (SystemClock.uptimeMillis()-time1));
-              closeAll();
-              ex.printStackTrace();
-          } catch (Exception e) {
-             e.printStackTrace();
-         }
-         Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
-         i.putExtra("showmsg", "查询数据出现问题");
-         ContextUtilApp.getInstance().sendBroadcast(i);
-          return null;
+            try {
+                if (!connectIsOk(connection)) {
+                    connection = new SqlConnection(connectionString);
+                    if (!connection.Open()) {
+                        return null;
+                    }
+                }
+                Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis() - time1) + !connection.con.isClosed());
+                Statement stmt = (Statement) connection.createStatement();// ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE
+                Log.v(tag, "2.5#--------statement create time " + (SystemClock.uptimeMillis() - time1));
+                stmt.setQueryTimeout(timeOutSec);
+                ResultSet rs = stmt.executeQuery(SQLString);
+                Log.v(tag, "3#-------------query cost time" + (SystemClock.uptimeMillis() - time1));
+                SsiotResult sr = new SsiotResult(rs, stmt);
+                usingResultList.add(sr);
+                sendDelayClose();
+                return sr;
+            } catch (SQLException ex) {
+                Log.e(tag, "-----SQLException-----costTime:" + (SystemClock.uptimeMillis() - time1));
+                closeAll();
+                ex.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Intent i = new Intent(SsiotReceiver.ACTION_SSIOT_MSG);
+            i.putExtra("showmsg", "查询数据出现问题");
+            ContextUtilApp.getInstance().sendBroadcast(i);
+            return null;
         }
-     }
+    }
     
-    private static boolean connectIsOk(SqlConnection c){
+    private boolean connectIsOk(SqlConnection c){
         try {
             if (null != c && null != c.con  && !c.con.isClosed()){// && c.con.isValid(5)
                 return true;
@@ -80,17 +137,9 @@ public class DbHelperSQL{
         return false;
     }
     
-    private static void closeAll(){
+    private void closeAll(){
         Log.v(tag, "----closeAll------");
         try {
-            if (null != stmt){
-                stmt.close();//TODO java.sql.SQLException: sp_cursorclose: The cursor identifier value provided (abce013) is not valid.20160125
-                stmt = null;
-            }
-            if (null != preStatement){
-                preStatement.close();
-                preStatement = null;
-            }
             if (null != connection){
                 connection.Close();
                 connection = null;
@@ -100,16 +149,16 @@ public class DbHelperSQL{
         }
     }
     
-    public static void outSideClose(){
+    public void outSideClose(){
         synchronized (objlock) {
-            Log.v(tag, "----outSideClose------");
-            closeAll();
+            Log.v(tag, "----outSideClose------but noting");
+//            closeAll();
         }
     }
     
     //第二个参数其实是params SqlParameter[] cmdParms
     //注意：问号与arrylist个数一致
-    public static ResultSet Query(String SQLString, ArrayList<String> cmdParams){
+    public SsiotResult Query(String SQLString, ArrayList<String> cmdParams){
         synchronized (objlock) {
             Log.v(tag, "1#带参数Query####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -122,17 +171,17 @@ public class DbHelperSQL{
                     }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
-                preStatement = connection.prepareStatement(SQLString);
+                PreparedStatement preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
                     preStatement.setString((i+1), cmdParams.get(i));
                 }
                 preStatement.setQueryTimeout(9);
                 ResultSet rs = preStatement.executeQuery();
-//                rs.close();
-//                preStatement.close();
-//                connection.Close();
                 Log.v(tag, "3#-------------query参 cost time" + (SystemClock.uptimeMillis()-time1));
-                return rs;
+                SsiotResult sr = new SsiotResult(rs, preStatement);
+                usingResultList.add(sr);
+                sendDelayClose();
+                return sr;
             } catch (Exception e) {
                 closeAll();
                 e.printStackTrace();
@@ -144,7 +193,7 @@ public class DbHelperSQL{
         }
     }
     
-    public static boolean Query_object(String SQLString, ArrayList<Object> cmdParams){
+    public boolean Query_object(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
             Log.v(tag, "1#####Query_objecty####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -157,17 +206,14 @@ public class DbHelperSQL{
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
                 
-//                connection.Open();
-                preStatement = connection.prepareStatement(SQLString);
+                PreparedStatement preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
                     preStatement.setObject((i+1), cmdParams.get(i));
                 }
                 preStatement.setQueryTimeout(9);
                 
                 boolean b = preStatement.execute();
-//                rs.close();
                 preStatement.close();
-//                connection.Close();
                 Log.v(tag, "3#-------------Query_object cost time" + (SystemClock.uptimeMillis()-time1));
                 return b;
             } catch (Exception e) {
@@ -181,7 +227,7 @@ public class DbHelperSQL{
         }
     }
     
-    public static boolean Exists_a(String SQLString, ArrayList<Object> cmdParams){
+    public boolean Exists_a(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
             Log.v(tag, "1#带参数Exist_a####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -191,7 +237,7 @@ public class DbHelperSQL{
                     connection.Open();
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
-                preStatement = connection.prepareStatement(SQLString);
+                PreparedStatement preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
 //                    preStatement.setString((i+1), cmdParams.get(i));
                     preStatement.setObject(i+1, cmdParams.get(i));
@@ -216,8 +262,7 @@ public class DbHelperSQL{
         }
     }
     
-    public static int Update(String SQLString) {// must close resultset!!! in
-                                                // outside
+    public int Update(String SQLString) {
         synchronized (objlock) {
             Log.v(tag, "1#####Update########" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -230,14 +275,10 @@ public class DbHelperSQL{
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis() - time1)
                         + !connection.con.isClosed());
-                stmt = (Statement) connection.createStatement();
+                Statement stmt = (Statement) connection.createStatement();
                 stmt.setQueryTimeout(9);
-                int i = stmt.executeUpdate(SQLString);//返回更新的条数
-                // CachedRowSetImpl crs = new CachedRowSetImpl();
-                // crs.populate(rs);
-                // rs.close();
-                 stmt.close();
-                // connection.Close();
+                int i = stmt.executeUpdate(SQLString);// 返回更新的条数
+                stmt.close();
                 Log.v(tag, "3#-------------update time" + (SystemClock.uptimeMillis() - time1));
                 return i;
             } catch (SQLException ex) {
@@ -253,7 +294,7 @@ public class DbHelperSQL{
         }
     }
     
-    public static int Update_object(String SQLString, ArrayList<Object> cmdParams){
+    public int Update_object(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
             Log.v(tag, "1#####Update_object####" + SQLString);
             long time1 = SystemClock.uptimeMillis();
@@ -265,17 +306,13 @@ public class DbHelperSQL{
                     }
                 }
                 Log.v(tag, "2#--------open connection time " + (SystemClock.uptimeMillis()-time1) + !connection.con.isClosed());
-                
-//                connection.Open();
-                preStatement = connection.prepareStatement(SQLString);
+                PreparedStatement preStatement = connection.prepareStatement(SQLString);
                 for(int i = 0;i< cmdParams.size();i ++){
                     preStatement.setObject((i+1), cmdParams.get(i));
                 }
                 preStatement.setQueryTimeout(9);
                 int ret = preStatement.executeUpdate();
-//                rs.close();
                 preStatement.close();
-//                connection.Close();
                 Log.v(tag, "3#-------------Update_object time" + (SystemClock.uptimeMillis()-time1));
                 return ret;
             } catch (Exception e) {
@@ -296,7 +333,7 @@ public class DbHelperSQL{
         ContextUtilApp.getInstance().sendBroadcast(i);
     }
     
-    public static class SqlConnection{
+    public class SqlConnection{
         public String tag = "mySqlConnection";
         public String connectionString= "";
         public Connection con;
@@ -324,7 +361,6 @@ public class DbHelperSQL{
                 return false;
             }
             
-
             try {
                 String user = "angeliot";
                 String password = "1qaz_PL";

@@ -1,6 +1,8 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
+import com.ssiot.remote.data.model.ProfilesContentModel;
 import com.ssiot.remote.data.model.SettingInfo1Model;
 
 import java.sql.ResultSet;
@@ -15,25 +17,32 @@ public class SettingInfo1 {
         strSql.append("select  top 1 ID,Name,ReportFrequency,Type,SettingMark,Channel,Other,Value from SettingInfo1 ");
         strSql.append(" where ID=" + ID);
 
-        ResultSet ds=DbHelperSQL.Query(strSql.toString());
+        SettingInfo1Model m = null;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
         try {
-            if(ds!= null && ds.next()) {
-                SettingInfo1Model m = DataRowToModel(ds);
-                ds.close();
-                return m;
-            } else {
-                return null;
+            if(null != sResult && null != sResult.mRs && sResult.mRs.next()) {
+                m = DataRowToModel(sResult.mRs);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return m;
     }
     
     
     public List<SettingInfo1Model> GetModelList(String strWhere){
-        ResultSet ds = GetList_dataaccess(strWhere);
-        return DataTableToList(ds);
+        SsiotResult sResult = GetList_dataaccess(strWhere);
+        List<SettingInfo1Model> list = null;
+        if (null != sResult && null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
+        }
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     private List<SettingInfo1Model> DataTableToList(ResultSet c){
@@ -73,13 +82,13 @@ public class SettingInfo1 {
     
     //---------------------------
     
-    public ResultSet GetList_dataaccess(String strWhere) {
+    private SsiotResult GetList_dataaccess(String strWhere) {
         StringBuilder strSql=new StringBuilder();
         strSql.append("select ID,Name,ReportFrequency,Type,SettingMark,Channel,Other,Value ");
         strSql.append(" FROM SettingInfo1 ");
         if(strWhere.trim()!="") {
             strSql.append(" where "+strWhere);
         }
-        return DbHelperSQL.Query(strSql.toString());
+        return DbHelperSQL.getInstance().Query(strSql.toString());
     }
 }

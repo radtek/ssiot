@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.ssiot.remote.BaseFragment;
 import com.ssiot.remote.MainActivity;
 import com.ssiot.remote.R;
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.data.AjaxCalibration;
 import com.ssiot.remote.data.model.SensorModifyDataModel;
 import com.ssiot.remote.data.model.SettingModel;
@@ -169,7 +170,11 @@ public class MoniCalibrationFrag extends BaseFragment{
             }
         });
         initDecreaseIncreaseBar(v);
-        new GetCaliThread().start();
+        if (Utils.isNetworkConnected(getActivity())){
+            new GetCaliThread().start();
+        } else {
+            Toast.makeText(getActivity(), "无网络，请检查！", Toast.LENGTH_SHORT).show();
+        }
         return v;
     }
     

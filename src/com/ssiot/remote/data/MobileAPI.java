@@ -33,9 +33,13 @@ public class MobileAPI{
             List<SensorViewModel> sensor_list = DataAPI.GetSensorListByNodeNoString(nodenos);
             List<NodeModel> node_list = DataAPI.GetNodeListByNodenolist(nodenos);
             
-            ResultSet last_ds = DataAPI.GetLastData(nodenos);
+            SsiotResult sResult = DataAPI.GetLastData(nodenos);
             List<NodeView2Model> nodeView_list1 = new ArrayList<NodeView2Model>();//存储在线
             List<NodeView2Model> nodeView_list2 = new ArrayList<NodeView2Model>();//离线
+            if (sResult == null){
+                return null;
+            }
+            ResultSet last_ds = sResult.mRs;
             if (null == last_ds){
                 return null;
             }
@@ -114,8 +118,9 @@ public class MobileAPI{
                     nodeView_list2.add(nodeView2);
                 }
             }
-            last_ds.close();
-
+            if (null != sResult){
+                sResult.close();
+            }
             
             List<NodeView2Model> onlineDataView_list = nodeView_list1;//dic_nodeView2["在线"];
             String onlineNodenos = "";
@@ -133,10 +138,11 @@ public class MobileAPI{
                 String beginTime = ConvertToSpecificDateTimeString(minDateTime, -12, "yyyy-MM-dd HH:mm:ss");
                 String endTime = ConvertToSpecificDateTimeString(minDateTime, -8, "yyyy-MM-dd HH:mm:ss");
               //获取对在线节点延迟十分钟的数据
-                ResultSet ds = DataAPI.GetData_old("十分钟", "平均值", beginTime, endTime, "更新时间 DESC", -1, -1, true, 10000, null, onlineNodenos);
+                SsiotResult sResult2 = DataAPI.GetData_old("十分钟", "平均值", beginTime, endTime, "更新时间 DESC", -1, -1, true, 10000, null, onlineNodenos);
                 
                 List<NodeView2Model> onlineNodeView2_list = new ArrayList<NodeView2Model>();//用于存储延迟十分钟的在线节点数据
-                if (ds!=null){
+                if (null != sResult2 && sResult2.mRs != null){
+                    ResultSet ds = sResult2.mRs;
                     while(ds.next()){
                         NodeView2Model nodeView2 = new NodeView2Model();
                         nodeView2._nodeno = Integer.parseInt(ds.getString("节点编号"));
@@ -171,7 +177,9 @@ public class MobileAPI{
                         nodeView2._nodeData_list = nodeData_list;
                         onlineNodeView2_list.add(nodeView2);
                     }
-                    ds.close();
+                }
+                if (null != sResult2){
+                    sResult2.close();
                 }
                 
               //将在线数据进行比较，并存储到新的List中，用于最终返回数
@@ -250,8 +258,9 @@ public class MobileAPI{
         List<NodeModel> node_list = DataAPI.GetNodeListByNodenolist(nodenos);
         List<NodeView2Model> nodeView2_list = new ArrayList<NodeView2Model>();
         
-        ResultSet ds = DataAPI.GetData(grainsize, queryType, beginTime, endTime, "更新时间 DESC", -1, -1, true, range, null, nodenos);
-        if (ds != null){
+        SsiotResult sResult = DataAPI.GetData(grainsize, queryType, beginTime, endTime, "更新时间 DESC", -1, -1, true, range, null, nodenos);
+        if (null != sResult && null != sResult.mRs){
+            ResultSet ds = sResult.mRs;
             try {
                 while(ds.next()){
                     NodeView2Model nodeView2 = new NodeView2Model();
@@ -313,30 +322,18 @@ public class MobileAPI{
                     nodeView2._nodeData_list = buildNodeDataListFromResultSet(ds);
                     nodeView2_list.add(nodeView2);
                 }
-                ds.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (null != sResult){
+            sResult.close();
         }
         return nodeView2_list;
     }
     
     public static List<ControlNodeViewModel> GetControlNodesInfoByAreaIds(String areaids) {
-        List<ControlNodeViewModel> controlNodeView_list = new ArrayList<ControlNodeViewModel>();
-        try {
-            ResultSet ds = DataAPI.mControlNodeService.GetControlNodesExtendInfoByAreaIds(areaids);
-            if (ds != null) {
-                while (ds.next()) {
-                    controlNodeView_list.add( DataRowToObjectModel(ds));
-                }
-                ds.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return controlNodeView_list;
+        return DataAPI.mControlNodeService.GetControlNodesExtendInfoByAreaIds(areaids);
     }
     
     //根据传感器的名称（ShortName）和修正类型（Type）加载传感器修正数据//现只用于标定
@@ -439,30 +436,4 @@ public class MobileAPI{
         }
         return dataStr;
     }
-    
-    public static ControlNodeViewModel DataRowToObjectModel(ResultSet c){//jingbo modified this
-        ControlNodeViewModel m = new ControlNodeViewModel();
-        try {
-            m._id = Integer.parseInt(c.getString("ID"));
-            m._uniqueid = c.getString("UniqueID");
-//            m._nodename = c.getString("Remark");//NodeName
-            m._nodeno = c.getInt("NodeNo");
-            m._remark = c.getString("Remark");
-            m._areaid = c.getInt("AreaID");
-//            m._x = c.getString("X");
-//            m._y = c.getString("Y");
-          //TODO
-            m._nodename = c.getString("Installation");//这个名字！！！！！！！！！！！！！！！！ TODO
-            m._image = c.getString("Image");
-            //TODO
-            m._devicecount = c.getInt("DeviceCount");
-            return m;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
 }

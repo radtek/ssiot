@@ -3,6 +3,7 @@ package com.ssiot.remote.data.business;
 import android.text.TextUtils;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.ControlLogModel;
 
 import java.sql.ResultSet;
@@ -57,7 +58,7 @@ public class ControlLog{
         parameters.add(model._edittime);
         parameters.add(model._timespan);
 
-        return DbHelperSQL.Update_object(strSql.toString(), parameters) > 0;//GetSingle
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), parameters) > 0;//GetSingle
 //        if (obj == null)
 //        {
 //            return 0;
@@ -106,13 +107,14 @@ public class ControlLog{
             }
             sqlValues = sqlValues.substring(0, sqlValues.length() - 10) + ";";
             strSql.append(sqlValues);
-            return DbHelperSQL.Update(strSql.toString());
+            return DbHelperSQL.getInstance().Update(strSql.toString());
         } catch (Exception e) {
             return 0;
         }
     }
     
     private ControlLogModel GetLatestData_dataaccess(String nodeUnique,int deviceNo,int controlType,int logType) {
+        ControlLogModel model = null;
         try {
             StringBuilder strSql = new StringBuilder();
             strSql.append("SELECT  TOP 1 * FROM ControlLog ");
@@ -126,12 +128,17 @@ public class ControlLog{
             parameters.add(""+nodeUnique);
             parameters.add(""+deviceNo);
             parameters.add(""+controlType);
-            ResultSet ds = DbHelperSQL.Query(strSql.toString(), parameters);
-           return  DataRowToModel(ds);
+            SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString(), parameters);
+            if (null != sResult && null != sResult.mRs){
+                model = DataRowToModel(sResult.mRs);
+            }
+            if (null != sResult){
+                sResult.close();
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
-        return null;
+        return model;
     }
     
     private ControlLogModel DataRowToModel(ResultSet s){

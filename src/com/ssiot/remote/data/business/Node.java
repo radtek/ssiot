@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.NodeModel;
 
 import java.sql.ResultSet;
@@ -51,7 +52,7 @@ public class Node{
         params.add(model._remark);
         params.add(model._nodeid);
         
-        return DbHelperSQL.Update_object(strSql.toString(), params) > 0;
+        return DbHelperSQL.getInstance().Update_object(strSql.toString(), params) > 0;
     }
     
     public NodeModel GetModelByNodeNo(String nodeno){
@@ -60,17 +61,19 @@ public class Node{
         strSql.append(" where NodeNo=" + nodeno);
 //        ArrayList<String> paramArray = new ArrayList<String>();
 //        paramArray.add("" + nodeno);
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
+        NodeModel model = null;
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
         try {
-            if (ds != null && ds.next()) {
-                NodeModel model = DataRowToModel(ds);
-                ds.close();
-                return model;
+            if (null != sResult && null!= sResult.mRs && sResult.mRs.next()) {
+                model = DataRowToModel(sResult.mRs);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return model;
     }
     
 //    public List<NodeModel> GetNodeList(String strwhere){
@@ -100,9 +103,12 @@ public class Node{
             if (strWhere.trim() != ""){
                 strSql.append(" where " + strWhere);
             }
-            ResultSet rs = DbHelperSQL.Query(strSql.toString());
-            if (null != rs){
-                objModel= DataTableToList(rs);
+            SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+            if (null != sResult && null != sResult.mRs){
+                objModel= DataTableToList(sResult.mRs);
+            }
+            if (null != sResult){
+                sResult.close();
             }
         }
         return objModel;
@@ -129,22 +135,10 @@ public class Node{
                     modelList.add(model);
                 }
             }
-            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return modelList;
-//        if (rowsCount > 0){
-//            Angel.IOT2.Model.Node model;
-//            for (int n = 0; n < rowsCount; n++){
-//                for (int n = 0; n < rowsCount; n++){
-//                    if (model != null){
-//                        modelList.Add(model);
-//                    }
-//                }
-//            }
-//        }
-//        return modelList;
     }
     
     private NodeModel DataRowToModel(ResultSet s){
@@ -184,7 +178,7 @@ public class Node{
 //        if (strWhere.trim() != ""){
 //            strSql.append(" where " + strWhere);
 //        }
-//        return DbHelperSQL.Query(strSql.toString());
+//        return DbHelperSQL.getInstance().Query(strSql.toString());
 //    }
     
 }

@@ -13,12 +13,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -51,6 +56,7 @@ public class SettingFrag extends Fragment{
     private TextView mVerStatusView;
     HashMap<String, String> mHashMap;
     private int remoteVersion = 0;
+    private SharedPreferences mPref;
     
     private String showText = "";
     private static final int MSG_GETVERSION_END = 1;
@@ -120,6 +126,7 @@ public class SettingFrag extends Fragment{
         setHasOptionsMenu(true);
         mFSettingBtnClickListener = (FSettingBtnClickListener) getActivity();
         getActivity().registerReceiver(updateBroadcastReceiver, new IntentFilter(ACTION_SSIOT_UPDATE));
+        mPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
     
     @Override
@@ -144,6 +151,18 @@ public class SettingFrag extends Fragment{
                     if (null != mFSettingBtnClickListener){
                         mFSettingBtnClickListener.onFSettingBtnClick();
                     }
+                }
+            }
+        });
+        CheckBox cb = (CheckBox) v.findViewById(R.id.alarm_switch);
+        cb.setChecked(mPref.getBoolean("alarm", true));
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (null != mPref){
+                    Editor e = mPref.edit();
+                    e.putBoolean("alarm", isChecked);
+                    e.commit();
                 }
             }
         });

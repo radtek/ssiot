@@ -44,7 +44,7 @@ public class BaseFragment extends Fragment{
                         }
                         
 //                        try {
-//                            DbHelperSQL.connection.Close();//TODO 是否造成崩溃 TODO TODO 卡死主线程！
+//                            DbHelperSQL.getInstance().connection.Close();//TODO 是否造成崩溃 TODO TODO 卡死主线程！
 //                        } catch (Exception e) {
 //                            e.printStackTrace();
 //                        }

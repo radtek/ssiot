@@ -1,6 +1,7 @@
 package com.ssiot.remote.data.business;
 
 import com.ssiot.remote.data.DbHelperSQL;
+import com.ssiot.remote.data.SsiotResult;
 import com.ssiot.remote.data.model.CompanyContentModel;
 
 import java.sql.ResultSet;
@@ -17,11 +18,15 @@ public class CompanyContent{
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
-        ResultSet ds = DbHelperSQL.Query(strSql.toString());
-        if (null != ds){
-            return DataTableToList(ds);
+        SsiotResult sResult = DbHelperSQL.getInstance().Query(strSql.toString());
+        List<CompanyContentModel> list = null;
+        if (null != sResult.mRs){
+            list = DataTableToList(sResult.mRs);
         }
-        return null;
+        if (null != sResult){
+            sResult.close();
+        }
+        return list;
     }
     
     public List<CompanyContentModel> DataTableToList(ResultSet c){
