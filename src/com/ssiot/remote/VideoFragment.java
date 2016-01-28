@@ -26,6 +26,7 @@ import com.ssiot.remote.data.DataAPI;
 import com.ssiot.remote.data.DbHelperSQL;
 import com.ssiot.remote.data.model.VLCVideoInfoModel;
 import com.ssiot.remote.hikvision.RTSPVideo;
+import com.ssiot.remote.hikvision.VideoActivity;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -71,14 +72,12 @@ public class VideoFragment extends Fragment{
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         View v = inflater.inflate(R.layout.fragment_video, container, false);
         
 //        mVideoView = (VideoView) v.findViewById(R.id.video_monitor);
@@ -125,13 +124,11 @@ public class VideoFragment extends Fragment{
     
     @Override
     public void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
     }
     
     @Override
     public void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
     }
     
@@ -169,6 +166,16 @@ public class VideoFragment extends Fragment{
                         intent.putExtra("videopswd", vModel._password);
                         intent.putExtra("addrtitle", vModel._address);
                         intent.putExtra("tcpport", vModel._tcpport);
+                        startActivity(intent);
+                    } else if ("海康".equals(vModel._type) && vModel._tcpport != 0){ 
+                        Intent intent = new Intent(getActivity(), VideoActivity.class);
+                        Bundle videoBundle = new Bundle();
+                        videoBundle.putString("videoip", vModel._ip);
+                        videoBundle.putString("videoname", vModel._username);
+                        videoBundle.putString("videopswd", vModel._password);
+                        videoBundle.putString("addrtitle", vModel._address);
+                        videoBundle.putInt("tcpport", vModel._tcpport);
+                        intent.putExtra("videobundle", videoBundle);
                         startActivity(intent);
                     } else {
                         Intent i = new Intent(getActivity(), RTSPVideo.class);
@@ -232,13 +239,11 @@ public class VideoFragment extends Fragment{
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO Auto-generated method stub
         inflater.inflate(R.menu.menu_video_frag, menu);
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
         switch (item.getItemId()) {
             case R.id.action_video_refresh:
                 Log.v(tag, "----------------action-settting");

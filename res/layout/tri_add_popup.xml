@@ -11,7 +11,7 @@
     
     <Spinner 
         android:id="@+id/tri_pop_maxmin_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tri_pop_sensor_spinner"
         android:spinnerMode="dialog"/>

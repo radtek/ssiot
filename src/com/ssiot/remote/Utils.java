@@ -49,6 +49,11 @@ public class Utils {
         }
     }
     
+    public static int dip2px(Context context, float dpValue) {   
+        final float scale = context.getResources().getDisplayMetrics().density;  
+        return (int) (dpValue * scale + 0.5f);  
+    }
+    
     public static String buildTime(long seconds){//当前时间向前向后加减多少秒
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = new Date(System.currentTimeMillis() + seconds * 1000);

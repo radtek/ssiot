@@ -123,6 +123,11 @@
             android:label="@string/activity_selectfish"
             android:screenOrientation="portrait" />
         
+        <activity
+            android:name=".hikvision.VideoActivity"
+            android:label="@string/live_activity_title"
+            android:screenOrientation="portrait" />
+        
         <receiver
             android:name="com.ssiot.remote.receiver.SsiotReceiver" >
             <intent-filter>
