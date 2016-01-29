@@ -16,7 +16,7 @@ public class LocalDBHelper extends SQLiteOpenHelper{
      *    
      */  
     public LocalDBHelper(Context context) {
-        super(context, "ssiot.db", null , 1);
+        super(context, "ssiot.db", null , 2);
     }  
   
     // 在mydbOpenHelper 在数据库第一次被创建的时候  会执行onCreate();  
@@ -25,6 +25,7 @@ public class LocalDBHelper extends SQLiteOpenHelper{
         System.out.println("我被调用了 oncreate");
         db.execSQL("create table if not exists traceprofiles("  
                 + "id integer primary key," 
+                + "ProID integer,"
                 + "ProCode varchar,"
                 + "ProName varchar,"  
                 + "ProBatchNo varchar,"  

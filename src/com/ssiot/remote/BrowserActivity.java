@@ -1,6 +1,7 @@
-package com.ssiot.remote.expert;
+package com.ssiot.remote;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -20,15 +21,20 @@ import android.widget.Toast;
 import com.ssiot.remote.R;
 import com.ssiot.remote.Utils;
 
-public class DiagnoseFishActivity extends ActionBarActivity{
-    private static final String tag  = "DiagnoseFishActivity";
-    private static final String urlString = "http://www.adds.org.cn/SelfDiagnosis";
+public class BrowserActivity extends ActionBarActivity{
+    private static final String tag  = "BrowserActivity";
+    private static String urlString = "http://www.ssiot.com";
     WebView webView;
     MenuItem refreshItem;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        if (null != intent){
+            urlString = intent.getStringExtra("url");
+        }
         setContentView(R.layout.activity_web_browser);
         
         webView = (WebView) findViewById(R.id.webview);
@@ -55,8 +61,8 @@ public class DiagnoseFishActivity extends ActionBarActivity{
         
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (!Utils.isNetworkConnected(DiagnoseFishActivity.this)){
-                    Toast.makeText(DiagnoseFishActivity.this, R.string.please_check_net, Toast.LENGTH_SHORT).show();
+                if (!Utils.isNetworkConnected(BrowserActivity.this)){
+                    Toast.makeText(BrowserActivity.this, R.string.please_check_net, Toast.LENGTH_SHORT).show();
                 } else {
                     view.loadUrl(url);
                 }
@@ -81,14 +87,16 @@ public class DiagnoseFishActivity extends ActionBarActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_control_refresh:
-                if (!Utils.isNetworkConnected(DiagnoseFishActivity.this)){
-                    Toast.makeText(DiagnoseFishActivity.this, R.string.please_check_net, Toast.LENGTH_LONG).show();
+                if (!Utils.isNetworkConnected(BrowserActivity.this)){
+                    Toast.makeText(BrowserActivity.this, R.string.please_check_net, Toast.LENGTH_LONG).show();
                 } else {
                     webView.reload();
                     showRefreshAnimation(item);
                 }
                 break;
-
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
             default:
                 break;
         }
@@ -100,11 +108,11 @@ public class DiagnoseFishActivity extends ActionBarActivity{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
             hideRefreshAnimation();
             refreshItem = item;
-            ImageView refreshActionView = (ImageView) DiagnoseFishActivity.this.getLayoutInflater().inflate(R.layout.action_refreshing, null);
+            ImageView refreshActionView = (ImageView) BrowserActivity.this.getLayoutInflater().inflate(R.layout.action_refreshing, null);
             refreshActionView.setImageResource(R.drawable.ic_action_refresh);
             refreshItem.setActionView(null);
             refreshItem.setActionView(refreshActionView);
-            Animation animation = AnimationUtils.loadAnimation(DiagnoseFishActivity.this, R.anim.loading_animation);
+            Animation animation = AnimationUtils.loadAnimation(BrowserActivity.this, R.anim.loading_animation);
             animation.setRepeatMode(Animation.RESTART);
             animation.setRepeatCount(Animation.INFINITE);
             refreshActionView.startAnimation(animation);

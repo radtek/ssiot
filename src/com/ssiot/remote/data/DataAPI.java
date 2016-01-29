@@ -75,6 +75,15 @@ public class DataAPI {
         }
     }
     
+    public static int GetUserIDByUserKey(String userkey){
+        List<UserModel> models = mUserService.GetModelList(" UniqueID='" + userkey + "'");
+        if (null != models && models.size() > 0){
+            UserModel mUserModel = models.get(0);
+            return mUserModel._userid;
+        }
+        return 0;
+    }
+    
     //根据UserKey获取用户的AreaIDs(包括其子帐户)
     public static String GetAreaIDsByUserKey(String userkey) {
         List<UserModel> models = mUserService.GetModelList(" UniqueID='" + userkey + "'");

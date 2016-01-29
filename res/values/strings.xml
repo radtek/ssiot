@@ -8,6 +8,7 @@
     <string name="action_refresh">刷新</string>
     <string name="action_refresh_link">正在刷新连接状态</string>
     <string name="action_logout">退出当前账户</string>
+    <string name="action_deletehis">删除本地查询记录</string>
     
     <string name="iconstr_monitor">监测预警</string>
     <string name="iconstr_control">自动控制</string>
@@ -49,6 +50,7 @@
     <string name="search">搜索</string>
     <string name="search_his_list_title">查询历史</string>
     <string name="building">正在开发</string>
+    <string name="procode_not_found">未获取到此溯源信息,可用测试码73064098查看效果</string>
     
     <string name="activity_diagnosefish">鱼病诊断</string>
     <string name="activity_selectfish">鱼病诊断</string>

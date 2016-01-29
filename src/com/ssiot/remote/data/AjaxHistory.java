@@ -34,6 +34,10 @@ public class AjaxHistory{
         return null;
     }
     
+    public List<TraceProfileModel> getUserTraceProfiles(int parentID){
+        return traceProfilesBll.GetModelList(" ProParentID=" + parentID +"");
+    }
+    
     public String getProfileContentStr(int profileContentID){//商品的描述信息
         List<ProfilesContentModel> models = proContentBll.GetModelList(" ProfilesContentID=" + profileContentID);
         if (null != models && models.size() > 0){

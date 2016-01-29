@@ -144,7 +144,6 @@ public class ControlDetailHolderFrag extends BaseFragment{
         } else {
             Log.e(tag, "----!!!! getArguments = null");
         }
-        
     }
     
     @Override
@@ -286,7 +285,7 @@ public class ControlDetailHolderFrag extends BaseFragment{
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
                 // super.destroyItem(container, position, object);
-                ((ViewPager) container).removeView(viewContainter.get(position));
+                container.removeView(viewContainter.get(position));
             }
         });
         pager.setOnPageChangeListener(new OnPageChangeListener() {
