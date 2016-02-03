@@ -120,6 +120,21 @@ public class MoniChartFrag2 extends BaseFragment{
         } else {
             Log.e(tag, "----onCreate----getArguments = null");
         }
+        
+        endTime = Utils.buildTime(0);
+        if (grainList[0].equals(grainSize)){
+            startTime = Utils.buildTime(-2 * 3600);
+        } else if (grainList[1].equals(grainSize)){
+            startTime = Utils.buildTime(-24 * 3600);
+        } else if (grainList[2].equals(grainSize)){
+            startTime = Utils.buildTime(-15 * 24 * 3600);
+        } else if (grainList[3].equals(grainSize)){
+            startTime = Utils.buildTime(-365 * 24 * 3600);
+        } else if (grainList[4].equals(grainSize)){
+            startTime = Utils.buildTime(-10 * 365 * 24 * 3600);
+        } else {
+            startTime = Utils.buildTime(-2*3600);
+        }
     };
     
     @Override

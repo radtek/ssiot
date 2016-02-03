@@ -25,7 +25,7 @@
             style="@style/top_tab"  
             android:drawableLeft="@drawable/radio_map_icon"  
             android:drawablePadding="0dp"
-            android:text="地图" />  
+            android:text="设置" />  
     </RadioGroup>  
     
     <RelativeLayout 

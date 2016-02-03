@@ -7,6 +7,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +37,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Utils {
+    private static final String tag = "Utils";
     public static final String PREF_AUTOUPDATE = "autoupdate";
+    
+    public static final String BUN_DEVICE_NAMES = "devicenames";
+    public static final String BUN_DEVICE_NOS = "devicenos";
     
     public static void setStringToFile(String str){
         try {
@@ -47,6 +53,49 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public static Timestamp getMyTimestamp(String str){//系统的都不支持模糊的parse
+        str = str.trim();
+        if (null != str){
+            int i = str.indexOf("-");
+            String year = str.substring(0, i);
+            String tmp = str.substring(i + 1, str.length());
+            int j = tmp.indexOf("-");
+            String month = tmp.substring(0, j);
+            tmp = tmp.substring(j + 1, tmp.length());
+            int k = tmp.indexOf(" ");
+            String day = tmp.substring(0, k);
+            tmp = tmp.substring(k + 1, tmp.length());
+            int maohao = tmp.indexOf(":");
+            String hour = tmp.substring(0, maohao);
+            tmp = tmp.substring(maohao + 1, tmp.length());
+            int maohao2 = tmp.indexOf(":");
+            String minite = "";
+            if (maohao2 < 0){
+                maohao2 = tmp.length();
+            }
+            minite = tmp.substring(0, maohao2);
+            if (TextUtils.isEmpty(minite)){
+                minite = "0";
+            }
+            String second = "";
+            if (maohao2 < tmp.length()){
+                tmp = tmp.substring(maohao2 + 1, tmp.length());
+                int kongge2 = tmp.indexOf(" ");
+                if (kongge2 > 0){
+                    second =  tmp.substring(0, kongge2);
+                }
+            }
+            if (TextUtils.isEmpty(second)){
+                second = "0";
+            }
+//            tmp = tmp.substring(maohao2 + 1, tmp.length());
+            Log.v(tag, "----getMyTimestamp----" + year + month + day + hour );
+            return new Timestamp(Integer.parseInt(year) - 1900, Integer.parseInt(month) - 1, Integer.parseInt(day), Integer.parseInt(hour), 
+                    Integer.parseInt(minite), Integer.parseInt(second), 0);
+        }
+        return new Timestamp(0);
     }
     
     public static int dip2px(Context context, float dpValue) {   

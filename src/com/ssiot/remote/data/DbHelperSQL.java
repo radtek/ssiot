@@ -195,7 +195,7 @@ public class DbHelperSQL{
     
     public boolean Query_object(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
-            Log.v(tag, "1#####Query_objecty####" + SQLString);
+            Log.v(tag, "1#####Query_objecty####" + SQLString + "####" + getString(cmdParams));
             long time1 = SystemClock.uptimeMillis();
             try {
                 if (!connectIsOk(connection)){
@@ -296,7 +296,7 @@ public class DbHelperSQL{
     
     public int Update_object(String SQLString, ArrayList<Object> cmdParams){
         synchronized (objlock) {
-            Log.v(tag, "1#####Update_object####" + SQLString);
+            Log.v(tag, "1#####Update_object####" + SQLString + "#####" + getString(cmdParams));
             long time1 = SystemClock.uptimeMillis();
             try {
                 if (!connectIsOk(connection)){
@@ -366,7 +366,7 @@ public class DbHelperSQL{
                 String password = "1qaz_PL";
                 con = DriverManager.getConnection(connectDB, user, password);// 连接数据库对象
                 Log.v(tag, "连接ssiot数据库成功");
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 toastmsg(MSGOPENFAIL);
                 return false;
@@ -409,5 +409,16 @@ public class DbHelperSQL{
                 }
             }
         }
+    }
+    
+    private static String getString(ArrayList<Object> ar){
+        String str = "";
+        if (null == ar){
+            return null;
+        }
+        for (int i = 0; i < ar.size(); i ++){
+            str += " "+ar.get(i);
+        }
+        return str;
     }
 }

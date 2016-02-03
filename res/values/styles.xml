@@ -82,6 +82,9 @@
         <item name="android:windowExitAnimation">@anim/shrink</item>
     </style>
     
+    
+    
+    
 <!--     copy from huiyun -->
     <style name="tcagri_farm_detail_tab_style">
         <item name="android:textSize">16.0sp</item>
@@ -91,6 +94,80 @@
         <item name="android:padding">8.0dip</item>
         <item name="android:button">@null</item>
         <item name="android:layout_weight">1.0</item>
+    </style>
+    
+    <style name="SetTitleText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">#ff777777</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+    </style>
+    
+    <style name="SetTitleTextColor">
+        <item name="android:textSize">@dimen/itemContent</item>
+        <item name="android:textColor">@color/otherSubTextColor</item>
+    </style>
+	<style name="setItemTopClickBg">
+	    <item name="android:gravity">center_vertical</item>
+	    <item name="android:background">@drawable/bg_optionlist_top_select</item>
+	    <item name="android:paddingLeft">16dp</item>
+	    <item name="android:paddingTop">12dp</item>
+	    <item name="android:paddingRight">16dp</item>
+	    <item name="android:paddingBottom">12dp</item>
+	    <item name="android:clickable">true</item>
+	</style>
+	
+	<style name="ItemTitleText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/itemTitle</item>
+        <item name="android:textColor">@color/titleColor</item>
+    </style>
+    
+	<style name="SetContentText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/itemContent</item>
+        <item name="android:textColor">@color/titleColor</item>
+    </style>
+    
+	<style name="setItemBottomClickBg">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/bg_optionlist_bottom_select</item>
+        <item name="android:paddingLeft">@dimen/Margin</item>
+        <item name="android:paddingTop">@dimen/Margin12</item>
+        <item name="android:paddingRight">@dimen/Margin</item>
+        <item name="android:paddingBottom">@dimen/Margin12</item>
+        <item name="android:clickable">true</item>
+    </style>
+    
+	<style name="setItemBg">
+        <item name="android:background">@drawable/bg_radius10</item>
+        <item name="android:paddingLeft">@dimen/Margin</item>
+        <item name="android:paddingTop">@dimen/Margin12</item>
+        <item name="android:paddingRight">@dimen/Margin</item>
+        <item name="android:paddingBottom">@dimen/Margin12</item>
+    </style>
+    
+	<style name="setItemBgClickBg">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/bg_optionlist_select</item>
+        <item name="android:paddingLeft">@dimen/Margin</item>
+        <item name="android:paddingRight">@dimen/Margin</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <style name="FilterText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/msg_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/green_action_btn_select</item>
+        <item name="android:paddingLeft">@dimen/msg_content</item>
+        <item name="android:paddingTop">5.0dip</item>
+        <item name="android:paddingRight">@dimen/msg_content</item>
+        <item name="android:paddingBottom">5.0dip</item>
+    </style>
+    
+    <style name="TitleText" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/Margin18</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
 </resources>

@@ -4,6 +4,7 @@ package com.ssiot.remote.data;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.data.business.AlarmRule;
 import com.ssiot.remote.data.business.Area;
 import com.ssiot.remote.data.business.ControlDevice;
@@ -27,11 +28,17 @@ import com.ssiot.remote.data.model.VLCVideoInfoModel;
 import com.ssiot.remote.data.model.view.ControlActionViewInfoModel;
 import com.ssiot.remote.data.model.view.ControlDeviceViewModel;
 import com.ssiot.remote.data.model.view.ControlTimeConditionModel;
+import com.ssiot.remote.data.model.view.CtrLoopConditionModel;
 import com.ssiot.remote.data.model.view.NodeViewModel;
 import com.ssiot.remote.data.model.view.SensorViewModel;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,6 +187,7 @@ public class DataAPI {
         return mNodeSevice.GetModelList(strwhere);
     }
     
+    //将actionInfo转化为一系列的ControlLog
     public static List<ControlLogModel> ConvertControlActionInfoToControlLog(ControlActionInfoModel actionInfo){
         List<ControlLogModel> controlLog_list = new ArrayList<ControlLogModel>();
         //
@@ -210,8 +218,8 @@ public class DataAPI {
                     e.printStackTrace();
                 }
                 break;
-            case 3:
-                ControlActionViewInfoModel<ControlTimeConditionModel> controlTimeActionView = ConvertToControlTimeActionView(actionInfo);
+            case 3://定时
+                ControlActionViewInfoModel<ControlTimeConditionModel> controlTimeActionView = ConvertToControlTimeActionView(actionInfo);//多此一举？？
                 if (controlTimeActionView != null){
                     List<ControlTimeConditionModel> controlTimeCondition_list = controlTimeActionView._controlcondition;
                     int count = 0;
@@ -219,7 +227,7 @@ public class DataAPI {
                         ControlLogModel controlLog = new ControlLogModel();
                         controlLog._logtype = 0;
                         controlLog._uniqueid = controlTimeActionView._uniqueid;
-                        controlLog._deviceno = Integer.parseInt(controlTimeActionView._devicename) + 16 * count;
+                        controlLog._deviceno = Integer.parseInt(controlTimeActionView._devicename) + 16 * count;//多此一举，曾玲说以前有特殊需求？
                         controlLog._starttype = controlTimeActionView._controltype;
                         controlLog._startvalue = (int)ConvertDataTimeLong(timeCondition.StartTime);
                         controlLog._runtime = (int) (timeCondition.EndTime.getTime() - timeCondition.StartTime.getTime())/1000;//由分钟转为秒
@@ -234,7 +242,43 @@ public class DataAPI {
                     }
                 }
                 break;
-            case 5:
+            case 5://循环
+                List<CtrLoopConditionModel> loopList = new ArrayList<CtrLoopConditionModel>();
+                try {
+                    if (!TextUtils.isEmpty(actionInfo._controlcondition)) {
+                        JSONArray jArray = new JSONArray(actionInfo._controlcondition);
+                        for (int i = 0 ; i < jArray.length(); i ++){
+                            JSONObject jo = jArray.optJSONObject(i);
+                            CtrLoopConditionModel m = new CtrLoopConditionModel();
+                            m.ID = jo.getInt("ID");
+                            m.StartTime = Utils.getMyTimestamp(jo.getString("StartTime"));
+                            m.EndTime = Utils.getMyTimestamp(jo.getString("EndTime"));
+                            m.OnceRunTime = jo.getInt("OnceRunTime");
+                            m.IntervalTime = jo.getInt("IntervalTime");
+                            loopList.add(m);
+                        }
+                    }
+                } catch (Exception e) {//timestamp删除时虽然错误但是 controllog被置为0。添加时 由于是我添加的所以不会出错
+                    e.printStackTrace();
+                }
+                int count = 0;
+                for (CtrLoopConditionModel loopCondition : loopList){
+                    ControlLogModel controlLog = new ControlLogModel();
+                    controlLog._logtype = 0;
+                    controlLog._uniqueid = actionInfo._uniqueid;
+                    controlLog._deviceno = actionInfo._deviceno + 16 * count;//多此一举，曾玲说以前有特殊需求？
+                    controlLog._starttype = actionInfo._controltype;
+                    controlLog._startvalue = (int)ConvertDataTimeLong(loopCondition.StartTime);
+                    controlLog._runtime = loopCondition.OnceRunTime * 60;//由分钟转为秒
+                    controlLog._endtype = (int)((loopCondition.IntervalTime/60.0) * 10);//间隔时间(以小时为单位，扩大10存储)??
+                    controlLog._endvalue = (int)ConvertDataTimeLong(loopCondition.EndTime);
+                    controlLog._sendstate = actionInfo._statenow;
+                    controlLog._createtime = actionInfo._operatetime;
+                    controlLog._edittime = actionInfo._operatetime;
+                    controlLog._timespan = (int)ConvertDataTimeLong(actionInfo._operatetime)+10*count;
+                    controlLog_list.add(controlLog);
+                    count++;
+                }
 
                 break;
             case 6:
@@ -254,31 +298,37 @@ public class DataAPI {
     //辅助方法 将定时类型的控制动作配置解析为TimeActionView
     public static ControlActionViewInfoModel<ControlTimeConditionModel> ConvertToControlTimeActionView(ControlActionInfoModel actionInfo){
         ControlActionViewInfoModel<ControlTimeConditionModel> controlTimeActionView = new ControlActionViewInfoModel<ControlTimeConditionModel>();
+        controlTimeActionView._id = actionInfo._id;
+        controlTimeActionView._areaid = actionInfo._areaid;
+        controlTimeActionView._controlname = actionInfo._controlname;
+        controlTimeActionView._uniqueid = actionInfo._uniqueid;
+        // string timekey = actionInfo.UniqueID + "_" + actionInfo.DeviceNo;
+        // controlTimeActionView.DeviceName = controlDic[timekey].DeviceName;//获取对应设备名
+        controlTimeActionView._devicename = ""+actionInfo._deviceno;//在此存为DeviceNo
+        controlTimeActionView._controltype = actionInfo._controltype;
+
+        List<ControlTimeConditionModel> controlTimeCondition_list = new ArrayList<ControlTimeConditionModel>();
         try {
-            controlTimeActionView._id = actionInfo._id;
-            controlTimeActionView._areaid = actionInfo._areaid;
-            controlTimeActionView._controlname = actionInfo._controlname;
-            controlTimeActionView._uniqueid = actionInfo._uniqueid;
-            // string timekey = actionInfo.UniqueID + "_" + actionInfo.DeviceNo;
-            // controlTimeActionView.DeviceName = controlDic[timekey].DeviceName;//获取对应设备名
-            controlTimeActionView._devicename = ""+actionInfo._deviceno;//在此存为DeviceNo
-            controlTimeActionView._controltype = actionInfo._controltype;
-
-            List<ControlTimeConditionModel> controlTimeCondition_list = new ArrayList<ControlTimeConditionModel>();
             if (!TextUtils.isEmpty(actionInfo._controlcondition)) {
-//                JavaScriptSerializer jss = new JavaScriptSerializer();
-//                controlTimeCondition_list = jss.Deserialize<List<ControlTimeConditionModel>>(actionInfo.ControlCondition);
-                //TODO
+                JSONArray jArray = new JSONArray(actionInfo._controlcondition);
+                for (int i = 0 ; i < jArray.length(); i ++){
+                    JSONObject jo = jArray.optJSONObject(i);
+                    ControlTimeConditionModel m = new ControlTimeConditionModel();
+                    m.ID = jo.getInt("ID");
+                    m.StartTime = Utils.getMyTimestamp(jo.getString("StartTime"));
+                    m.EndTime = Utils.getMyTimestamp(jo.getString("EndTime"));
+                    controlTimeCondition_list.add(m);
+                }
             }
-            controlTimeActionView._controlcondition = controlTimeCondition_list;
-
-            controlTimeActionView._operatetime = actionInfo._operatetime;
-            controlTimeActionView._statenow = actionInfo._statenow;
-            controlTimeActionView._operate = actionInfo._operate;
-            controlTimeActionView._remark = actionInfo._remark;
-        } catch (Exception e) {
+        } catch (Exception e) {//timestamp删除时虽然错误但是 controllog被置为0。添加时 由于是我添加的所以不会出错
             e.printStackTrace();
         }
+        controlTimeActionView._controlcondition = controlTimeCondition_list;
+
+        controlTimeActionView._operatetime = actionInfo._operatetime;
+        controlTimeActionView._statenow = actionInfo._statenow;
+        controlTimeActionView._operate = actionInfo._operate;
+        controlTimeActionView._remark = actionInfo._remark;
         return controlTimeActionView;
     }
     

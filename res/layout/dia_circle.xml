@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff0f0f0"
+    android:orientation="vertical" >
+    
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/title_set" />
+    
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:shrinkColumns="2" >
+
+        <TableRow
+            style="@style/setItemBgClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:layout_marginTop="@dimen/Margin12" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="模式" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|right" >
+
+                <TextView
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="循环控制" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        style="@style/SetTitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:paddingLeft="10dp"
+        android:text="时段" />
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:shrinkColumns="2" >
+
+        <TableRow
+            android:id="@+id/TableRowStart"
+            style="@style/setItemTopClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:onClick="StartTimeClick" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="开始时间" />
+
+            <TextView
+                android:id="@+id/TextViewStart"
+                style="@style/SetContentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/Margin10"
+                android:drawableRight="@drawable/arrow_right_light"
+                android:gravity="right"
+                android:tag="start" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRowEnd"
+            style="@style/setItemBottomClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:clickable="true"
+            android:onClick="EndTimeClick" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="结束时间" />
+
+            <TextView
+                android:id="@+id/TextViewEnd"
+                style="@style/SetContentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/Margin10"
+                android:drawableRight="@drawable/arrow_right_light"
+                android:gravity="right"
+                android:tag="end" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRowControlState"
+            style="@style/setItemBottomClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:clickable="true"
+            android:onClick="ControlState"
+            android:visibility="gone" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="控制状态" />
+
+<!--             <include -->
+<!--                 android:layout_width="wrap_content" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 layout="@layout/device_toggle" /> -->
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRowTimeErrorTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/MarginMini"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/textViewStartErrorTime"
+                style="@style/setItemBg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始时间不能大于结束时间"
+                android:textColor="@color/errorColor" />
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="@dimen/Margin12"
+        android:layout_marginTop="@dimen/Margin12" >
+
+        <TableRow
+            android:id="@+id/TableRowTime"
+            style="@style/setItemTopClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:onClick="TimeClick" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="持续时长" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|right" >
+
+                <TextView
+                    android:id="@+id/TextViewTime"
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2" />
+
+                <TextView
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/Margin10"
+                    android:drawableRight="@drawable/arrow_right_light"
+                    android:text="分钟" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/TableRowSpand"
+            style="@style/setItemBottomClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:onClick="SpandClick" >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="每次间隔" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|right" >
+
+                <TextView
+                    android:id="@+id/TextViewpand"
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15" />
+
+                <TextView
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/Margin10"
+                    android:drawableRight="@drawable/arrow_right_light"
+                    android:text="分钟" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            style="@style/setItemBgClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:layout_marginTop="@dimen/Margin12"
+            android:onClick="DeviceSelectClick"
+             >
+
+            <TextView
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="设备选择" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center|right" >
+
+                <TextView
+                    android:id="@+id/TextViewDeviceSelect"
+                    style="@style/SetContentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/Margin10"
+                    android:drawableRight="@drawable/arrow_right_light"
+                    android:text="未设置" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        style="@style/setItemBg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" >
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/ItemTitleText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/MarginMini"
+                    android:text="状态" />
+
+                <TextView
+                    android:id="@+id/textViewComp"
+                    style="@style/SetTitleTextColor"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="已启用。" />
+            </LinearLayout>
+
+            <ToggleButton
+                android:id="@+id/toggleButtonSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/setMagin"
+                android:background="@drawable/set_toggle"
+                android:checked="true"
+                android:focusable="false"
+                android:tag="Time"
+                android:textOff=""
+                android:textOn="" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

@@ -10,6 +10,7 @@
     <RelativeLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_below="@id/moni_title_alarm">
         
         <Spinner
@@ -29,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:background="@drawable/button_bk"

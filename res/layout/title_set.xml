@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/titleHeight"
+        android:background="@color/DarkGreen"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/Margin10"
+        android:paddingRight="@dimen/Margin10" >
+
+        <TextView
+            android:id="@+id/TextViewBack"
+            style="@style/FilterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/green_action_btn_select"
+            android:clickable="true"
+            android:onClick="onBackClick"
+            android:text="@string/cancel" />
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            style="@style/TitleText"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/TextViewSub"
+            style="@style/FilterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/green_action_btn_select"
+            android:clickable="true"
+            android:onClick="SubClick"
+            android:text="@string/ok" />
+    </LinearLayout>
+
+</LinearLayout>

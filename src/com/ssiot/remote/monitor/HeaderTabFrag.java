@@ -1,5 +1,6 @@
 package com.ssiot.remote.monitor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.ssiot.remote.BaseFragment;
+import com.ssiot.remote.MainActivity;
 import com.ssiot.remote.R;
+import com.ssiot.remote.SettingFrag;
+import com.ssiot.remote.control.ControlDetailFrag;
 import com.ssiot.remote.control.ControlDetailHolderFrag;
 import com.ssiot.remote.control.ControlListAdapter.ControlDetailListener;
 import com.ssiot.remote.control.ControlNodeListFrag;
@@ -27,6 +31,11 @@ import com.ssiot.remote.monitor.MonitorListAdapter2.DetailListener;
 
 public class HeaderTabFrag extends BaseFragment{
     public static final String tag = "HeaderTabFragment";
+    private final static String TAG_MONI = "tag_monitor";
+    private final static String TAG_MONI_DETAIL = "tag_monitor_detail";
+    private final static String TAG_CTR = "tag_control";
+    private final static String TAG_CTR_DETAIL = "tag_control_detail";
+    private final static String TAG_SETTING = "tag_setting";
     private FHeaderTabBtnClickListener mFHeaderTabBtnClickListener;
     private FragmentManager fragmentManager;
     private RadioGroup radioGroup; 
@@ -54,12 +63,7 @@ public class HeaderTabFrag extends BaseFragment{
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {  
             @Override  
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                Fragment fragment = getInstanceByIndex(checkedId);
-                transaction.replace(R.id.detail_content, fragment);
-                fragmentManager.popBackStackImmediate();//TODO 是否是全部弹出还是单个弹出
-//                transaction.addToBackStack(null);
-                transaction.commit();
+                startFragment(checkedId);
             }
         });
         switch (defaultTab) {
@@ -102,6 +106,23 @@ public class HeaderTabFrag extends BaseFragment{
         return super.onOptionsItemSelected(item);
     }
     
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(tag, "----onActivityResult----" + requestCode + " "+ resultCode);
+        switch (requestCode) {
+            case MainActivity.REQUEST_CODE_CTR_CIRCLE:
+                Fragment f = fragmentManager.findFragmentByTag(TAG_CTR_DETAIL);
+                if (null != f){
+                    f.onActivityResult(requestCode, resultCode, data);
+                }
+                break;
+
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
     public void setClickListener(FHeaderTabBtnClickListener listen){
         mFHeaderTabBtnClickListener = listen;
     }
@@ -125,28 +146,59 @@ public class HeaderTabFrag extends BaseFragment{
         fragmentManager.popBackStack();
     }
     
+    private void startFragment(int checkedId){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment fragment = null;
+        Bundle bundle = new Bundle();
+        bundle.putString("uniqueid", userKey);
+        switch (checkedId) {
+            case R.id.radiobutton_moni:
+                fragment = new MoniNodeListFrag();
+                fragment.setArguments(bundle);
+                ((MoniNodeListFrag) fragment).setDetailListener(mDetailListener);
+                transaction.replace(R.id.detail_content, fragment, TAG_MONI);
+                break;
+            case R.id.radiobutton_control:
+                fragment = new ControlNodeListFrag();
+                fragment.setArguments(bundle);
+                ((ControlNodeListFrag) fragment).setCtrDetailListener(mCtrDetailListener);
+                transaction.replace(R.id.detail_content, fragment, TAG_CTR);
+                break;
+//            case 3:
+//                fragment = new MapFrag();
+//                transaction.replace(R.id.detail_content, fragment, TAG_MAP);
+//                break;
+                default:
+                    fragment = new SettingFrag();
+                    transaction.replace(R.id.detail_content, fragment, TAG_SETTING);
+                    break;
+        }
+        
+        fragmentManager.popBackStackImmediate();//TODO 是否是全部弹出还是单个弹出
+//        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+    
     private Fragment getInstanceByIndex(int index) {
         Fragment fragment = null;
+        Bundle bundle = new Bundle();
+        bundle.putString("uniqueid", userKey);
         switch (index) {
             case R.id.radiobutton_moni:
                 fragment = new MoniNodeListFrag();
-                Bundle bundle = new Bundle();
-                bundle.putString("uniqueid", userKey);
                 fragment.setArguments(bundle);
                 ((MoniNodeListFrag) fragment).setDetailListener(mDetailListener);
                 break;
             case R.id.radiobutton_control:
                 fragment = new ControlNodeListFrag();
-                Bundle bun = new Bundle();
-                bun.putString("uniqueid", userKey);
-                fragment.setArguments(bun);
+                fragment.setArguments(bundle);
                 ((ControlNodeListFrag) fragment).setCtrDetailListener(mCtrDetailListener);
                 break;
 //            case 3:
 //                fragment = new MapFrag();
 //                break;
                 default:
-                    fragment = new ControlDetailHolderFrag();
+                    fragment = new SettingFrag();
                     break;
         }
         return fragment;
@@ -165,7 +217,7 @@ public class HeaderTabFrag extends BaseFragment{
             bundle.putInt("nodeno", n2m._nodeno);
             bundle.putString("uniqueid", n2m._uniqueid);
             fragment.setArguments(bundle);
-            transaction.replace(R.id.detail_content, fragment);
+            transaction.replace(R.id.detail_content, fragment,TAG_MONI_DETAIL);
             transaction.addToBackStack(null);
             transaction.commit();  
         }
@@ -175,7 +227,8 @@ public class HeaderTabFrag extends BaseFragment{
         public void showDetail(int position, ControlNodeViewModel model) {
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             Fragment fragment = new ControlDetailHolderFrag();
-            transaction.replace(R.id.detail_content, fragment);
+//            Fragment fragment = new ControlDetailFrag();
+            transaction.replace(R.id.detail_content, fragment, TAG_CTR_DETAIL);
             Bundle bundle = new Bundle();
             bundle.putString("userkey", userKey);
             bundle.putString("controlnodeuniqueid", model._uniqueid);

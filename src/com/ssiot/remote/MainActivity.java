@@ -42,17 +42,16 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity implements FMainBtnClickListener ,FSettingBtnClickListener ,FExpertBtnClickListener, FHisBtnClickListener{
     private static final String tag = "SSIOT-Main";
     public final static int REQUEST_CODE_SCAN = 1;
+    public final static int REQUEST_CODE_CTR_CIRCLE = 2;
     private final static String TAG_MONITOR = "tag_monitor";
     private final static String TAG_VIDEO = "tag_video";
     private final static String TAG_HISTORY = "tag_history";
     private final static String TAG_HISTORY_DETAIL = "tag_history_detail";
     
     private final static String TAG_HEADER_TAB = "tag_header_tab";
-    private final static String TAG_CONTROL = "tag_control";
     private final static String TAG_EXPERT = "tag_expert";
     private final static String TAG_INFO = "tag_info";
     private final static String TAG_SETTING = "tag_setting";
-    
     
     public static String mUniqueID = "";
     private UpdateManager mUpdaManager;
@@ -154,38 +153,10 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
         }
 //        testsql();
 //        Utils.changePic2(getApplicationContext());
-        test2();
     }
     
     public MyCache getCaheManager(){
         return mCache;
-    }
-    
-    public void test2(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                new NodeHelper().GetLastDataByNodenolist(0, 1, "12", "1", "100");
-//                new NodeHelper().GetLastDataByNodenolist(126, 0, "119", "1", "100");
-//                new AjaxGetNodesDataByUserkey().GetMapDataByUserkey("67873e4a-aca2-45dc-a2ba-70340500");
-            }
-        }).start();
-    }
-    
-    private void testsql(){
-//        try {
-//            new InfotmDataBase().getValueFromDB("", "sss", "xxx");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ConSQL conS = new ConSQL();
-                conS.ConnectSQl();
-                conS.selete();
-            }
-        }).start();
     }
     
     public String getUnique(){
@@ -211,6 +182,12 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
                     hisDetailFragment.setArguments(bundle);
                     mTransaction.addToBackStack(null);
                     mTransaction.commit();
+                }
+                break;
+            case REQUEST_CODE_CTR_CIRCLE://一层一层传递给fragment
+                Fragment frag = getSupportFragmentManager().findFragmentByTag(TAG_HEADER_TAB);
+                if (null != frag){
+                    frag.onActivityResult(requestCode, resultCode, data);
                 }
                 break;
 
@@ -294,7 +271,7 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
             mTransaction.commit();
         } else if (itmTxt.equals(getResources().getString(R.string.iconstr_control))){
             HeaderTabFrag controlFragment = new HeaderTabFrag();
-            mTransaction.replace(R.id.container, controlFragment, TAG_CONTROL);
+            mTransaction.replace(R.id.container, controlFragment, TAG_HEADER_TAB);
             Bundle bundle = new Bundle();
             bundle.putString("uniqueid", mUniqueID);
             bundle.putInt("defaulttab", 2);
@@ -336,13 +313,19 @@ public class MainActivity extends ActionBarActivity implements FMainBtnClickList
             mTransaction.addToBackStack(null);
             mTransaction.commit();
         } else if (itmTxt.equals(getResources().getString(R.string.iconstr_info))){
-            InfoFragment infoFragment = new InfoFragment();
-            mTransaction.replace(R.id.container, infoFragment, TAG_INFO);
-            Bundle bundle = new Bundle();
-            bundle.putString("title", "ttttteeeeesssst");
-            infoFragment.setArguments(bundle);
-            mTransaction.addToBackStack(null);
-            mTransaction.commit();
+            if ("gn".equalsIgnoreCase(mPref.getString("username", ""))){
+                Intent intent = new Intent(MainActivity.this, BrowserActivity.class);
+                intent.putExtra("url", "http://gn.ssiot.com/mobile");
+                startActivity(intent);
+            } else {
+                InfoFragment infoFragment = new InfoFragment();
+                mTransaction.replace(R.id.container, infoFragment, TAG_INFO);
+                Bundle bundle = new Bundle();
+                bundle.putString("title", "ttttteeeeesssst");
+                infoFragment.setArguments(bundle);
+                mTransaction.addToBackStack(null);
+                mTransaction.commit();
+            }
         } else if (itmTxt.equals("setting")){//设置界面
             SettingFrag settingFragment = new SettingFrag();
             mTransaction.replace(R.id.container, settingFragment, TAG_SETTING);

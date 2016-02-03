@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.ssiot.remote.MainActivity;
 import com.ssiot.remote.R;
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
 import com.ssiot.remote.data.model.view.NodeView2Model;
 import com.ssiot.remote.data.model.view.SensorViewModel;
@@ -48,9 +50,15 @@ import java.util.List;
 //触发规则的对话框
 public class TriggerDiaFrag extends DialogFragment{
     private static final String tag = "TriggerDiaFrag";
+    private FTriDiaFragListener mFTriDiaFragListener;
+    private Bundle mBundle;
+    ArrayList<String> deviceNames = new ArrayList<String>();
+    ArrayList<Integer> deviceNos = new ArrayList<Integer>();
     private String userkey = MainActivity.mUniqueID;
     private boolean isTriMODE = true;
     
+    private Spinner mDeviceSpinner;
+    private int mSelectedDeviceNo = 0;
     private ListView mNodeListView;
     NodeListCheckAdapter mNodeAdapter;
     private Button mNextBtn;
@@ -110,8 +118,17 @@ public class TriggerDiaFrag extends DialogFragment{
         Log.e(tag, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!empty constructor");//bug  Unable to instantiate fragment
     }
     
-    public TriggerDiaFrag(boolean mode){
+    public TriggerDiaFrag(boolean mode, FTriDiaFragListener listener){
         isTriMODE = mode;
+        mFTriDiaFragListener = listener;
+    }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBundle = getArguments();
+        deviceNames = mBundle.getStringArrayList(Utils.BUN_DEVICE_NAMES);
+        deviceNos = mBundle.getIntegerArrayList(Utils.BUN_DEVICE_NOS);
     }
     
     @Override
@@ -160,6 +177,19 @@ public class TriggerDiaFrag extends DialogFragment{
     }
     
     private void initFirstPage(View rootView){
+        mDeviceSpinner = (Spinner) rootView.findViewById(R.id.spinner_device);
+        ArrayAdapter<String> arr_adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,deviceNames);
+        mDeviceSpinner.setAdapter(arr_adapter);
+        mDeviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mSelectedDeviceNo = deviceNos.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         mNodeListView = (ListView) rootView.findViewById(R.id.tri_node_list);
         mNodeAdapter = new NodeListCheckAdapter(getActivity(), n2mList);
         mNodeListView.setAdapter(mNodeAdapter);
@@ -275,12 +305,19 @@ public class TriggerDiaFrag extends DialogFragment{
                     Toast.makeText(getActivity(), "运行时间必须小于触发间隔", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String condition = buildTriJSON(mSelectedIntervalTime,mSelectedWorkTime,typeDatas[mSelectedRelationType], mElementDatas);
+                final String condition = buildTriJSON(mSelectedIntervalTime,mSelectedWorkTime,typeDatas[mSelectedRelationType], mElementDatas);
                 Log.v(tag, ""+ condition);
-//                boolean ret = new AjaxGetNodesDataByUserkey().SaveControlTriggerUser(UniqueID, deviceNo, selectednodesStr, condition, updateid, userkey);
-//                if (!ret){
-//                    Toast.makeText(getActivity(), "失败", Toast.LENGTH_SHORT).show();
-//                }//TODO 。。。还要添加device选择
+                final String nodeUnique = mBundle.getString("controlnodeuniqueid");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        
+                    }
+                }).start();
+                if (null != mFTriDiaFragListener){
+                    mFTriDiaFragListener.onFTriDiaBtnClick(nodeUnique, mSelectedDeviceNo, selectednodesStr, condition, "", userkey);
+                }
+                TriggerDiaFrag.this.dismiss();
             }
         });
     }
@@ -316,6 +353,8 @@ public class TriggerDiaFrag extends DialogFragment{
         View popView = LayoutInflater.from(getActivity()).inflate(R.layout.tri_add_popup, null);
         
         mSensorSpinner = (Spinner) popView.findViewById(R.id.tri_pop_sensor_spinner);
+        final EditText numEdit = (EditText) popView.findViewById(R.id.tri_maxmin_value_edit);
+        final EditText numEdit2 = (EditText) popView.findViewById(R.id.tri_maxmin_value_edit_2);
         if (null != mSensorDatas){
             ArrayAdapter<String> sensorAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,mSensorDatas);
             mSensorSpinner.setAdapter(sensorAdapter);
@@ -328,10 +367,19 @@ public class TriggerDiaFrag extends DialogFragment{
         final Spinner mMaxMinSpinner = (Spinner) popView.findViewById(R.id.tri_pop_maxmin_spinner);
         ArrayAdapter<String> maxminAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,maxMinDatas);
         mMaxMinSpinner.setAdapter(maxminAdapter);
-        
-        final EditText numEdit = (EditText) popView.findViewById(R.id.tri_maxmin_value_edit);
-        
-        
+        mMaxMinSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 2){ 
+                    numEdit2.setVisibility(View.VISIBLE);
+                } else {
+                    numEdit2.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         
         final PopupWindow popupWindow = new PopupWindow(popView,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
@@ -348,13 +396,27 @@ public class TriggerDiaFrag extends DialogFragment{
             @Override
             public void onClick(View v) {
                 SensorViewModel sModel = mSVModels.get(mSensorSpinner.getSelectedItemPosition());
-                String type = maxMinDatas[mMaxMinSpinner.getSelectedItemPosition()];
+                int maxMinPosition = mMaxMinSpinner.getSelectedItemPosition();
+                String type = maxMinDatas[maxMinPosition];
                 String value = numEdit.getText().toString();
                 if (TextUtils.isEmpty(value)){
                     Toast.makeText(getActivity(), "数值不能为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mElementDatas.add(new TriRuleElementBean(sModel._shortname + sModel._channel, sModel._sensorno + "-" + sModel._channel, type, value));
+                String value2 = "";
+                if (maxMinPosition == 2){
+                    value2 = numEdit2.getText().toString();
+                    if (TextUtils.isEmpty(value2)){
+                        Toast.makeText(getActivity(), "数值不能为空", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (Float.parseFloat(value) >= Float.parseFloat(value2)){
+                        Toast.makeText(getActivity(), "最小值不能大于最大值", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    value2 = "," + value2;
+                }
+                mElementDatas.add(new TriRuleElementBean(sModel._shortname + sModel._channel, sModel._sensorno + "-" + sModel._channel, type, value + value2));
                 mElementAdapter.notifyDataSetChanged();
                 if (popupWindow.isShowing()){
                     popupWindow.dismiss();
@@ -371,7 +433,7 @@ public class TriggerDiaFrag extends DialogFragment{
             }
         });
         
-        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.ssiot_green));
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_card_normal));
 //        popupWindow.showAsDropDown(anchor);
         popupWindow.showAtLocation(anchor, Gravity.CENTER, 0, 0);
     }
@@ -517,5 +579,9 @@ public class TriggerDiaFrag extends DialogFragment{
             this.type = type;
             this.valueNumber = valueNumber;
         }
+    }
+    
+    public interface FTriDiaFragListener{
+        void onFTriDiaBtnClick(String UniqueID, int deviceNo, String selectedNodes, String conditionStr, String updateid, String userkeys);
     }
 }

@@ -18,6 +18,7 @@ public class ControlController{
     ControlLog controllogbll = new ControlLog();
     
     public boolean SaveControlTimeUser(String timeCondition, String seldevice, String UniqueID, int controlType, String DeviceNos,String updateid){
+        Log.v(tag, "----SaveControlTimeUser----" + timeCondition + seldevice + UniqueID + controlType + DeviceNos + updateid);
         if (TextUtils.isEmpty(timeCondition)){
             Log.e(tag, "----SaveControlTimeUser!!!!----timeCondition = null");
             return false;
@@ -39,7 +40,7 @@ public class ControlController{
             controlActionInfo._operate = "打开";
             return updateControlActionInfoAndAddLog(controlActionInfo);
         } else {//添加
-            if (seldevice == null && DeviceNos != ""){
+            if (seldevice == null && !TextUtils.isEmpty(DeviceNos)){
                 if (DeviceNos.endsWith(",")){
                     DeviceNos = DeviceNos.substring(0, DeviceNos.length()-1);
                 }
@@ -93,6 +94,7 @@ public class ControlController{
             try {
                 int rtnCount = controllogbll.AddManyCount(controlLog_list);
                 if (rtnCount == 0) {
+                    Log.e(tag, "!!!!add controllog fail  !!!!size" + controlLog_list.size());
                     return false;
                 } else {
                     return true;
@@ -102,6 +104,7 @@ public class ControlController{
                 return false;
             }
         } else {
+            Log.e(tag, "!!!! add controlActionInfo fail!!!!");
             return false;
         }
     }
@@ -118,7 +121,7 @@ public class ControlController{
         return names;
     }
     
-    private int GetNowAccountAreaID(){
+    private int GetNowAccountAreaID(){//TODO
         if (MainActivity.AreaID < 0){
             Log.e(tag, "----!!!! MainActivity.AreaID < 0");
         }

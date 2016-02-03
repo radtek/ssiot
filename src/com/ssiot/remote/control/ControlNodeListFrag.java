@@ -132,37 +132,6 @@ public class ControlNodeListFrag extends BaseFragment{
         super.onDestroyView();
     };
     
-    MenuItem refreshItem;
-    @SuppressLint("NewApi")
-    private void showRefreshAnimation(MenuItem item) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-            hideRefreshAnimation();
-            refreshItem = item;
-            ImageView refreshActionView = (ImageView) getActivity().getLayoutInflater().inflate(R.layout.action_refreshing, null);
-            refreshActionView.setImageResource(R.drawable.ic_action_refresh);
-            refreshItem.setActionView(null);
-            refreshItem.setActionView(refreshActionView);
-            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.loading_animation);
-            animation.setRepeatMode(Animation.RESTART);
-            animation.setRepeatCount(Animation.INFINITE);
-            refreshActionView.startAnimation(animation);
-            //TODO real action
-        }
-    }
-    
-    @SuppressLint("NewApi")
-    private void hideRefreshAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-            if (refreshItem != null) {
-                View view = refreshItem.getActionView();
-                if (view != null) {
-                    view.clearAnimation();
-                    refreshItem.setActionView(null);
-                }
-            }
-        }
-    }
-    
     public void onMyBackPressed(){//add by jingbo
     }
     

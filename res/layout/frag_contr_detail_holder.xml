@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f9cb80" >
+    android:background="#ffeeeeee" >
 
     <RelativeLayout
         android:id="@+id/control_d_bar"
@@ -60,6 +60,7 @@
                 android:padding="3dp"
                 android:background="#ff007130"
                 android:text="全部开启"
+                android:visibility="gone"
                 android:maxLines="1" />
 
             <TextView
@@ -72,6 +73,7 @@
                 android:padding="3dp"
                 android:background="#ff898989"
                 android:text="全部关闭"
+                android:visibility="gone"
                 android:maxLines="1" />
 
             <TextView

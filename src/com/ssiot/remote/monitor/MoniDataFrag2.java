@@ -10,6 +10,7 @@ import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.text.StaticLayout;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -332,7 +333,7 @@ public class MoniDataFrag2 extends BaseFragment{
     
     private void buildLeftView(TextView timeTextTitle, LinearLayout leftLinear, List<NodeView2Model> listData){
         leftLinear.removeAllViews();
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         lp.weight = 1;
         
         timeTextTitle.setText("时间");
@@ -353,6 +354,10 @@ public class MoniDataFrag2 extends BaseFragment{
             tView.setEms(5);
             tView.setGravity(Gravity.CENTER);
             tView.setMaxLines(2);
+            if (tView.getText().length() > 10){
+                float textHeight = (leftLinear.getHeight()-10-120)/ (1+LINEARSIZE)/2;
+                tView.setTextSize(TypedValue.COMPLEX_UNIT_PX,textHeight);//设置textsize
+            }
             tView.setLayoutParams(lp);
             leftLinear.addView(tView, lp);
             View divider = new View(mContext);

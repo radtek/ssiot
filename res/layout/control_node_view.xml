@@ -57,7 +57,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:paddingBottom="3dp"
-                android:src="@drawable/online" />
+                android:src="@drawable/online_3" />
         </RelativeLayout>
 
         <ImageView
@@ -66,7 +66,7 @@
             android:layout_height="1px"
             android:layout_centerVertical="true"
             android:layout_below="@id/control_title_bar"
-            android:src="#fff39800" />
+            android:src="@color/ssiotgreen" />
 
         <RelativeLayout
             android:id="@+id/control_detail_bar"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/control_divider_bar"
             android:layout_marginTop="10dp"
-            android:background="#fff39800" >
+            android:background="@color/ssiotgreen" >
 
             <TextView
                 android:id="@+id/control_sensorcount"

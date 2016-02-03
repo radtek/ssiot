@@ -6,5 +6,21 @@
     
     <dimen name="node_img_width">84dp</dimen>
     <dimen name="node_img_height">84dp</dimen>
+    
+    
+<!--     //copy慧云 -->
+<dimen name="MarginMini">5.0dip</dimen>
+     <dimen name="subMenuHeight">42.0dip</dimen>
+     <dimen name="Margin">16.0dip</dimen>
+     <dimen name="Margin10">10.0dip</dimen>
+     <dimen name="Margin12">12.0dip</dimen>
+     <dimen name="Margin18">18.0dip</dimen>
+     <dimen name="itemTitle">16.0dip</dimen>
+     <dimen name="itemContent">14.0dip</dimen>
+     <dimen name="setMagin">20.0dip</dimen>
+     <dimen name="setMaginLeft">16.0dip</dimen>
+     <dimen name="msg_content">17.0dip</dimen>
+<!--      需要不同的值 -->
+     <dimen name="titleHeight">48.0dip</dimen>
 
 </resources>

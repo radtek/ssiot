@@ -20,7 +20,7 @@ public class User{
     public List<UserModel> GetModelList(String strWhere) {
         StringBuilder strSql = new StringBuilder();
         strSql.append("select * ");
-        strSql.append(" FROM tbl_User ");
+        strSql.append(" FROM iot_User ");
         if (strWhere.trim() != "") {
             strSql.append(" where " + strWhere);
         }
@@ -61,9 +61,9 @@ public class User{
     private UserModel DataRowToModel(ResultSet c){//先.next !!
         UserModel uModel = new UserModel();
         try {
-            uModel._userid = Integer.parseInt(c.getString("UserID"));
+            uModel._userid = c.getInt("UserID");
             uModel._uniqueid = c.getString("UniqueID");
-            uModel._areaid = Integer.parseInt(c.getString("AreaID"));
+            uModel._areaid = c.getInt("AreaID");
             //TODO
             return uModel;
         } catch (SQLException e) {

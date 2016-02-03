@@ -1,6 +1,8 @@
 package com.ssiot.remote;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,6 +111,11 @@ public class MainFragment extends Fragment{
                 }
             }
         });
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if ("gn".equalsIgnoreCase(mPref.getString("username", ""))) {
+            mInfo.setImageResource(R.drawable.icon_business);
+            mInfo.setText("电商平台");
+        }
         mInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

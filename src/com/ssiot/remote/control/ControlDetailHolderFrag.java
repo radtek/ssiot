@@ -1,23 +1,18 @@
 package com.ssiot.remote.control;
 
-import android.R.integer;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -41,31 +34,30 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.ssiot.remote.BaseFragment;
+import com.ssiot.remote.MainActivity;
 import com.ssiot.remote.R;
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.control.RuleAdapter.DeleteListener;
 import com.ssiot.remote.control.RuleAdapter.TimeCountDownHolder;
+import com.ssiot.remote.control.TriggerDiaFrag.FTriDiaFragListener;
 import com.ssiot.remote.data.AjaxGetControlActionInfo;
 import com.ssiot.remote.data.AjaxGetNodesDataByUserkey;
 import com.ssiot.remote.data.ControlController;
 import com.ssiot.remote.data.model.ControlActionInfoModel;
 import com.ssiot.remote.data.model.view.ControlDeviceView3Model;
-import com.ssiot.remote.view.HVScrollView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ControlDetailHolderFrag extends BaseFragment{
+public class ControlDetailHolderFrag extends BaseFragment implements FTriDiaFragListener{
     public static final String tag = "ContrDetailHoldFragment";
-    private FContrDetailHoldBtnClickListener mFContrDetailHoldBtnClickListener;
+    private FCtrDetailHoldBtnClickListener mFCtrDetailHoldBtnClickListener;
     ViewPager pager = null;
     PagerTabStrip tabStrip = null;
     ArrayList<View> viewContainter = new ArrayList<View>();
@@ -76,12 +68,13 @@ public class ControlDetailHolderFrag extends BaseFragment{
     private String controlnodeuniqueid;
     private String controlnodeid;
     private String controlnodename;
-    List<ControlDeviceView3Model> listDatas;
+    List<ControlDeviceView3Model> listDatas = new ArrayList<ControlDeviceView3Model>();
     HorizontalScrollView mScrollView;
     LayoutInflater mInflater;
     
     Timestamp mStartTime;//添加规则时使用的
     Timestamp mEndTime;
+    private Bundle mBundle;
     
     public static final String[] spinnerDatas = {"5分钟","10分钟","15分钟","20分钟","25分钟","30分钟","35分钟","40分钟","45分钟","50分钟","55分钟"}; 
     
@@ -136,11 +129,12 @@ public class ControlDetailHolderFrag extends BaseFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (null != getArguments()){
-            userkey = getArguments().getString("userkey");
-            controlnodeuniqueid = getArguments().getString("controlnodeuniqueid");
-            controlnodeid = getArguments().getString("controlnodeid");
-            controlnodename = getArguments().getString("controlnodename");
+        mBundle = getArguments();
+        if (null != mBundle){
+            userkey = mBundle.getString("userkey");
+            controlnodeuniqueid = mBundle.getString("controlnodeuniqueid");
+            controlnodeid = mBundle.getString("controlnodeid");
+            controlnodename = mBundle.getString("controlnodename");
         } else {
             Log.e(tag, "----!!!! getArguments = null");
         }
@@ -158,16 +152,44 @@ public class ControlDetailHolderFrag extends BaseFragment{
         ctr_d_btn_newtiming.setOnClickListener(new View.OnClickListener() {//新建定时规则
             @Override
             public void onClick(View v) {
-                showDialog(DIALOG_TIMING);
+                if (Utils.isNetworkConnected(getActivity())){
+                    showDialog(DIALOG_TIMING);
+                } else {
+                    Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        TextView ctr_d_btn_newcircle = (TextView) v.findViewById(R.id.ctr_d_btn_newcircle);
+        ctr_d_btn_newcircle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CtrEditAct.class);
+                ArrayList<String> deviceNames = new ArrayList<String>();
+                ArrayList<Integer> deviceNos = new ArrayList<Integer>();
+                if (null != listDatas){
+                    for (ControlDeviceView3Model c : listDatas){
+                        deviceNames.add(c.DeviceName);
+                        deviceNos.add(c.DeviceNo);
+                    }
+                }
+                intent.putStringArrayListExtra(Utils.BUN_DEVICE_NAMES, deviceNames);
+                intent.putIntegerArrayListExtra(Utils.BUN_DEVICE_NOS, deviceNos);
+                intent.putExtra("controlnodeuniqueid", controlnodeuniqueid);
+                getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_CTR_CIRCLE);//TODO should in MAINACTIVITY
             }
         });
         TextView ctr_new_tri = (TextView) v.findViewById(R.id.ctr_d_btn_newtrigger);
         ctr_new_tri.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(DIALOG_TRIGGER);
+                if (Utils.isNetworkConnected(getActivity())){
+                    showDialog(DIALOG_TRIGGER);
+                } else {
+                    Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+        
 //        int tabSize = 17;
 //        for (int i = 0; i < tabSize;i ++){
 //            View view1 = inflater.inflate(R.layout.control_tab, pager,false);
@@ -314,26 +336,38 @@ public class ControlDetailHolderFrag extends BaseFragment{
     public class GetControlActionInfoThread extends Thread{
         @Override
         public void run() {
-            listDatas = new AjaxGetNodesDataByUserkey().GetDeviceActionInfo(controlnodeid, controlnodeuniqueid);
+            sendShowMyDlg("");
+            List<ControlDeviceView3Model> list = new AjaxGetNodesDataByUserkey().GetDeviceActionInfo(controlnodeid, controlnodeuniqueid);
+            listDatas.clear();
+            if (null != list){
+                listDatas.addAll(list);
+            }
+            sendDismissDlg();
             mHandler.sendEmptyMessage(MSG_GET_CONTROLDETAIL_END);
         }
     }
     
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.ContrDetailHold, menu);
+        inflater.inflate(R.menu.menu_ctr_detail, menu);
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                Log.v(tag, "----------------action-settting");
-//                break;
-//
-//            default:
-//                break;
-//        }
+        switch (item.getItemId()) {
+            case R.id.action__refresh:
+                Log.v(tag, "----------------action-action__refresh");
+                if (!Utils.isNetworkConnected(getActivity())){
+                    Toast.makeText(getActivity(), R.string.please_check_net, Toast.LENGTH_SHORT).show();
+                } else {
+                    showRefreshAnimation(item,pager);
+                    mHandler.sendEmptyMessage(MSG_REFRESH);
+                }
+                break;
+
+            default:
+                break;
+        }
         return true;
     }
     
@@ -396,8 +430,9 @@ public class ControlDetailHolderFrag extends BaseFragment{
     private void delstate(int id){
         boolean ret = new AjaxGetNodesDataByUserkey().DelControl(id);
         if (ret){
-            
+            showToastMSG("删除成功");
         } else {
+            showToastMSG("删除失败");
             Log.e(tag, "------delstate------failed:" + id);
         }
         mHandler.sendEmptyMessage(MSG_REFRESH);
@@ -501,8 +536,8 @@ public class ControlDetailHolderFrag extends BaseFragment{
                 final HorizontalScrollView hv = (HorizontalScrollView) view.findViewById(R.id.two_timepick);
 //                final RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.hv_container);
                 final RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.hv_con);
-                TimePicker tpickS = (TimePicker) view.findViewById(R.id.d_c_o_timepick_start);
-                TimePicker tpickE = (TimePicker) view.findViewById(R.id.d_c_o_timepick_end);
+                final TimePicker tpickS = (TimePicker) view.findViewById(R.id.d_c_o_timepick_start);
+                final TimePicker tpickE = (TimePicker) view.findViewById(R.id.d_c_o_timepick_end);
                 tpickS.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                     @Override
                     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
@@ -532,6 +567,10 @@ public class ControlDetailHolderFrag extends BaseFragment{
                 buil.setView(view).setTitle(R.string.timing).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Timestamp tNow = new Timestamp(System.currentTimeMillis());
+                        mStartTime = new Timestamp(tNow.getYear(), tNow.getMonth(), tNow.getDate(), tpickS.getCurrentHour(), tpickS.getCurrentMinute(), 0, 0);
+                        mEndTime = new Timestamp(tNow.getYear(), tNow.getMonth(), tNow.getDate(), tpickE.getCurrentHour(), tpickE.getCurrentMinute(), 0, 0);
+                        
                         if (mEndTime.getTime() <= mStartTime.getTime()){
                             Toast.makeText(getParentFragment().getActivity(), "结束时间小于开始时间!", Toast.LENGTH_SHORT).show();
                             return;
@@ -549,12 +588,14 @@ public class ControlDetailHolderFrag extends BaseFragment{
                         jArray.put(jsonObj);
                         final String conditionStr = jArray.toString();
                         new Thread(new Runnable() {
-                            
                             @Override
                             public void run() {
                                 boolean ret = new ControlController().SaveControlTimeUser(conditionStr, null, controlnodeuniqueid, 3, adapter.getSelectedListStr(), "");
-                                if (ret){
+                                if (!ret){
                                     Log.e(tag, "----!!!! 添加定时规则失败");
+                                    showToastMSG("添加定时规则失败");
+                                } else {
+                                    showToastMSG("操作成功");
                                 }
                                 mHandler.sendEmptyMessage(MSG_REFRESH);
                             }
@@ -580,13 +621,42 @@ public class ControlDetailHolderFrag extends BaseFragment{
                 break;
 
             case DIALOG_TRIGGER:
-                TriggerDiaFrag triggerDiaFrag = new TriggerDiaFrag(true);
+                TriggerDiaFrag triggerDiaFrag = new TriggerDiaFrag(true,ControlDetailHolderFrag.this);
+                ArrayList<String> deviceNames = new ArrayList<String>();
+                ArrayList<Integer> deviceNos = new ArrayList<Integer>();
+                if (null != listDatas){
+                    for (ControlDeviceView3Model c : listDatas){
+                        deviceNames.add(c.DeviceName);
+                        deviceNos.add(c.DeviceNo);
+                    }
+                }
+                mBundle.putStringArrayList(Utils.BUN_DEVICE_NAMES, deviceNames);
+                mBundle.putIntegerArrayList(Utils.BUN_DEVICE_NOS, deviceNos);
+                triggerDiaFrag.setArguments(mBundle);
                 triggerDiaFrag.show(getFragmentManager(), "tag_tridiafrag");
                 break;
             default:
                 break;
         }
     }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(tag, "----onActivityResult----" + requestCode + " "+ resultCode);
+        switch (requestCode) {
+            case MainActivity.REQUEST_CODE_CTR_CIRCLE:
+                if (resultCode == Activity.RESULT_OK){
+                    mHandler.sendEmptyMessage(MSG_REFRESH);
+                }
+                break;
+        }
+    }
+    
+//    private void showCircleDialog(){
+//        AlertDialog.Builder buil = new AlertDialog.Builder(getActivity());
+//        LayoutInflater inflater = getActivity().getLayoutInflater();
+//        View view = inflater.inflate(R.layout.dia_circle, null);
+//    }
     
     private String buildTimeStr(Timestamp t){
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -622,21 +692,43 @@ public class ControlDetailHolderFrag extends BaseFragment{
         @Override
         public void onDelete(int id) {
             final int idFinal = id;
+            sendShowMyDlg("");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     delstate(idFinal);
                 }
             }).start();
+            sendDismissDlg();
         }
     };
     
-    public void setClickListener(FContrDetailHoldBtnClickListener listen){
-        mFContrDetailHoldBtnClickListener = listen;
+    public void setClickListener(FCtrDetailHoldBtnClickListener listen){
+        mFCtrDetailHoldBtnClickListener = listen;
     }
     
     //回调接口，留给activity使用
-    public interface FContrDetailHoldBtnClickListener {  
-        void onFContrDetailHoldBtnClick();  
+    public interface FCtrDetailHoldBtnClickListener {
+        void onFCtrDetailHoldBtnClick(int ctrType);
+    }
+
+    @Override
+    public void onFTriDiaBtnClick(final String UniqueID, final int deviceNo, final String selectedNodes, final String conditionStr, 
+            String updateid, final String userkeys) {
+        sendShowMyDlg("正在保存触发设置");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean ret = new AjaxGetNodesDataByUserkey().SaveControlTriggerUser(UniqueID, deviceNo, selectedNodes, conditionStr, "", userkeys);
+                sendDismissDlg();
+                if (ret){
+                    showToastMSG("触发设置成功");
+                    mHandler.sendEmptyMessage(MSG_REFRESH);
+                } else {
+                    showToastMSG("触发设置失败");
+                }
+            }
+        }).start();
+        
     }
 }

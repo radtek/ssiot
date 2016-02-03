@@ -53,4 +53,12 @@
 	
 	<color name="grey_divider">#ffbfbfbf</color>
 	<color name="his_title_green">#ff50a700</color>
+	
+	
+<!-- 	copy 慧云 -->
+	<color name="titleColor">#ff333333</color>
+	<color name="errorColor">#fff08080</color>
+	<color name="otherSubTextColor">#ff777777</color>
+	<color name="DarkGreen">#ff2d8931</color>
+
 </resources>

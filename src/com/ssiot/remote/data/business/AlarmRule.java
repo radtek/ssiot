@@ -38,7 +38,7 @@ public class AlarmRule{
         strSql.append("update AlarmRule set ");
 //        strSql.append("NodeUniqueID=?,");
         strSql.append("Relation=?,");
-        strSql.append("RuleStr=?");
+        strSql.append("RuleStr=?,");
         strSql.append(" NodeUniqueID =?");
         
         ArrayList<Object> parameters = new ArrayList<Object>();

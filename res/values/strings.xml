@@ -485,4 +485,12 @@
 	<string name="info_success">success</string>
 	<string name="info_failed">failed</string>
 	<string name="info_check">please check input</string>
+	
+	
+	
+	
+	
+<!-- 	huiyun -->
+	<string name="setTime">持续时长</string>
+	<string name="setSpand">每次间隔</string>
 </resources>

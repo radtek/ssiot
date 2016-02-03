@@ -5,8 +5,33 @@
     <RelativeLayout
         android:id="@+id/part1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:visibility="visible" >
+        
+        <TextView 
+            android:id="@+id/spinner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="选择设备"
+            android:layout_margin="5dp"/>
+        
+        <Spinner 
+            android:id="@+id/spinner_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/spinner_title"
+            android:layout_margin="5dp"/>
+        
+        <TextView 
+            android:id="@+id/list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/spinner_device"
+            android:text="选择节点"
+            android:layout_margin="5dp"/>
         
         <Button 
             android:id="@+id/tri_next"
@@ -19,8 +44,9 @@
         <ListView
             android:id="@+id/tri_node_list"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
+            android:layout_below="@id/list_title"
             android:layout_above="@id/tri_next" />
         
     </RelativeLayout>
@@ -30,32 +56,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" >
-
-        <Spinner
-            android:id="@+id/tri_interval_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Spinner
-            android:id="@+id/tri_working_time"
-            android:layout_width="wrap_content"
+        <LinearLayout 
+            android:id="@+id/part2_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tri_interval_time"
-            android:layout_centerHorizontal="true" />
+            android:orientation="horizontal">
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_margin="3dp"
+                android:text="间隔时间:"/>
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_margin="3dp"
+                android:text="运行时间:"/>
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_margin="3dp"
+                android:text="关系选择:"/>
+        </LinearLayout>
 
-        <Spinner
-            android:id="@+id/tri_relation_type"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/part2_spinner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tri_working_time"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@id/part2_title"
+            android:orientation="horizontal" >
+
+            <Spinner
+                android:id="@+id/tri_interval_time"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/tri_working_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_centerHorizontal="true" />
+
+            <Spinner
+                android:id="@+id/tri_relation_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_centerHorizontal="true" />
+        </LinearLayout>
         
         <include
             android:id="@+id/tri_rule_title"
             layout="@layout/tri_addrule_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tri_interval_time" />
+            android:layout_below="@id/part2_spinner" />
         
         <ListView 
             android:id="@+id/tri_element_list"

@@ -84,15 +84,15 @@ public class RuleAdapter extends BaseAdapter{
             holder.ctr_rule_detail_s.setVisibility(View.GONE);
             ArrayList<String> ss = parseTimingCondition(m.ControlCondition);
             holder.ctr_rule_detail_1.setText("开始:"+ ss.get(1));
-            holder.ctr_rule_detail_2.setText("结束:"+ ss.get(1));
+            holder.ctr_rule_detail_2.setText("结束:"+ ss.get(2));
         } else if (5 == m.ControlType){//循环
             holder.ctr_rule_type.setText("循环");
             holder.ctr_rule_type.setBackgroundColor(Color.parseColor("#88337f"));
             holder.ctr_rule_detail_linear.setVisibility(View.VISIBLE);
             holder.ctr_rule_detail_s.setVisibility(View.GONE);
             ArrayList<String> ss = parseCircleCondition(m.ControlCondition);
-            holder.ctr_rule_detail_1.setText("开始：" +ss.get(1) + " 运行："+ss.get(2));
-            holder.ctr_rule_detail_2.setText("结束：" + ss.get(4) + " 间隔" + ss.get(3));
+            holder.ctr_rule_detail_1.setText("开始:" +ss.get(1) + " 运行:"+ss.get(2));
+            holder.ctr_rule_detail_2.setText("结束:" + ss.get(4) + " 间隔" + ss.get(3));
         } else if (1 == m.ControlType) {//立即
             holder.ctr_rule_type.setText("立即开启");
             holder.ctr_rule_type.setBackgroundColor(Color.parseColor("#33588f"));
