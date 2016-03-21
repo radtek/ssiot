@@ -31,4 +31,9 @@ public class UserModel{
     public String _usercol;
     public String _userlogo;
     public int _UserType;
+    
+    public int _parentid;
+    public int _usergroupid;
+    
+    public int _type = 1;
 }

@@ -200,7 +200,11 @@ public class MoniNodeListFrag extends BaseFragment{
         @Override
         public synchronized void run() {
             sendShowMyDlg("正在查询");
-            mNodes = new AjaxGetNodesDataByUserkey().GetAllNodesDataByUserkey(userKey);
+            List<NodeView2Model> list = new AjaxGetNodesDataByUserkey().GetAllNodesDataByUserkey(userKey);
+            if (null != list && list.size() > 0){
+                mNodes.clear();
+                mNodes.addAll(list);
+            }
             sendDismissDlg();
             mHandler.sendEmptyMessage(MSG_GETNODES_END);
         }

@@ -159,6 +159,110 @@ public class LiveData{
         }
         return null;
     }
+    
+    public SsiotResult GetData_3(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
+            int beginindex, int endindex, boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist){
+        Log.v("LiveData", "---------GetData_3---" + begintime + grainsize);
+        //传感器列表
+        List<SensorViewModel> list = new ArrayList<SensorViewModel>();
+        if (sensorlist != null) {
+            list = sensorlist;
+        } else {
+            list = mSensorDataAccess.GetSensorListByNodeNoString(nodenolist);
+        }
+        
+        StringBuilder sb_columns1 = new StringBuilder();
+        sb_columns1.append(",");
+        if (null != list && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                String sensoradd = "";
+                if (list.get(i)._channel > 0) {
+                    sensoradd = ""+list.get(i)._channel;
+                }
+                sb_columns1.append(list.get(i)._shortname + sensoradd + ",");
+            }
+        }
+        
+        StringBuilder sb_sql = new StringBuilder();
+        String tablename = "[LiveData]";
+        String rangestr = "";
+        rangestr = "TOP " + range;
+        
+        if ("逐分钟".equals(grainsize)){
+//            timelength = "19";
+            tablename = "[data_DataByLiveData]";
+//            timecolumn = "[CollectionTime]";
+        } else if ("十分钟".equals(grainsize)){
+//            timelength = "16";
+            tablename = "[data_DataByTen]";
+//            timecolumn = "[CountTime]";
+//            indexid = "[EveryYearByMinuteID]";
+        } else if ("逐小时".equals(grainsize)){
+//            timelength = "13";
+            tablename = " [data_DataByHour]";
+//            timecolumn = "[CountTime]";
+//            indexid = "[EveryYearByHourID]";
+        } else if ("逐日".equals(grainsize)){
+//            timelength = "10";
+            tablename = "[data_DataByDay]";
+//            timecolumn = "[CountTime]";
+//            indexid = "[EveryYearByDayID]";
+        } else if ("逐月".equals(grainsize)){
+//            timelength = "7";
+            tablename = "[data_DataByMonth]";
+//            timecolumn = "[CountTime]";
+//            indexid = "[EveryYearByMonthID]";
+        } else if ("逐年".equals(grainsize)){
+//            timelength = "4";
+            tablename = "[data_DataByDay]";
+//            timecolumn = "[CountTime]";
+//            indexid = "[EveryYearByDayID]";
+        } else {
+//            timelength = "15";
+            tablename = "[data_DatabyLiveData]";
+//            timecolumn = "[CollectionTime]";
+//            indexid = "[LiveDataID]";
+        }
+        String datacolumn = "Avg";
+        if (!"逐分钟".equals(grainsize)){
+            if ("最大值".equals(valuetype.toUpperCase())){
+                datacolumn = "Max";
+            } else if ("平均值".equals(valuetype)){
+                datacolumn = "Avg";
+            } else if ("最小值".equals(valuetype)){
+                datacolumn = "Min";
+            } else if ("累计值".equals(valuetype)){
+                datacolumn = "Sum";
+            } else {
+                datacolumn = "Avg";
+            }
+        }
+        
+        sb_sql.append(" SELECT "+rangestr+" node.NodeNo  as[节点编号],node.Location as [安装地点],[更新时间]" + sb_columns1 + 
+                " ROW_NUMBER() OVER ( ORDER BY 更新时间 desc) AS [RANK] from "+tablename+" ");
+
+        sb_sql.append("inner join Node as node on node.UniqueID=[节点编号] ");
+        if (!TextUtils.isEmpty(nodenolist)) {
+            sb_sql.append(" AND   NodeNo IN ("+nodenolist+")");
+        }
+        sb_sql.append("  WHERE 1=1  and [TypeOfData]='"+datacolumn+"'");
+
+        if (!TextUtils.isEmpty(begintime) && !TextUtils.isEmpty(endtime)){
+            sb_sql.append(" AND [更新时间] > '"+begintime+"' AND [更新时间] < '"+endtime+"' ");
+        }
+        if (orderby != null) {
+            sb_sql.append(" ORDER BY "+orderby+" ");
+        }
+        //分页 
+        if (beginindex != -1 && endindex != -1)
+        {
+            sb_sql.insert(0, "SELECT * FROM (");
+            sb_sql.append(" ) AS [Table] WHERE 1=1");
+            sb_sql.append(" AND [Table].[RANK] >= "+beginindex+" AND [Table].[RANK] <"+endindex+" ");
+        }
+        SsiotResult ds = DbHelperSQL.getInstance().Query(sb_sql.toString(),20);
+        return ds;
+    }
                  
     
     //获取流水数据(只在前range条中查找)//前10000条的限制加在前面，所以不卡，但可能有问题 暂时只用在所有节点列表显示界面
@@ -248,7 +352,7 @@ public class LiveData{
     }
     
     //精确查找获取数据
-    public SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
+    private SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, 
             int beginindex, int endindex, boolean unit, String nodenolist)
     {
         SsiotResult ds = null;

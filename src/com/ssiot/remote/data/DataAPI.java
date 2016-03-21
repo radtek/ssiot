@@ -130,17 +130,28 @@ public class DataAPI {
         if (objModel == null) {
             AreaModel area_mdl = new AreaModel();
             List<AreaModel> area_list = new ArrayList<AreaModel>();
-            area_mdl = bllarea.GetModel(areaid);
-            if (area_mdl != null) {
-                area_list = bllarea.GetSelfAndChildrenAreaByAreaCode(area_mdl._areacode);
+            if (areaid == 0){//管理员
+                area_list = bllarea.GetModelList(" 1=1");
+                if (area_list.size() > 0) {
+                    for (AreaModel a : area_list) {
+                        areaidsStr += a._areaid + ",";
+                    }
+                }
             } else {
-                areaidsStr = "" + areaid;
-            }
-            if (area_list.size() > 0) {
-                for (AreaModel a : area_list) {
-                    areaidsStr += a._areaid + ",";
+                area_mdl = bllarea.GetModel(areaid);
+                if (area_mdl != null) {
+                    area_list = bllarea.GetSelfAndChildrenAreaByAreaCode(area_mdl._areacode);
+                    if (area_list.size() > 0) {
+                        for (AreaModel a : area_list) {
+                            areaidsStr += a._areaid + ",";
+                        }
+                    }
+                } else {
+                    areaidsStr = "" + areaid;
                 }
             }
+            
+            
             if (!TextUtils.isEmpty(areaidsStr) && areaidsStr.contains(",")) {
                 areaidsStr = areaidsStr.trim();// trim(',')
             }
@@ -500,7 +511,7 @@ public class DataAPI {
     /// <returns></returns>
     public static SsiotResult GetData(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 
             boolean unit, int range, List<SensorViewModel> sensorlist, String nodenolist) {//TODO20160115临时改的 _old
-        return mLiveDataSevice.GetData(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
+        return mLiveDataSevice.GetData_3(grainsize, valuetype, begintime, endtime, orderby, beginindex, endindex, unit, range, sensorlist, nodenolist);
     }
     
     public static SsiotResult GetData_old(String grainsize, String valuetype, String begintime, String endtime, String orderby, int beginindex, int endindex, 

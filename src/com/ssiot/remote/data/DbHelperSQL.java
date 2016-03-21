@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.ssiot.remote.ContextUtilApp;
+import com.ssiot.remote.Utils;
 import com.ssiot.remote.receiver.SsiotReceiver;
 
 import java.sql.Connection;
@@ -160,7 +161,7 @@ public class DbHelperSQL{
     //注意：问号与arrylist个数一致
     public SsiotResult Query(String SQLString, ArrayList<String> cmdParams){
         synchronized (objlock) {
-            Log.v(tag, "1#带参数Query####" + SQLString);
+            Log.v(tag, "1#带参数Query####" + SQLString + "------------" +toLogString(cmdParams));
             long time1 = SystemClock.uptimeMillis();
             try {
                 
@@ -368,7 +369,9 @@ public class DbHelperSQL{
                 Log.v(tag, "连接ssiot数据库成功");
             } catch (Exception e) {
                 e.printStackTrace();
-                toastmsg(MSGOPENFAIL);
+                if (!Utils.isBackground(ContextUtilApp.getInstance())){
+                    toastmsg(MSGOPENFAIL);//若后台运行失败，会一直弹出 TODO
+                }
                 return false;
             }
             return true;
@@ -418,6 +421,16 @@ public class DbHelperSQL{
         }
         for (int i = 0; i < ar.size(); i ++){
             str += " "+ar.get(i);
+        }
+        return str;
+    }
+    
+    private String toLogString(List list){
+        String str = "";
+        if (null != list && list.size() > 0){
+            for (int i = 0; i < list.size(); i ++){
+                str += list.get(i).toString();
+            }
         }
         return str;
     }

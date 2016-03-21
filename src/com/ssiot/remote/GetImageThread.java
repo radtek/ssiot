@@ -22,6 +22,7 @@ import java.net.URL;
 
 public class GetImageThread extends Thread{
     private static final String tag = "GetImageThread.java";
+    public static final int MSG_GETFTPIMG_END = MoniNodeListFrag.MSG_GET_ONEIMAGE_END;
     String url = "";
     ImageView imageView;
     Handler uiHandler;
@@ -37,8 +38,6 @@ public class GetImageThread extends Thread{
         message.obj = new ThumnailHolder(imageView, bitmap);
         uiHandler.sendMessage(message);
     }
-    
-    
     
     public static Bitmap getHttpBitmap(String url){
         URL myFileURL;
@@ -87,11 +86,12 @@ public class GetImageThread extends Thread{
     }
     
     public static void saveBitmap(Bitmap bm, String path) {
+        path = path.replace("http://", "");
         File f = new File(path);
         f.getParentFile().mkdirs();
         if (f.exists()) {
             boolean b = f.delete();
-            Log.v(tag, "------delete result :" + b);
+            Log.v(tag, "------exists delete result :" + b + " " + path);
         }
         try {
             FileOutputStream out = new FileOutputStream(f);

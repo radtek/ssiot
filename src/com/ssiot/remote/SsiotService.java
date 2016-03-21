@@ -78,7 +78,7 @@ public class SsiotService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.v(tag, "-------------onStartCommand---------------");
         cancel = false;
-        if (!mWorker.isAlive() && isLogedIn()){
+        if (!mWorker.isAlive() && isLogedIn() && Utils.getBooleabPref(Utils.PREF_ALARM, this)){
             mWorker.start();//TODO
         }
         return super.onStartCommand(intent, flags, startId);
@@ -93,7 +93,7 @@ public class SsiotService extends Service{
                 synchronized (lock) {
                     
                     try {
-                        Thread.sleep(10 * 1000);
+                        Thread.sleep(60 * 1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -137,7 +137,7 @@ public class SsiotService extends Service{
     }
 
     private void getWitchToCompare(String account){//TODO account
-        account = mPref.getString("username", "");
+        account = mPref.getString(Utils.PREF_USERNAME, "");
         if (TextUtils.isEmpty(account)){
             Log.e(tag, "------account = null");
             return;
@@ -346,7 +346,7 @@ public class SsiotService extends Service{
         if (mPref == null){
             return false;
         }
-        String pwd = mPref.getString("password", "");
+        String pwd = mPref.getString(Utils.PREF_PWD, "");
         return !TextUtils.isEmpty(pwd);
     }
     
