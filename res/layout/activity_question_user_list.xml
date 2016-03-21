@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_activity_rootview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<!--     <com.satan.peacantdoctor.base.ui.BaseTitleBar -->
+<!--         android:id="@id/title_bar" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" /> -->
+
+    <com.ssiot.fish.question.widget.VerticalSwipeRefreshLayout
+        android:id="@+id/ask_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    
+    <ImageButton
+        android:id="@+id/question_new" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@null"
+        android:src="@drawable/question_new_select"/>
+
+<!--     <com.satan.peacantdoctor.question.widget.QuestionEditFlowBar -->
+<!--         android:id="@id/question_flow_bar" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         android:layout_below="@id/title_bar" -->
+<!--         android:visibility="gone" /> -->
+
+</RelativeLayout>

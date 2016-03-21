@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TableRow
+        android:id="@+id/TableRowStartTime"
+        style="@style/setItemTopClickBg"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/titleHeight"
+        android:gravity="center_vertical"
+        android:onClick="ClickStartTime" >
+
+        <TextView
+            android:id="@+id/TextViewTitleStart"
+            style="@style/ItemTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0"
+            android:text="开始时间" />
+
+        <TextView
+            android:id="@+id/TextViewStart"
+            style="@style/SetContentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/Margin10"
+            android:drawableRight="@drawable/arrow_right_light"
+            android:tag="start"
+            android:text="" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRowEndTime"
+        style="@style/setItemBottomClickBg"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/titleHeight"
+        android:gravity="center_vertical"
+        android:onClick="ClickEndTime" >
+
+        <TextView
+            style="@style/ItemTitleText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="结束时间" />
+
+        <TextView
+            android:id="@+id/TextViewEnd"
+            style="@style/SetContentText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/Margin10"
+            android:drawableRight="@drawable/arrow_right_light"
+            android:tag="end"
+            android:text="" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRowTimeError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/MarginMini"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/textViewStartError"
+            style="@style/setItemBg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="开始时间不能大于结束时间"
+            android:textColor="@color/errorColor" />
+    </TableRow>
+
+</LinearLayout>

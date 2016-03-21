@@ -113,11 +113,6 @@
             android:label="@string/live_activity_title"
             android:screenOrientation="portrait" />
 	    
-	    <activity
-            android:name=".expert.DiagnoseFishActivity"
-            android:label="@string/activity_diagnosefish"
-            android:screenOrientation="portrait" />
-        
         <activity
             android:name=".expert.DiagnoseFishSelectActivity"
             android:label="@string/activity_selectfish"
@@ -145,6 +140,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.ssiot.remote.update.versiongot" />
+                <action android:name="com.ssiot.remote.update.downloadprogress" />
+                <action android:name="com.ssiot.remote.update.downfinish" />
+                <action android:name="com.ssiot.remote.update.error" />
+            </intent-filter>
         </receiver>
         
         <service android:name="com.ssiot.remote.SsiotService"
@@ -153,6 +154,12 @@
                 <action android:name="com.ssiot.remote.SsiotService" />
             </intent-filter>
         </service>
+        <activity
+            android:name="com.ssiot.remote.UpdateDialogActivity"
+            android:label="@string/app_name"
+            android:theme="@style/MyDialogStyle"
+            android:screenOrientation="portrait" />
+<!--         android:theme="@android:style/Theme.Dialog" -->
 
     </application>
     

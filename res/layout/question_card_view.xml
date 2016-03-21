@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/ask_card_guanzhu_zuowu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/master_btn_white_pure"
+        android:drawableRight="@drawable/icon_card_arrow_right"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:paddingBottom="15.0dip"
+        android:paddingLeft="17.0dip"
+        android:paddingRight="17.0dip"
+        android:paddingTop="15.0dip"
+        android:singleLine="true"
+        android:text="您还没有关注任何作物，请点击去关注"
+        android:textColor="@color/master_text_color_1"
+        android:textSize="@dimen/textsize_h3"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/ask_card_guanzhu_zuowu_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1.0px"
+        android:background="@color/master_card_line_color"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/ask_card_first_margin"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/card_margin"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/card_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="36.0dip"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="2.0dip"
+            android:drawablePadding="12.0dip"
+            android:drawableRight="@drawable/icon_refresh"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="您上次看到这里，点击刷新"
+            android:textColor="@color/master_text_color_2"
+            android:textSize="@dimen/textsize_h4"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/question_card_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginRight="@dimen/card_margin"
+        android:background="@drawable/master_card_bg"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/ask_card_pic_root"
+                android:layout_width="@dimen/question_card_image_width"
+                android:layout_height="@dimen/question_card_image_height"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="15.0dip" >
+
+                <ImageView
+                    android:id="@+id/ask_card_pic"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:id="@+id/ask_card_pic_more"
+                    android:layout_width="16.0dip"
+                    android:layout_height="16.0dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:background="@drawable/icon_pic_more"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/ask_card_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="12.0dip"
+                android:layout_toLeftOf="@id/ask_card_pic_root"
+                android:ellipsize="end"
+                android:gravity="center|left|top"
+                android:lineSpacingExtra="@dimen/textsize_h1_linespace"
+                android:singleLine="true"
+                android:textColor="@color/master_text_color_1"
+                android:textSize="@dimen/textsize_h2" />
+
+            <TextView
+                android:id="@+id/ask_card_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ask_card_title"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="1.0dip"
+                android:layout_toLeftOf="@id/ask_card_pic_root"
+                android:ellipsize="end"
+                android:gravity="center|left|top"
+                android:lineSpacingExtra="3.0dip"
+                android:maxLines="2"
+                android:textColor="@color/master_text_color_2"
+                android:textSize="@dimen/textsize_h3" />
+
+            <TextView
+                android:id="@+id/ask_card_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/ask_card_content"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="4.0dip"
+                android:layout_toLeftOf="@id/ask_card_pic_root"
+                android:drawableLeft="@drawable/icon_card_lbs"
+                android:drawablePadding="6.0dip"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="无地址信息"
+                android:textColor="@color/master_text_color_blue"
+                android:textSize="@dimen/textsize_h4" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0px"
+            android:layout_marginTop="6.0dip"
+            android:background="@color/master_card_line_color" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10.0dip" >
+
+            <TextView
+                android:id="@+id/ask_card_replycount_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4.0dip"
+                android:background="@drawable/btn_master_blue"
+                android:gravity="center"
+                android:minWidth="25.0dip"
+                android:padding="4.0dip"
+                android:text="0"
+                android:textColor="#ff0d60c0"
+                android:textSize="@dimen/textsize_h4" />
+
+            <TextView
+                android:id="@+id/ask_card_replycount_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="6.0dip"
+                android:layout_toRightOf="@id/ask_card_replycount_text"
+                android:singleLine="true"
+                android:text="个回答"
+                android:textColor="@color/master_text_color_2"
+                android:textSize="@dimen/textsize_h3" />
+
+<!--             暂用为专家图标 -->
+            <ImageView
+                android:id="@+id/ask_card_guanfang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_toRightOf="@id/ask_card_replycount_label"
+                android:src="@drawable/icon_question_guanfang_true"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/ask_card_caina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_toRightOf="@id/ask_card_guanfang"
+                android:src="@drawable/icon_question_caina_true"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/ask_card_tuijian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_toRightOf="@id/ask_card_caina"
+                android:src="@drawable/icon_question_tuijian_true"
+                android:visibility="gone" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5.0dip"
+                android:src="@drawable/icon_card_arrow_right" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/event_card_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginRight="@dimen/card_margin"
+        android:background="@drawable/master_card_green_bg"
+        android:visibility="gone"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/event_card_pic_root"
+                android:layout_width="@dimen/question_card_image_width"
+                android:layout_height="@dimen/question_card_image_height"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="15.0dip" >
+
+                <ImageView
+                    android:id="@+id/event_card_pic"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@color/master_grey_color"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:id="@+id/event_card_pic_more"
+                    android:layout_width="16.0dip"
+                    android:layout_height="16.0dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:background="@drawable/icon_pic_more" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/event_card_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4.0dip"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="12.0dip"
+                android:layout_toLeftOf="@id/event_card_pic_root"
+                android:ellipsize="end"
+                android:gravity="center|left|top"
+                android:lineSpacingExtra="@dimen/textsize_h1_linespace"
+                android:singleLine="true"
+                android:textColor="@color/master_green_color"
+                android:textSize="@dimen/textsize_h2" />
+
+            <TextView
+                android:id="@+id/event_card_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/event_card_title"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:layout_marginTop="1.0dip"
+                android:layout_toLeftOf="@id/event_card_pic_root"
+                android:ellipsize="end"
+                android:gravity="center|left|top"
+                android:lineSpacingExtra="3.0dip"
+                android:maxLines="2"
+                android:textColor="@color/master_green_deep_color"
+                android:textSize="@dimen/textsize_h3" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0px"
+            android:layout_marginTop="6.0dip"
+            android:background="@color/master_card_line_color" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10.0dip" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="4.0dip"
+                android:background="@drawable/btn_master_green"
+                android:gravity="center"
+                android:minWidth="25.0dip"
+                android:padding="4.0dip"
+                android:text="推广"
+                android:textColor="@color/master_white_color"
+                android:textSize="@dimen/textsize_h4" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/card_margin" />
+
+    <include layout="@layout/view_recycleview_loading" />
+
+</LinearLayout>

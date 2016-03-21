@@ -60,5 +60,28 @@
 	<color name="errorColor">#fff08080</color>
 	<color name="otherSubTextColor">#ff777777</color>
 	<color name="DarkGreen">#ff2d8931</color>
+	<color name="aa">#ffaaaaaa</color>
+	<color name="c999999">#ff999999</color>
+	<color name="c777777">#ff777777</color>
+	<color name="bgColor">#fff0f0f0</color>
+	<color name="transparent">#00000000</color>
+	<color name="c333333">#ff333333</color>
+	<color name="itemPressColor">#ffc7d9bc</color>
 
+	
+<!-- 	copy 渔业通 还是农医生？？-->
+	<color name="master_text_color_1">#ff333333</color>
+	<color name="master_grey_light_color">#fff2f2f2</color>
+	<color name="master_white_color">#ffffffff</color>
+	<color name="master_card_line_color">#ffd8d8d8</color>
+	<color name="master_text_color_2">#ff838383</color>
+	<color name="master_text_color_blue">#ff5072a8</color>
+	<color name="master_green_color">#ff8dcb4a</color>
+	<color name="master_green_deep_color">#ff417505</color>
+	<color name="master_grey_color">#ffeeeeee</color>
+	<color name="master_text_color_hint">#ffbebebe</color>
+	<color name="master_title_bar_color">#ff434343</color>
+	<color name="master_card_time_color">#ff929292</color>
+	<color name="master_gold_color">#fffcba42</color>
+	<color name="master_red_color">#ffd0132a</color>
 </resources>

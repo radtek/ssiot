@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_activity_rootview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+<!--     <com.satan.peacantdoctor.base.ui.BaseTitleBar -->
+<!--         android:id="@id/title_bar" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" /> -->
+<include 
+    android:id="@+id/title_bar_detail"
+    layout="@layout/title_bar"/>
+
+<!--     <LinearLayout -->
+<!--         android:id="@+id/ask_detail_tool" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentBottom="true" -->
+<!--         android:clickable="false" -->
+<!--         android:orientation="vertical" > -->
+
+<!--         <View -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="1.0px" -->
+<!--             android:background="@color/master_card_line_color" /> -->
+
+<!--         <LinearLayout -->
+<!--             android:id="@+id/ask_detail_feedback_root" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="50.0dip" -->
+<!--             android:layout_margin="12.0dip" -->
+<!--             android:orientation="horizontal" -->
+<!--             android:visibility="gone" > -->
+
+<!--             <TextView -->
+<!--                 android:id="@+id/ask_detail_feedback_done_btn" -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="1.0" -->
+<!--                 android:background="@drawable/btn_master_green" -->
+<!--                 android:gravity="center" -->
+<!--                 android:text="问题已解决" -->
+<!--                 android:textColor="@color/master_white_color" -->
+<!--                 android:textSize="@dimen/textsize_h3" /> -->
+
+<!--             <View -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="0.1" /> -->
+
+<!--             <TextView -->
+<!--                 android:id="@+id/ask_detail_feedback_undone_btn" -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="1.0" -->
+<!--                 android:background="@drawable/btn_master_green" -->
+<!--                 android:gravity="center" -->
+<!--                 android:text="问题未解决" -->
+<!--                 android:textColor="@color/master_white_color" -->
+<!--                 android:textSize="@dimen/textsize_h3" /> -->
+<!--         </LinearLayout> -->
+
+<!--         <LinearLayout -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="50.0dip" -->
+<!--             android:layout_alignParentBottom="true" > -->
+
+<!--             <RelativeLayout -->
+<!--                 android:id="@+id/ask_detail_ask_share_root" -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="2.0" -->
+<!--                 android:background="@drawable/master_btn_white_pure" > -->
+
+<!--                 <TextView -->
+<!--                     android:id="@+id/ask_detail_ask_share" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_centerInParent="true" -->
+<!--                     android:drawablePadding="5.0dip" -->
+<!--                     android:drawableRight="@drawable/icon_share" -->
+<!--                     android:text="分享" -->
+<!--                     android:textColor="@color/master_text_color_2" -->
+<!--                     android:textSize="@dimen/textsize_h4" /> -->
+<!--             </RelativeLayout> -->
+
+<!--             <View -->
+<!--                 android:layout_width="1.0px" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:background="@color/master_card_line_color" /> -->
+
+<!--             <RelativeLayout -->
+<!--                 android:id="@+id/ask_detail_ask_fav_root" -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="2.0" -->
+<!--                 android:background="@drawable/master_btn_white_pure" > -->
+
+<!--                 <TextView -->
+<!--                     android:id="@+id/ask_detail_ask_fav" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_centerInParent="true" -->
+<!--                     android:drawablePadding="5.0dip" -->
+<!--                     android:drawableRight="@drawable/icon_fav_no" -->
+<!--                     android:text="收藏" -->
+<!--                     android:textColor="@color/master_text_color_2" -->
+<!--                     android:textSize="@dimen/textsize_h4" /> -->
+<!--             </RelativeLayout> -->
+
+<!--             <View -->
+<!--                 android:layout_width="1.0px" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:background="@color/master_card_line_color" /> -->
+
+<!--             <RelativeLayout -->
+<!--                 android:id="@+id/ask_detail_ask_root" -->
+<!--                 android:layout_width="0.0dip" -->
+<!--                 android:layout_height="fill_parent" -->
+<!--                 android:layout_weight="3.0" -->
+<!--                 android:background="@color/master_green_color" > -->
+
+<!--                 <TextView -->
+<!--                     android:id="@+id/ask_detail_reply_btn" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_centerInParent="true" -->
+<!--                     android:drawablePadding="5.0dip" -->
+<!--                     android:drawableRight="@drawable/icon_reply" -->
+<!--                     android:text="我来回答" -->
+<!--                     android:textColor="@color/master_white_color" -->
+<!--                     android:textSize="@dimen/textsize_h4" /> -->
+<!--             </RelativeLayout> -->
+<!--         </LinearLayout> -->
+<!--     </LinearLayout> -->
+    
+    
+<!--     jingbo add this  copy from activity_chat.xml-->
+    <RelativeLayout
+        android:id="@+id/ask_detail_tool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="6.0dip" >
+
+        <LinearLayout
+            android:id="@+id/shop_cmt_submit_edittext_root"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="52.0dip"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/shop_cmt_submit_edittext"
+                style="@style/PD.EditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left|top"
+                android:hint="输入内容"
+                android:inputType="textMultiLine"
+                android:maxLines="10"
+                android:paddingBottom="5.0dip"
+                android:paddingLeft="2.0dip"
+                android:paddingRight="2.0dip"
+                android:paddingTop="5.0dip"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/textsize_h3" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_green_color" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/shop_cmt_submit_line"
+            android:layout_width="fill_parent"
+            android:layout_height="1.0px"
+            android:layout_below="@id/shop_cmt_submit_edittext_root" />
+
+        <TextView
+            android:id="@+id/shop_cmt_submit_button"
+            android:layout_width="45.0dip"
+            android:layout_height="30.0dip"
+            android:layout_above="@id/shop_cmt_submit_line"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_master_green"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/master_white_color"
+            android:textSize="@dimen/textsize_h3" />
+    </RelativeLayout>
+
+    <com.ssiot.fish.question.widget.VerticalSwipeRefreshLayout
+        android:id="@+id/shop_cmt_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ask_detail_tool"
+        android:layout_below="@id/title_bar_detail" />
+
+</RelativeLayout>

@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include 
+        layout="@layout/title_bar"/>
+    
+    <TextView
+        android:id="@+id/RadioButtonFarm"
+        style="@style/tab7714"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/s_menu_select"
+        android:button="@null"
+        android:checked="true"
+        android:gravity="center"
+        android:text="企业组织架构" />
+    
+    <include 
+        layout="@layout/activity_swiperefresh_list"/>
+
+</LinearLayout>

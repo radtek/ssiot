@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_activity_rootview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<!--     <com.satan.peacantdoctor.base.ui.BaseTitleBar -->
+<!--         android:id="@+id/title_bar" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" /> -->
+
+<include 
+    android:id="@+id/title_innerbar"
+    layout="@layout/title_bar"/>
+<!-- android:layout_below="@id/title_bar" -->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/title_innerbar"
+         >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/submit_question_title_edittext"
+                style="@style/PD.EditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/master_white_color"
+                android:dividerHeight="0.0dip"
+                android:gravity="center|left|top"
+                android:hint="请简单输入您遇到的问题"
+                android:inputType="textMultiLine"
+                android:padding="@dimen/card_padding_medium"
+                android:textSize="@dimen/textsize_h3" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_card_line_color" />
+
+<!--             android:layout_below="@id/submit_question_camera" -->
+            <EditText
+                android:id="@+id/submit_question_extra_edittext"
+                style="@style/PD.EditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                
+                android:background="@color/master_white_color"
+                android:gravity="center|left|top"
+                android:hint="请详细描述您遇到的问题，方便专家解答（选填）"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:padding="@dimen/card_padding_medium"
+                android:textSize="@dimen/textsize_h3" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_card_line_color" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="8.0dip" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_card_line_color" />
+
+            <EditText
+                android:id="@+id/submit_question_crop_edittext"
+                style="@style/PD.EditText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/master_white_color"
+                android:gravity="center|left|top"
+                android:hint="添加与提问相关的作物名称（选填）"
+                android:inputType="textMultiLine"
+                android:padding="@dimen/card_padding_medium"
+                android:textSize="@dimen/textsize_h3" />
+
+<!--             <com.satan.peacantdoctor.base.widget.PicModelSelectGridView -->
+<!--                 xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!--                 xmlns:f="http://schemas.android.com/apk/res-auto" -->
+<!--                 android:id="@+id/submit_question_camera" -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:background="@color/master_white_color" -->
+<!--                 android:contentDescription="@null" -->
+<!--                 android:padding="@dimen/card_padding_medium" -->
+<!--                 android:scaleType="centerInside" -->
+<!--                 android:src="@drawable/icon_camera_normal" -->
+<!--                 f:horizontalSpacing="8.0dip" -->
+<!--                 f:itemHeight="75.0dip" -->
+<!--                 f:itemWidth="75.0dip" -->
+<!--                 f:verticalSpacing="8.0dip" /> -->
+
+			<com.ssiot.fish.question.widget.PicModelGridView
+			    android:id="@+id/submit_question_camera"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:background="@color/master_white_color" 
+			    android:padding="@dimen/card_padding_medium"
+			    android:horizontalSpacing="8.0dp"
+			    android:numColumns="4"
+			    android:verticalSpacing="8.0dp"
+			    />
+			
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_card_line_color" />
+
+<!--             android:layout_below="@id/submit_question_edittext_line" -->
+            <TextView
+                android:id="@+id/submit_question_pos"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                
+                android:background="@color/master_white_color"
+                android:drawableLeft="@drawable/icon_submit_lbs_unselected"
+                android:drawablePadding="10.0dip"
+                android:drawableRight="@drawable/icon_arrow_grey"
+                android:gravity="center|left"
+                android:padding="@dimen/card_padding_medium"
+                android:text="所在位置"
+                android:textColor="@color/master_text_color_1"
+                android:textSize="@dimen/textsize_h3" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:background="@color/master_card_line_color" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

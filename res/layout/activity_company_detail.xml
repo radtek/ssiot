@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <TextView 
+        android:id="@+id/company_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/master_text_color_1"
+        android:textSize="@dimen/textsize_h2"
+        android:padding="5dp"/>
+    
+    <TextView 
+        android:id="@+id/company_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/master_text_color_1"
+        android:textSize="@dimen/textsize_h2"
+        android:padding="5dp"/>
+    
+    <TextView 
+        android:id="@+id/company_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/master_text_color_2"
+        android:textSize="@dimen/textsize_h2"
+        android:padding="5dp"/>
+    
+    <TextView 
+        android:id="@+id/company_remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/master_text_color_1"
+        android:textSize="@dimen/textsize_h2"
+        android:padding="5dp"/>
+    
+</LinearLayout>

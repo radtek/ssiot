@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string-array name="fishes">
-        <item>淡水-鱼类-鳗鲡</item>
-        <item>淡水-鱼类-锦鲤</item>
-        <item>淡水-鱼类-鲫鱼</item>
+        <item>海水-鱼类-美国红鱼</item>
+        <item>海水-鱼类-卵形鲳鲹</item>
+        <item>海水-鱼类-大黄鱼</item>
+        <item>海水-鱼类-鲆蝶类</item>
+        <item>海水-鱼类-石斑鱼</item>
+        
         <item>淡水-鱼类-鲌鱼</item>
+        <item>淡水-鱼类-淡水白鲳</item>
+        <item>淡水-鱼类-白斑狗鱼</item>
+        <item>淡水-鱼类-鲮鱼</item>
+        <item>淡水-鱼类-罗汉鱼</item>
+        <item>淡水-鱼类-鲶</item>
         <item>淡水-鱼类-草鱼</item>
         <item>淡水-鱼类-团头鲂</item>
         <item>淡水-鱼类-罗非鱼</item>
@@ -12,6 +21,9 @@
         <item>淡水-鱼类-虹鳟</item>
         <item>淡水-鱼类-加州鲈</item>
         <item>淡水-鱼类-黄颡鱼</item>
+        <item>淡水-鱼类-鳗鲡</item>
+        <item>淡水-鱼类-锦鲤</item>
+        <item>淡水-鱼类-鲫鱼</item>
         <item>淡水-鱼类-鳜鱼</item>
         <item>淡水-鱼类-黄鳝</item>
         <item>淡水-鱼类-泥鳅</item>
@@ -24,11 +36,71 @@
         <item>淡水-鱼类-长吻鮠</item>
         <item>淡水-鱼类-鲢</item>
         <item>淡水-鱼类-鳙</item>
-        <item>淡水-鱼类-淡水白鲳</item>
-        <item>淡水-鱼类-白斑狗鱼</item>
-        <item>淡水-鱼类-鲮鱼</item>
-        <item>淡水-鱼类-罗汉鱼</item>
-        <item>淡水-鱼类-鲶</item>
+        
         <item>海水-甲壳类-对虾</item>
+        <item>淡水-甲壳类-河蟹</item>
+        <item>淡水-甲壳类-龟</item>
+        
+        <item>海水-贝类-扇贝</item>
+        <item>海水-贝类-缢蛏</item>
+        <item>海水-贝类-鲍</item>
+        <item>海水-贝类-牡蛎</item>
+        <item>淡水-贝类-河蚌</item>
+        
+        <item>其他-大鲵</item>
+        <item>其他-中华鳖</item>
+        <item>其他-牛蛙</item>
     </string-array> 
+    
+    <integer-array name="fishes_int">
+        <item>44</item>
+        <item>46</item>
+        <item>12</item>
+        <item>13</item>
+        <item>17</item>
+        
+        <item>47</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>45</item>
+        <item>2</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>19</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        
+        <item>15</item>
+        <item>14</item>
+        <item>32</item>
+        
+        <item>38</item>
+        <item>53</item>
+        <item>16</item>
+        <item>28</item>
+        <item>21</item>
+        
+        <item>17</item>
+        <item>18</item>
+        <item>33</item>
+        
+    </integer-array>
 </resources>  

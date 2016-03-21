@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_f0f0f0"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <include
+            android:id="@+id/includeFoot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/title_bar" />
+
+        <TextView
+            android:id="@+id/textViewSend"
+            style="@style/FilterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/MarginSmall"
+            android:background="@drawable/green_action_btn_select"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_actionbar_send"
+            android:text="发送" />
+    </RelativeLayout>
+
+    <ScrollView
+        style="@style/Scoller"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/Margin"
+                android:layout_marginRight="@dimen/Margin"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/LinearLayoutHasFertilizes"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/titleHeight"
+                    android:layout_marginTop="@dimen/Margin"
+                    android:background="@drawable/bg_optionlist_top_normal"
+                    android:visibility="gone" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/mainImgMargin"
+                        android:paddingRight="@dimen/mainImgMargin" >
+
+                        <TextView
+                            style="@style/ItemTitleText"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.0"
+                            android:text="需要用肥" />
+
+                        <TextView
+                            android:id="@+id/textViewFertilizes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/MarginMini"
+                            android:layout_marginRight="@dimen/MarginMini"
+                            android:text="@string/toggleYes" />
+
+                        <ToggleButton
+                            android:id="@+id/toggleButtonFertilizes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/set_toggle"
+                            android:checked="true"
+                            android:focusable="false"
+                            android:tag="0"
+                            android:textOff=""
+                            android:textOn="" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/fertilizesRelativeLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/titleHeight"
+                    android:background="@drawable/bg_optionlist_bottom_select"
+                    android:paddingLeft="@dimen/mainImgMargin"
+                    android:paddingRight="@dimen/mainImgMargin"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="肥料使用表"
+                        android:textColor="@color/c333333"
+                        android:textSize="@dimen/itemContent" />
+
+                    <TextView
+                        android:id="@+id/fertilizesTotalTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:drawablePadding="@dimen/mainMargin"
+                        android:drawableRight="@drawable/arrow_right_light"
+                        android:singleLine="true"
+                        android:textColor="@color/aa"
+                        android:textSize="@dimen/itemContent" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/LinearLayoutHasSprays"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/titleHeight"
+                    android:layout_marginTop="@dimen/Margin"
+                    android:background="@drawable/bg_optionlist_top_normal"
+                    android:visibility="gone" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/mainImgMargin"
+                        android:paddingRight="@dimen/mainImgMargin" >
+
+                        <TextView
+                            style="@style/ItemTitleText"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.0"
+                            android:text="需要用药" />
+
+                        <TextView
+                            android:id="@+id/textViewSprays"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/MarginMini"
+                            android:layout_marginRight="@dimen/MarginMini"
+                            android:text="@string/toggleYes" />
+
+                        <ToggleButton
+                            android:id="@+id/toggleButtonSprays"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/set_toggle"
+                            android:checked="true"
+                            android:focusable="false"
+                            android:tag="0"
+                            android:textOff=""
+                            android:textOn="" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/spraysRelativeLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/titleHeight"
+                    android:background="@drawable/bg_optionlist_bottom_select"
+                    android:paddingLeft="@dimen/mainImgMargin"
+                    android:paddingRight="@dimen/mainImgMargin"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:singleLine="true"
+                        android:text="农药使用表"
+                        android:textColor="@color/c333333"
+                        android:textSize="@dimen/itemContent" />
+
+                    <TextView
+                        android:id="@+id/spraysTotalTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:drawablePadding="@dimen/mainMargin"
+                        android:drawableRight="@drawable/arrow_right_light"
+                        android:singleLine="true"
+                        android:textColor="@color/aa"
+                        android:textSize="@dimen/itemContent" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutPhoContain"
+                    style="@style/TextViewPaddingLeftRightSmallTopBottom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/Margin"
+                    android:background="@drawable/bg_radius10"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone" >
+                    
+                    <com.ssiot.fish.question.widget.PicModelGridView
+                        android:id="@+id/report_new_pic_grid"
+                        android:layout_width="fill_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10.0dip"
+                        android:layout_marginLeft="10.0dip"
+                        android:layout_marginRight="10.0dip"
+                        android:columnWidth="10dp"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="3"
+                        android:stretchMode="columnWidth"
+                        android:verticalSpacing="3dp" />
+
+<!--                     <unit.FixedGridLayout -->
+<!--                         android:id="@+id/linearLayoutPho" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="60.0dip" -->
+<!--                         android:orientation="horizontal" -->
+<!--                         android:visibility="gone" /> -->
+
+
+                    <TextView
+                        android:id="@+id/textViewAddPho"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:drawableLeft="@drawable/ic_task_addimage"
+                        android:gravity="center"
+                        android:text="\u0009添加图片"
+                        android:textColor="@color/txt_aa_select"
+                        android:textSize="@dimen/itemContent"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutLocation"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/Margin"
+                    android:background="@drawable/bg_input_select"
+                    android:padding="@dimen/contentPadding"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:id="@+id/textViewLocation"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:drawableLeft="@drawable/ic_task_location"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textColor="@color/aa"
+                        android:textSize="@dimen/itemContent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/Margin"
+                    android:layout_marginTop="@dimen/Margin"
+                    android:background="@drawable/bg_input_normal"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical" >
+
+                    <EditText
+                        android:id="@+id/editTextContent"
+                        style="@style/hintText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:gravity="left"
+                        android:hint="汇报内容"
+                        android:minHeight="80.0dip"
+                        android:paddingBottom="@dimen/Margin10"
+                        android:paddingLeft="@dimen/Margin"
+                        android:paddingRight="@dimen/Margin"
+                        android:paddingTop="@dimen/Margin10" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="@dimen/divider"
+                        android:layout_marginBottom="@dimen/MarginMini"
+                        android:layout_marginTop="@dimen/MarginMini"
+                        android:background="@drawable/divide_ccc" />
+
+<!--                     <include layout="@layout/op_menu_task_new" /> -->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LinearLayoutTask"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/titleHeight"
+                    android:background="@drawable/bg_optionlist_bottom_normal" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/mainImgMargin"
+                        android:paddingRight="@dimen/mainImgMargin" >
+
+                        <TextView
+                            style="@style/ItemTitleText"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.0"
+                            android:text="完成任务" />
+
+                        <TextView
+                            android:id="@+id/textViewTask"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/MarginMini"
+                            android:layout_marginRight="@dimen/MarginMini"
+                            android:text="不" />
+
+                        <ToggleButton
+                            android:id="@+id/toggleButtonTask"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/set_toggle"
+                            android:focusable="false"
+                            android:tag="0"
+                            android:textOff=""
+                            android:textOn="" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

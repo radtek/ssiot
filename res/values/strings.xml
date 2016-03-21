@@ -493,4 +493,7 @@
 <!-- 	huiyun -->
 	<string name="setTime">持续时长</string>
 	<string name="setSpand">每次间隔</string>
+	<string name="needNo">不需要</string>
+	<string name="toggleYes">是</string>
+	<string name="toggleNo">不</string>
 </resources>

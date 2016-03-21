@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ask_card_replycount_root"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/master_grey_color"
+    android:paddingBottom="10.0dip"
+    android:paddingLeft="17.0dip"
+    android:paddingRight="17.0dip"
+    android:paddingTop="17.0dip" >
+
+    <TextView
+        android:id="@+id/ask_card_replycount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="0"
+        android:textColor="@color/master_text_color_2"
+        android:textSize="@dimen/textsize_h3" />
+
+    <TextView
+        android:id="@+id/ask_card_replycount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5.0dip"
+        android:singleLine="true"
+        android:text="个回答"
+        android:textColor="@color/master_text_color_2"
+        android:textSize="@dimen/textsize_h3" />
+
+    <ImageView
+        android:id="@+id/ask_card_guanfang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10.0dip"
+        android:src="@drawable/icon_detail_guanfang_wenti"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -16,45 +16,47 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/app_icon"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:paddingTop="10dp"
-        android:text="0.0"
-        android:textSize="20sp"/>
+        android:text="0.0"/>
     
-    <TextView 
-        android:id="@+id/app_version_status"
-        android:layout_width="wrap_content"
+    <RelativeLayout 
+        android:id="@+id/checkupdate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_version"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="10dp"
-        android:textSize="20sp"/>
-    
-    <Button 
-        android:id="@+id/checkupdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="@string/soft_check"
-        android:background="@drawable/bk_update_select"/>
-    
-    <TextView 
-        android:id="@+id/app_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:text="更多功能，敬请期待"
-        android:textSize="16sp"/>
+        android:padding="10dp"
+        android:background="@drawable/bg_card_normal">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="版本更新"/>
+        
+        <TextView 
+            android:id="@+id/app_version_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:text="检查版本"/>
+        
+        <CheckBox 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="5dp"
+            android:checked="true"
+            android:button="@drawable/check_circle_selector"
+            android:visibility="invisible"/>
+    </RelativeLayout>
     
     <RelativeLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/app_info"
+        android:layout_below="@id/checkupdate"
         android:padding="10dp"
         android:background="@drawable/bg_card_normal">
         <TextView 
@@ -74,4 +76,14 @@
             android:button="@drawable/check_circle_selector"/>
     </RelativeLayout>
     
+    <TextView 
+        android:id="@+id/app_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="更多功能，敬请期待"
+        android:textSize="16sp"/>
 </RelativeLayout>

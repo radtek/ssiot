@@ -25,17 +25,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import com.ssiot.remote.R;
+import com.ssiot.remote.receiver.SsiotReceiver;
 
 public class UpdateManager{
-    private static final String tag = "UpdateManager";
+    private static final String tag = "UpdateManager-FISH";
     public static final int NOTIFICATION_FLAG = 1; 
     private Context mContext;
-    private Handler mAppHandler;
     public static boolean updating = false;
     
-    public UpdateManager(Context context, Handler v){
+    public UpdateManager(Context context){
         mContext = context;
-        mAppHandler = v;
     }
     
     public void startGetRemoteVer(){
@@ -52,34 +52,40 @@ public class UpdateManager{
     
     private class GetRemoteVerThread extends Thread{
         @Override
-        public void run() {
+        public synchronized void run() {
             updating = true;
             try {
                 HashMap<String, String> mHashMap;
                 int curV = getCurVersionCode(mContext);
-                URL url = new URL("http://yun.ssiot.com/APK/ssiotversion.xml");
+                URL url = new URL("http://www.ssiot.com/app/downloads/ssiotversion.xml");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.connect();
                 InputStream inStream = conn.getInputStream();
                 mHashMap = Utils.parseXml(inStream);
                 if (null != mHashMap){
                     int serviceCode = Integer.valueOf(mHashMap.get("version"));
-//                    remoteVersion = serviceCode;
-                    if (null != mAppHandler){
-                        Message m = mAppHandler.obtainMessage(MainActivity.MSG_GETVERSION_END);
-                        m.arg1 = serviceCode;
-                        m.arg2 = curV;
-                        m.obj = mHashMap;
-                        mAppHandler.sendMessage(m);
-                    }
+//                    if (null != mAppHandler){
+//                        Message m = mAppHandler.obtainMessage(MainActivity.MSG_GETVERSION_END);
+//                        m.arg1 = serviceCode;
+//                        m.arg2 = curV;
+//                        m.obj = mHashMap;
+//                        mAppHandler.sendMessage(m);
+//                    }
+                    Intent getVerEndIntent = new Intent(SsiotReceiver.ACTION_SSIOT_V_GOT);
+                    getVerEndIntent.putExtra("remoteversion", serviceCode);
+                    getVerEndIntent.putExtra("currentversion", curV);
+                    getVerEndIntent.putExtra("versionxmlmap", mHashMap);
+                    mContext.sendBroadcast(getVerEndIntent);
                 }
                 
             } catch (Exception e) {
                 e.printStackTrace();
-//                Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
-                Message m = mAppHandler.obtainMessage(MainActivity.MSG_GETVERSION_END);
-                m.arg1 = -1;
-                mAppHandler.sendMessage(m);
+//                Message m = mAppHandler.obtainMessage(MainActivity.MSG_GETVERSION_END);
+//                m.arg1 = -1;
+//                mAppHandler.sendMessage(m);
+                Intent getVerEndIntent = new Intent(SsiotReceiver.ACTION_SSIOT_V_GOT);
+                getVerEndIntent.putExtra("remoteversion", -1);
+                mContext.sendBroadcast(getVerEndIntent);
             }
             updating = false;
             
@@ -114,6 +120,9 @@ public class UpdateManager{
                 if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                     String mSavePath = getSavePath();
                     Log.v(tag, "--------------mSavePath" +mSavePath);
+                    if (null == mHashMap){
+                        throw new IOException("----HashMap is null!");
+                    }
                     URL url = new URL(mHashMap.get("url"));
                     //URL url = new URL("yun.ssiot.com/UpdateSoftDemo.apk");
                     // 创建连接
@@ -140,15 +149,20 @@ public class UpdateManager{
                         progressnow = (int) (((float) count / length) * 100);
                         // 更新进度
                         if (progressnow != progress){
-                            Message m = mAppHandler.obtainMessage(MainActivity.MSG_DOWNLOADING_PREOGRESS);
-                            m.arg1 = progress;
-                            mAppHandler.sendMessage(m);
+//                            Message m = mAppHandler.obtainMessage(MainActivity.MSG_DOWNLOADING_PREOGRESS);
+//                            m.arg1 = progress;
+//                            mAppHandler.sendMessage(m);
+                            Intent intent = new Intent(SsiotReceiver.ACTION_SSIOT_V_DOWNLOAD_PROGRESS);
+                            intent.putExtra("downloadprogress", progress);
+                            mContext.sendBroadcast(intent);
                         }
                         progress = progressnow;
                         
                         if (numread <= 0) {
                             // 下载完成
-                            mAppHandler.sendEmptyMessage(MainActivity.MSG_DOWNLOAD_FINISH);
+//                            mAppHandler.sendEmptyMessage(MainActivity.MSG_DOWNLOAD_FINISH);
+                            Intent intent = new Intent(SsiotReceiver.ACTION_SSIOT_V_DOWNLOAD_FINISH);
+                            mContext.sendBroadcast(intent);
                             break;
                         }
                         // 写入文件
@@ -158,19 +172,22 @@ public class UpdateManager{
                     is.close();
                     if (cancelUpdate && apkFile.exists()){
                         apkFile.delete();
-                        mAppHandler.sendEmptyMessage(MainActivity.MSG_DOWNLOAD_CANCEL);
+//                        mAppHandler.sendEmptyMessage(MainActivity.MSG_DOWNLOAD_CANCEL);
                     }
                 } else {
                     Log.v(tag, "!!!!!!!!!!!!!!!!! sdcard is not mounted");
-                    mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+//                    mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+                    mContext.sendBroadcast(new Intent(SsiotReceiver.ACTION_SSIOT_V_DOWNLOAD_ERROR));
                 }
             } catch (MalformedURLException e) {
 //                showText = "URL错误";
-                mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+//                mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+                mContext.sendBroadcast(new Intent(SsiotReceiver.ACTION_SSIOT_V_DOWNLOAD_ERROR));
                 e.printStackTrace();
             } catch (IOException e) {
 //                showText = "IO错误";
-                mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+//                mAppHandler.sendEmptyMessage(MainActivity.MSG_SHOWERROR);
+                mContext.sendBroadcast(new Intent(SsiotReceiver.ACTION_SSIOT_V_DOWNLOAD_ERROR));
                 e.printStackTrace();
             }
             // 取消下载对话框显示
@@ -185,7 +202,7 @@ public class UpdateManager{
         }
     };
     
-    public String getSavePath(){
+    public static String getSavePath(){
         String path = Environment.getExternalStorageDirectory() + "/" + SsiotConfig.CACHE_DIR+ "/";
         return path;
     }
@@ -230,18 +247,6 @@ public class UpdateManager{
         }
     }
     
-    public void installApk() {
-        File apkfile = new File(getSavePath(), "ssiot2.apk");
-        if (!apkfile.exists()) {
-            Toast.makeText(mContext, "未找到文件" + apkfile.getPath(), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // 通过Intent安装APK文件
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
-        i.setDataAndType(Uri.parse("file://" + apkfile.toString()), "application/vnd.android.package-archive");
-        mContext.startActivity(i);
-    }
     
 //    // in Thread
 //    public interface VersionListener{

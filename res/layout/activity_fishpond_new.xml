@@ -1,0 +1,128 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+	<include
+        android:id="@+id/title_fishpondnew"
+        layout="@layout/title_bar" />
+    
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:shrinkColumns="2" >
+
+        <TableRow
+            android:id="@+id/row_name"
+            style="@style/setItemBgClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:onClick="StartTimeClick" >
+
+            <EditText
+                android:id="@+id/edit_name"
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:hint="鱼场名称" />
+
+            <TextView
+                android:id="@+id/TextViewStart"
+                style="@style/SetContentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/Margin10"
+                android:drawableRight="@drawable/arrow_right_light"
+                android:gravity="right"
+                android:tag="start"
+                android:visibility="gone" />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/row_addr"
+            style="@style/setItemBgClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:layout_marginTop="@dimen/Margin"
+            android:onClick="StartTimeClick" >
+
+            <EditText
+                android:id="@+id/edit_addr"
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:hint="地址名称" />
+
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/row_long"
+            style="@style/setItemTopClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:layout_marginTop="@dimen/Margin"
+            android:onClick="StartTimeClick" >
+
+            <TextView
+                android:id="@+id/txt_longti"
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:text="经度:" />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/row_la"
+            style="@style/setItemBottomClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:onClick="StartTimeClick" >
+
+            <TextView
+                android:id="@+id/txt_lati"
+                style="@style/ItemTitleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:text="纬度:" />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/row_size"
+            style="@style/setItemBgClickBg"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/subMenuHeight"
+            android:layout_marginTop="@dimen/Margin"
+            android:onClick="StartTimeClick" >
+
+            <TextView
+                android:id="@+id/txt_size"
+                style="@style/ItemTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:text="面积:" />
+            
+            <EditText 
+                android:id="@+id/edit_size"
+                style="@style/ItemTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@null"
+                android:numeric="decimal"
+                android:hint="请输入占地面积，单位亩"
+                />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bgColor"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <include
+            android:id="@+id/includeFoot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/title_bar" />
+
+<!--         <TextView -->
+<!--             android:id="@+id/textViewSend" -->
+<!--             style="@style/FilterText" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_alignParentRight="true" -->
+<!--             android:layout_centerVertical="true" -->
+<!--             android:layout_marginRight="@dimen/MarginSmall" -->
+<!--             android:background="@drawable/green_action_btn_select" -->
+<!--             android:clickable="true" -->
+<!--             android:drawableLeft="@drawable/ic_actionbar_send" -->
+<!--             android:onClick="Send" -->
+<!--             android:text="@id/textViewSend" /> -->
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/ScrollViewA"
+        style="@style/Scoller"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="@dimen/Margin" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/linearLayoutRe"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_normal" >
+
+                <TextView
+                    android:id="@+id/TextViewRe"
+                    style="@style/MsgNew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:gravity="center|top"
+                    android:paddingTop="10.0dip"
+                    android:text="接收者" />
+
+                <LinearLayout
+                    android:id="@+id/LinearLayoutcontainer"
+                    android:layout_width="0.0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:divider="@drawable/divide_ccc"
+                    android:minHeight="@dimen/msgHight"
+                    android:orientation="vertical"
+                    android:paddingRight="16.0dip"
+                    android:paddingTop="5.0dip" />
+
+                <ImageView
+                    android:id="@+id/imageViewAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/msgHight"
+                    android:layout_marginRight="@dimen/Margin"
+                    android:contentDescription="@null"
+                    android:onClick="ClickAdd"
+                    android:src="@drawable/add_select" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/MarginTop"
+                android:background="@drawable/bg_input_normal"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/editTextContent"
+                    style="@style/hintText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/contentHeigh"
+                    android:background="@color/transparent"
+                    android:gravity="left"
+                    android:hint="任务内容"
+                    android:padding="@dimen/contentPadding"
+                    android:text="" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/divider"
+                    android:layout_marginBottom="@dimen/MarginMini"
+                    android:layout_marginTop="@dimen/MarginMini"
+                    android:background="@drawable/divide_v_ccc" />
+
+<!--                 <include -->
+<!--                     android:layout_width="fill_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     layout="@layout/op_menu_task_new" /> -->
+            </LinearLayout>
+
+            <TextView
+                style="@style/SetTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/setMaginLeft"
+                android:text="起止日期" />
+
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/op_time" />
+
+            <TextView
+                style="@style/SetTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/setMaginLeft"
+                android:text="汇报要求" />
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TableRow
+                    style="@style/setItemTopBg"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible" >
+
+                    <TextView
+                        style="@style/ItemTitleText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="拍摄图片" />
+
+                    <TextView
+                        android:id="@+id/textViewPho"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/MarginMini"
+                        android:layout_marginRight="@dimen/MarginMini"
+                        android:gravity="right"
+                        android:text="@string/needNo" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButtonPho"
+                        android:background="@drawable/set_toggle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:tag="0"
+                        android:textOn=""
+                        android:textOff="" />
+                </TableRow>
+
+                <TableRow
+                    style="@style/setItemBottomBg"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true" >
+
+                    <TextView
+                        style="@style/ItemTitleText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="地理位置" />
+
+                    <TextView
+                        android:id="@+id/textViewLoc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/MarginMini"
+                        android:layout_marginRight="@dimen/MarginMini"
+                        android:gravity="right"
+                        android:text="@string/needNo" />
+
+                    <ToggleButton
+                        android:id="@+id/toggleButtonLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/set_toggle"
+                        android:focusable="false"
+                        android:tag="0"
+                        android:textOff=""
+                        android:textOn="" />
+                </TableRow>
+
+<!--                 <TableRow -->
+<!--                     android:id="@+id/TableRowReplyTime" -->
+<!--                     android:layout_width="fill_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:background="@drawable/bg_optionlist_bottom_normal" -->
+<!--                     android:clickable="true" -->
+<!--                     android:gravity="center_vertical" -->
+<!--                     android:minHeight="@dimen/titleHeight" -->
+<!--                     android:paddingBottom="@dimen/Margin12" -->
+<!--                     android:paddingTop="@dimen/Margin12" > -->
+
+<!--                     <TextView -->
+<!--                         style="@style/ItemTitleText" -->
+<!--                         android:layout_width="fill_parent" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:layout_weight="1.0" -->
+<!--                         android:paddingLeft="@dimen/Margin" -->
+<!--                         android:text="定期汇报进度" /> -->
+
+<!--                     <TextView -->
+<!--                         android:id="@+id/textViewReply" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:layout_marginLeft="@dimen/MarginMini" -->
+<!--                         android:layout_marginRight="@dimen/MarginMini" -->
+<!--                         android:gravity="right" -->
+<!--                         android:text="@string/needNo" /> -->
+
+<!--                     <ToggleButton -->
+<!--                         android:id="@+id/toggleButtonReply" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:background="@drawable/set_toggle" -->
+<!--                         android:focusable="false" -->
+<!--                         android:tag="0" -->
+<!--                         android:textOff="" -->
+<!--                         android:textOn="" /> -->
+
+<!--                     <TextView -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:paddingRight="@dimen/Margin" /> -->
+<!--                 </TableRow> -->
+
+<!--                 <TableRow -->
+<!--                     android:id="@+id/TableRowTime" -->
+<!--                     style="@style/setItemBottomClickBg" -->
+<!--                     android:layout_width="fill_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:clickable="true" -->
+<!--                     android:gravity="center_vertical" -->
+<!--                     android:onClick="ClickTime" -->
+<!--                     android:visibility="gone" > -->
+
+<!--                     <TextView -->
+<!--                         style="@style/ItemTitleText" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:layout_weight="1.0" -->
+<!--                         android:text="汇报时间" /> -->
+
+<!--                     <LinearLayout -->
+<!--                         android:layout_width="fill_parent" -->
+<!--                         android:layout_height="fill_parent" -->
+<!--                         android:gravity="center|right" > -->
+
+<!--                         <TextView -->
+<!--                             style="@style/SetContentText" -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:text="每" /> -->
+
+<!--                         <TextView -->
+<!--                             android:id="@+id/TextViewTime" -->
+<!--                             style="@style/SetContentText" -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:text="2" /> -->
+
+<!--                         <TextView -->
+<!--                             style="@style/SetContentText" -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:text="天汇报进度" /> -->
+
+<!--                         <ImageView -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:layout_marginLeft="@dimen/Margin10" -->
+<!--                             android:contentDescription="@null" -->
+<!--                             android:src="@drawable/arrow_right_light" /> -->
+<!--                     </LinearLayout> -->
+<!--                 </TableRow> -->
+
+                <TableRow
+                    android:id="@+id/tableRowExcTimeError"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/MarginMini"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:id="@+id/textViewExcError"
+                        style="@style/setItemBg"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="开始时间不能低于当前时间"
+                        android:textColor="@color/errorColor" />
+                </TableRow>
+            </TableLayout>
+
+            <TextView
+                style="@style/SetTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/setMaginLeft"
+                android:text="附件上传"
+                android:visibility="gone" />
+
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/Margin12"
+                layout="@layout/appendix_more1"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

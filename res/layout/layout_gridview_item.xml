@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4.0dip"
+        android:padding="5dp"
+        android:background="@drawable/cell_bk"
+         >
+<!--          android:background="@drawable/mask175" -->
+
+        <ImageView
+            android:id="@+id/imageView_ItemImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:src="@drawable/ic_launcher" />
+
+<!--         红点 -->
+<!--         <ImageView -->
+<!--             android:id="@+id/hongdian" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_alignParentRight="true" -->
+<!--             android:gravity="right" -->
+<!--             android:src="@drawable/unread_dot" /> -->
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView_ItemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/relativeLayout2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3.0dip"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textColor="@color/grey"
+        android:textSize="15.0dip" />
+
+</RelativeLayout>

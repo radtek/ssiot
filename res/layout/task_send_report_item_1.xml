@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewTitleDate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/Margin"
+        android:text="TextView"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/Margin"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="5.0dip"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imageViewFlag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/timeline" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:background="@drawable/timeline_bg" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayoutBg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/Margin"
+            android:layout_marginRight="@dimen/Margin20"
+            android:background="@drawable/bg_task_reply"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/Margin12"
+                android:paddingLeft="@dimen/Margin8"
+                android:paddingRight="@dimen/Margin8"
+                android:paddingTop="@dimen/Margin8" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                    
+
+                    <LinearLayout 
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView 
+                            android:id="@+id/report_name"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:text="张三"/>
+                        <TextView 
+                            android:id="@+id/report_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="2016/03/08 09:00"
+                            android:gravity="right"/>
+                    </LinearLayout>
+                    
+                    <TextView 
+                        android:id="@+id/report_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="详细内容"/>
+                    
+                    <com.ssiot.fish.question.widget.PicModelGridView
+                        android:id="@+id/report_list_pic_grid"
+                        android:layout_width="fill_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginBottom="10.0dip"
+                        android:layout_marginLeft="17.0dip"
+                        android:layout_marginRight="17.0dip"
+                        android:columnWidth="10dp"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="3"
+                        android:stretchMode="columnWidth"
+                        android:verticalSpacing="3dp" />
+                    
+                    <TextView 
+                        android:id="@+id/report_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_task_location"
+                        android:paddingTop="@dimen/MarginMini"
+                        android:gravity="center_vertical"
+                        android:text=""/>
+                    
+                    
+
+<!--                     <LinearLayout -->
+<!--                         android:id="@+id/LinearLayoutState" -->
+<!--                         android:layout_width="wrap_content" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         android:layout_gravity="right" -->
+<!--                         android:layout_marginTop="25.0dip" -->
+<!--                         android:background="@drawable/bg_reply_ribbon_dark" -->
+<!--                         android:gravity="center|right" -->
+<!--                         android:visibility="gone" > -->
+
+<!--                         <ImageView -->
+<!--                             android:id="@+id/imageViewState" -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:layout_marginRight="@dimen/Margin10" -->
+<!--                             android:src="@drawable/ic_task_statistics_done" /> -->
+
+<!--                         <TextView -->
+<!--                             android:id="@+id/textViewState" -->
+<!--                             android:layout_width="wrap_content" -->
+<!--                             android:layout_height="wrap_content" -->
+<!--                             android:text="TextView" -->
+<!--                             android:textColor="@color/white" -->
+<!--                             android:textSize="@dimen/itemTitle" /> -->
+<!--                     </LinearLayout> -->
+
+<!--                     <include -->
+<!--                         android:layout_width="fill_parent" -->
+<!--                         android:layout_height="wrap_content" -->
+<!--                         layout="@layout/task_send_report_item_more_info" /> -->
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

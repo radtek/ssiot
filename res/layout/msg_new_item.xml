@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divide_ccc"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="5.0dip" >
+
+        <TextView
+            android:id="@+id/TextViewTitle"
+            style="@style/contetntTopPadding"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/bg_location_item_normal"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="@dimen/msg_content" />
+
+        <ImageButton
+            android:id="@+id/ImageButtonDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@drawable/bg_receiver_item_select"
+            android:contentDescription="@null" />
+    </LinearLayout>
+
+</LinearLayout>

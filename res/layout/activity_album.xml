@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_activity_rootview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/black"
+    android:orientation="vertical" >
+
+<!--     <com.satan.peacantdoctor.base.ui.BaseTitleBar -->
+<!--         android:id="@id/title_bar" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" /> -->
+
+<!--     <com.satan.peacantdoctor.base.album.AlbumPager -->
+<!--         android:id="@id/viewpager" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         android:layout_below="@id/title_bar" /> -->
+    
+    <ImageView 
+        android:id="@+id/album_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

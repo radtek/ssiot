@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_f0f0f0"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <include
+            android:id="@+id/includeFoot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/title_bar" />
+
+        <TextView
+            android:id="@+id/textViewReport"
+            style="@style/FilterText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/MarginSmall"
+            android:background="@drawable/green_action_btn_select"
+            android:paddingLeft="@dimen/Margin10"
+            android:paddingRight="@dimen/Margin"
+            android:text="写汇报"
+            android:visibility="gone" />
+    </RelativeLayout>
+    
+    <ListView 
+        android:id="@+id/listViewReport"
+        style="@style/listResNoDivideStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+<!--     <unit.pullList.PullHeaderListView TODO -->
+<!--         android:id="@+id/listViewReport" -->
+<!--         style="@style/listResNoDivideStyle" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" /> -->
+
+</LinearLayout>

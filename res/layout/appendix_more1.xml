@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_radius10"
+        android:orientation="vertical" >
+
+<!--         android:background="@drawable/list_item_select2" -->
+        <LinearLayout
+            android:id="@+id/LinearLayoutImg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            
+            android:gravity="center_vertical"
+            android:padding="@dimen/Margin" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_comment_img" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/Margin12"
+                android:layout_weight="1.0"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/MsgTitleText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加图片" />
+
+                <TextView
+                    android:id="@+id/textViewImgCount"
+                    style="@style/MsgTitleTextOther"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/Margin"
+                    android:text="最多3张，每张小于5M" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageViewAddImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_comment_add"
+                android:visibility="gone" />
+        </LinearLayout>
+
+<!--         <include -->
+<!--             android:id="@+id/dividImg" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             layout="@layout/divide_h" -->
+<!--             android:visibility="gone" /> -->
+        <View 
+            android:id="@+id/dividImg"
+            android:background="@drawable/divide_ccc" 
+            android:layout_width="fill_parent" 
+            android:layout_height="@dimen/divider"
+            android:visibility="gone" />
+        
+        <GridView
+            android:id="@+id/gridViewAttachImg"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="3"
+            android:visibility="gone" />
+    </LinearLayout>
+
+<!--     <LinearLayout -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_marginTop="@dimen/Margin" -->
+<!--         android:background="@drawable/bg_radius10" -->
+<!--         android:orientation="vertical" > -->
+
+<!--         <LinearLayout -->
+<!--             android:id="@+id/LinearLayoutOther" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:background="@drawable/list_item_select2" -->
+<!--             android:gravity="center_vertical" -->
+<!--             android:padding="@dimen/Margin" > -->
+
+<!--             <ImageView -->
+<!--                 android:layout_width="wrap_content" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:src="@drawable/ic_comment_attatch" /> -->
+
+<!--             <LinearLayout -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:layout_marginLeft="@dimen/Margin12" -->
+<!--                 android:layout_weight="1.0" -->
+<!--                 android:orientation="vertical" > -->
+
+<!--                 <TextView -->
+<!--                     style="@style/MsgTitleText1" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:text="添加附件" /> -->
+
+<!--                 <TextView -->
+<!--                     android:id="@+id/textViewOtherCount" -->
+<!--                     style="@style/MsgTitleTextOther" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:layout_marginRight="@dimen/Margin" -->
+<!--                     android:text="最多3个，每个小于5M" /> -->
+<!--             </LinearLayout> -->
+
+<!--             <ImageView -->
+<!--                 android:id="@+id/imageViewAddOther" -->
+<!--                 android:layout_width="wrap_content" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:src="@drawable/ic_comment_add" -->
+<!--                 android:visibility="gone" /> -->
+<!--         </LinearLayout> -->
+
+<!--         <include -->
+<!--             android:id="@+id/dividOther" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             layout="@layout/divide_h" -->
+<!--             android:visibility="gone" /> -->
+
+<!--         <ListView -->
+<!--             android:id="@+id/listViewAttachOther" -->
+<!--             style="@style/listResNoDivideStyle" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:numColumns="3" -->
+<!--             android:visibility="gone" /> -->
+<!--     </LinearLayout> -->
+
+</LinearLayout>

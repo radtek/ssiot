@@ -36,4 +36,10 @@
   
   <item type="id" name="about_version_code">false</item>
   <item type="id" name="split">false</item>
+  
+  
+<!--   copy from 慧云 接受者联系人添加-->
+  <item name="tag_first" type="id"></item>
+  <item name="tag_second" type="id"></item>
+  <item name="tag_third" type="id"></item>
 </resources>
