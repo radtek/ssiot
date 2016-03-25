@@ -37,7 +37,16 @@
      <dimen name="statistics_text_size">16.0dip</dimen>
      <dimen name="mainImgMargin">16.0dip</dimen>
      <dimen name="titleSize">19.0dip</dimen>
-
+     
+     <dimen name="farmLeft">20.0dip</dimen>
+     <dimen name="Margin28">28.0dip</dimen>
+     <dimen name="subTextSize">12.0dip</dimen>
+     <dimen name="itemMiniContent">12.0dip</dimen>
+     <dimen name="new_farm_item_top">5.0dip</dimen>
+     <dimen name="ic_size_devices">40.0dip</dimen>
+     <dimen name="ic_stroke_width">2.0dip</dimen>
+     <dimen name="ic_size_section">44.0dip</dimen>
+     
      
      
      

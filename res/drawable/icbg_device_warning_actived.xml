@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="oval"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <size android:height="@dimen/ic_size_section" android:width="@dimen/ic_size_section" />
+    <solid android:color="@color/device_warning_actived" />
+</shape>

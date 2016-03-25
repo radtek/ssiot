@@ -67,6 +67,9 @@
 	<color name="transparent">#00000000</color>
 	<color name="c333333">#ff333333</color>
 	<color name="itemPressColor">#ffc7d9bc</color>
+	<color name="device_offline_actived">#ffda646d</color>
+	<color name="device_warning_actived">#ffffb06e</color>
+	<color name="device_connect_actived">#ff2d8931</color>
 
 	
 <!-- 	copy 渔业通 还是农医生？？-->

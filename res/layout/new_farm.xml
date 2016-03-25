@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_f0f0f0"
+    android:orientation="vertical" >
+
+<!--     <include -->
+<!--         android:id="@+id/includeFoot" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         layout="@layout/title_bar" /> -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/subMenuHeight"
+        android:background="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <ImageView
+            android:id="@+id/imageViewMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@id/imageViewMore"
+            android:padding="@dimen/Margin10"
+            android:paddingLeft="@dimen/farmLeft"
+            android:src="@drawable/home_select" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@id/imageViewMore"
+            android:src="@drawable/arrow_breadcrumb" />
+
+        <HorizontalScrollView
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:fadingEdge="none"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:id="@+id/navigationLinearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/divider"
+        android:background="@drawable/divide_ccc"
+        android:contentDescription="@null" />
+    
+    <include 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/listResNoDivideStyle"
+        layout="@layout/swiperefresh_list"/>
+
+<!--     <include -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         layout="@layout/user_search" /> -->
+
+<!--     <unit.pullList.PullToRefreshListView -->
+<!--         xmlns:in="http://schemas.android.com/apk/res/com.tcloud.fruitfarm" -->
+<!--         android:id="@+id/listViewFarm" -->
+<!--         style="@style/listResNoDivideStyle" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         in:mode="pullDownFromTop" /> -->
+
+    <LinearLayout
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/Margin28"
+            android:gravity="center"
+            android:text="没有监控信息"
+            android:textAppearance="?android:textAppearanceLarge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8.0dip"
+            android:hint="您需要新建或加入企业组织\n才能使用此功能"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+<!--         <Button -->
+<!--             style="?android:attr/buttonStyleSmall" -->
+<!--             android:layout_width="fill_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_margin="@dimen/Margin28" -->
+<!--             android:background="@drawable/green_btn_selector" -->
+<!--             android:onClick="search" -->
+<!--             android:padding="10.0dip" -->
+<!--             android:text="查找并加入您所在的企业" -->
+<!--             android:textColor="@color/white" -->
+<!--             android:textSize="18.0sp" /> -->
+    </LinearLayout>
+
+</LinearLayout>

@@ -18,6 +18,6 @@
         android:text="企业组织架构" />
     
     <include 
-        layout="@layout/activity_swiperefresh_list"/>
+        layout="@layout/swiperefresh_list"/>
 
 </LinearLayout>
